@@ -30,4 +30,147 @@ export const htmlCards: ConceptCard[] = [
       url: "https://developer.mozilla.org/es/docs/Learn_web_development/Core/Structuring_content/Basic_HTML_syntax",
     },
   },
+  {
+    id: "html-h1",
+    worldId: "html-basics",
+    kind: "element",
+    title: "<h1>",
+    tagline: "El título principal de la página: dice de qué trata.",
+    explain:
+      "<h1> marca el título más importante, como la portada de un libro. El navegador lo muestra grande y en negrita, y los lectores de pantalla (programas que leen la página en voz alta a quien no puede verla) lo anuncian como el tema de la página. Cada página tiene un solo <h1>.",
+    use: [
+      "Para el nombre de la página o del sitio: «Isla Marcado», «Panadería La Miga».",
+      "Una sola vez por página, normalmente arriba del todo.",
+    ],
+    avoid: [
+      "Poner dos <h1>: la página tendría dos portadas y nadie sabría cuál manda.",
+      "Usar <h1> solo para que un texto se vea grande: el tamaño se cambia con CSS, el idioma de los estilos que verás en la próxima isla.",
+    ],
+    example: { html: "<h1>Faro del Norte</h1>\n" },
+    exampleNote: "Un único <h1> con el nombre de aquello de lo que trata toda la página.",
+    predict: {
+      question:
+        "Tu página habla de la isla y tiene dos textos: «Isla Marcado» y «Bienvenida, viajera». ¿Cuál va en el <h1>?",
+      options: [
+        {
+          label: "«Isla Marcado»",
+          correct: true,
+          why: "Es el tema de toda la página, lo que pondría en la portada.",
+        },
+        {
+          label: "Los dos, cada uno en su <h1>",
+          correct: false,
+          why: "Solo hay un título principal por página. El saludo es texto normal.",
+        },
+        {
+          label: "«Bienvenida, viajera»",
+          correct: false,
+          why: "Un saludo no dice de qué trata la página: el título es el nombre de la isla.",
+        },
+      ],
+    },
+    mdn: {
+      label: "MDN: <h1>–<h6>",
+      url: "https://developer.mozilla.org/es/docs/Web/HTML/Reference/Elements/Heading_Elements",
+    },
+  },
+  {
+    id: "html-h2-h6",
+    worldId: "html-basics",
+    kind: "element",
+    title: "<h2> … <h6>",
+    tagline: "Subtítulos que ordenan la página como un índice.",
+    explain:
+      "Debajo del <h1> vienen los subtítulos: <h2> para cada sección, <h3> para una parte dentro de esa sección, y así hasta <h6>. El número es el rango, no el tamaño. Juntos forman un índice que los lectores de pantalla usan para saltar de sección en sección.",
+    use: [
+      "<h2> para cada sección grande de la página: «Panadería», «Puerto».",
+      "<h3> solo dentro de una sección <h2>, para una parte más pequeña.",
+      "Bajar de uno en uno: después de <h1> viene <h2>, no <h4>.",
+    ],
+    avoid: [
+      "Elegir <h4> porque «se ve más pequeño»: el número dice el rango; el tamaño lo decide CSS.",
+      "Saltarse niveles (de <h1> a <h4>): el índice queda con huecos.",
+      "Usar un encabezado para un texto que no es título de nada.",
+    ],
+    example: {
+      html: `<h1>Isla Marcado</h1>
+<h2>Panadería La Miga</h2>
+<h3>Pan de la mañana</h3>
+<h2>Faro del Norte</h2>
+`,
+    },
+    exampleNote:
+      "Los dos <h2> son secciones de la isla; el <h3> es una parte dentro de la panadería.",
+    predict: {
+      question: "Después de <h1>Isla Marcado</h1> quieres el título de una sección: «Puerto». ¿Cuál eliges?",
+      options: [
+        {
+          label: "<h2>Puerto</h2>",
+          correct: true,
+          why: "El puerto es una sección de la isla: el rango que sigue a <h1> es <h2>.",
+        },
+        {
+          label: "<h4>Puerto</h4>, que se ve más discreto",
+          correct: false,
+          why: "Saltaría del 1 al 4 y dejaría huecos en el índice. Si lo quieres más pequeño, eso se hace con CSS.",
+        },
+        {
+          label: "<h1>Puerto</h1>",
+          correct: false,
+          why: "Ya hay un <h1>. El puerto es una parte de la isla, no una segunda portada.",
+        },
+      ],
+    },
+    mdn: {
+      label: "MDN: Encabezados y párrafos",
+      url: "https://developer.mozilla.org/es/docs/Learn_web_development/Core/Structuring_content/Headings_and_paragraphs",
+    },
+  },
+  {
+    id: "html-p",
+    worldId: "html-basics",
+    kind: "element",
+    title: "<p>",
+    tagline: "Un párrafo: el texto normal de la página.",
+    explain:
+      "<p> envuelve un bloque de texto, como un párrafo de una carta. Cada <p> empieza en una línea nueva y deja un pequeño espacio arriba y abajo. Pulsar Enter en el código no crea párrafos: el navegador junta los saltos de línea en un espacio, así que cada párrafo necesita su propio <p>.",
+    use: [
+      "Para frases que explican algo: descripciones, avisos, horarios.",
+      "Un <p> por cada idea o bloque de texto.",
+      "Justo debajo del encabezado al que pertenece.",
+    ],
+    avoid: [
+      "Escribir texto suelto, sin <p>: se ve, pero el navegador no sabe que es un párrafo.",
+      "Usar <p> para el nombre de una sección: si es un título, es un encabezado.",
+    ],
+    example: {
+      html: `<h2>Panadería La Miga</h2>
+<p>Pan recién horneado cada mañana.</p>
+<p>Abrimos a las 7:00, con vista al mar.</p>
+`,
+    },
+    exampleNote: "Dos <p> son dos párrafos: cada uno empieza en su propia línea.",
+    predict: {
+      question:
+        "Dentro de un solo <p> escribes «Pan caliente.», pulsas Enter dos veces y escribes «Con vista al mar.». ¿Cómo se ve?",
+      options: [
+        {
+          label: "En una sola línea: «Pan caliente. Con vista al mar.»",
+          correct: true,
+          why: "El navegador convierte los saltos de línea del código en un espacio. Para separarlos, abre un segundo <p>.",
+        },
+        {
+          label: "Como dos párrafos separados",
+          correct: false,
+          why: "Los Enter del código no crean párrafos: solo cada <p> lo hace.",
+        },
+        {
+          label: "Con una línea en blanco en medio, igual que en el código",
+          correct: false,
+          why: "Los espacios y saltos de línea de más se ignoran. Lo que separa es la etiqueta, no el Enter.",
+        },
+      ],
+    },
+    mdn: { label: "MDN: <p>", url: "https://developer.mozilla.org/es/docs/Web/HTML/Reference/Elements/p" },
+  },
 ];
