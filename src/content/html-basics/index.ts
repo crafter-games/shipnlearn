@@ -7,11 +7,12 @@ import { enlaces } from "./05-enlaces";
 import { imagenes } from "./06-imagenes";
 import { documento } from "./07-documento";
 import { estructura } from "./08-estructura";
+import { receta } from "./09-receta";
 
 export const htmlBasics: World = {
   id: "html-basics",
   title: "Isla Marcado",
   subtitle: "HTML fundamental",
   accent: "#FFD66B",
-  levels: [titulo, encabezados, enfasis, listas, enlaces, imagenes, documento, estructura],
+  levels: [titulo, encabezados, enfasis, listas, enlaces, imagenes, documento, estructura, receta],
 };
