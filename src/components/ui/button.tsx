@@ -6,7 +6,7 @@ type Size = "sm" | "md" | "lg";
 const variants: Record<Variant, string> = {
   primary: "bg-lime text-ink",
   secondary: "bg-foam text-ink",
-  danger: "bg-coral text-foam",
+  danger: "bg-coral text-ink",
   accent: "bg-sand text-ink",
   grape: "bg-grape text-foam",
 };

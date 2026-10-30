@@ -19,7 +19,23 @@ export type Settings = {
   /** 0..1, mapped to dB by the audio engine. */
   musicVolume: number;
   sfxVolume: number;
+  /** Player opt-in on top of the OS `prefers-reduced-motion`. */
+  reducedMotion: boolean;
 };
+
+/** Island flag colours. Unlocked by shipper rank (see FLAG_RANKS). */
+export type FlagColor = "coral" | "lime" | "grape" | "ocean";
+
+/** Minimum rank to equip each flag colour. */
+export const FLAG_RANKS: Record<FlagColor, number> = {
+  coral: 1,
+  lime: 2,
+  grape: 3,
+  ocean: 4,
+}; // tune
+
+/** Cosmetics the player chose for their islands. */
+export type Equipped = { flag: FlagColor };
 
 export const XP_PER_STAR = 10; // tune
 export const XP_PER_RANK = 100; // tune
@@ -39,20 +55,55 @@ type ProgressState = {
   xp: number;
   reviews: Review[];
   settings: Settings;
+  /** The first-30-seconds intro was shown (or skipped). */
+  seenIntro: boolean;
+  equipped: Equipped;
   /** Records a finished level. Only improvements grant XP. */
   completeLevel: (levelId: string, stars: Stars) => CompleteResult;
   /** Marks a due review as done and removes it. */
   completeReview: (levelId: string) => void;
   setSettings: (patch: Partial<Settings>) => void;
+  markIntroSeen: () => void;
+  /** Ignored when the current rank has not unlocked `patch.flag` yet. */
+  equip: (patch: Partial<Equipped>) => void;
   reset: () => void;
 };
 
+const defaultSettings: Settings = {
+  muted: false,
+  musicVolume: 0.6,
+  sfxVolume: 0.8,
+  reducedMotion: false,
+};
+
 const initial = {
-  levels: {},
+  levels: {} as Record<string, LevelProgress>,
   xp: 0,
   reviews: [] as Review[],
-  settings: { muted: false, musicVolume: 0.6, sfxVolume: 0.8 },
+  settings: defaultSettings,
+  seenIntro: false,
+  equipped: { flag: "coral" } as Equipped,
 };
+
+type Persisted = Pick<
+  ProgressState,
+  "levels" | "xp" | "reviews" | "settings" | "seenIntro" | "equipped"
+>;
+
+/** Upgrades persisted state from older versions. Exported for tests. */
+export function migrateProgress(persisted: unknown, version: number): Persisted {
+  const s = (persisted ?? {}) as Partial<Persisted>;
+  const levels = s.levels ?? {};
+  return {
+    levels,
+    xp: s.xp ?? 0,
+    reviews: s.reviews ?? [],
+    settings: { ...defaultSettings, ...s.settings },
+    // v1 players who already beat a level skip the intro.
+    seenIntro: version < 2 ? Object.keys(levels).length > 0 : (s.seenIntro ?? false),
+    equipped: { ...initial.equipped, ...s.equipped },
+  };
+}
 
 export const useProgress = create<ProgressState>()(
   persist(
@@ -97,11 +148,28 @@ export const useProgress = create<ProgressState>()(
         }),
       setSettings: (patch) =>
         set((s) => ({ settings: { ...s.settings, ...patch } })),
+      markIntroSeen: () => set({ seenIntro: true }),
+      equip: (patch) =>
+        set((s) => {
+          if (patch.flag && FLAG_RANKS[patch.flag] > rankOf(s.xp)) return s;
+          return { equipped: { ...s.equipped, ...patch } };
+        }),
       reset: () => set(initial),
     }),
     {
       name: "shipnlearn-progress",
-      version: 1,
+      version: 2,
+      migrate: migrateProgress,
+      // Deep-merge nested objects so new fields keep their defaults.
+      merge: (persisted, current) => {
+        const p = (persisted ?? {}) as Partial<Persisted>;
+        return {
+          ...current,
+          ...p,
+          settings: { ...current.settings, ...p.settings },
+          equipped: { ...current.equipped, ...p.equipped },
+        };
+      },
       storage: createJSONStorage(() => localStorage),
       skipHydration: true,
     },
