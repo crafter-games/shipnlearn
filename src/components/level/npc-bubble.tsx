@@ -15,7 +15,7 @@ export function NpcBubble({ npc, story, className = "" }: { npc: Npc; story: str
         aria-expanded={open}
         aria-controls="npc-story"
         aria-label={open ? `Ocultar el pedido de ${npc.name}` : `Ver el pedido de ${npc.name}`}
-        className="flex size-14 shrink-0 animate-bob items-center justify-center overflow-hidden rounded-full border-[3px] border-ink bg-sand shadow-chunky-sm md:pointer-events-none"
+        className="flex size-14 shrink-0 animate-bob items-center justify-center overflow-hidden rounded-full shadow-chunky-sm md:pointer-events-none"
       >
         <NpcAvatar id={npc.avatar} className="size-full" />
       </button>
