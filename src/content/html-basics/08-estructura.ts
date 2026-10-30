@@ -135,5 +135,5 @@ export const estructura: Level = {
     { label: "MDN: <main>", url: "https://developer.mozilla.org/es/docs/Web/HTML/Reference/Elements/main" },
     { label: "MDN: <nav>", url: "https://developer.mozilla.org/es/docs/Web/HTML/Reference/Elements/nav" },
   ],
-  cards: [],
+  cards: ["html-header-footer", "html-nav", "html-main"],
 };
