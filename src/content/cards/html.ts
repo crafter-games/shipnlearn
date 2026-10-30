@@ -361,4 +361,151 @@ export const htmlCards: ConceptCard[] = [
     },
     mdn: { label: "MDN: <ol>", url: "https://developer.mozilla.org/es/docs/Web/HTML/Reference/Elements/ol" },
   },
+  {
+    id: "html-atributo",
+    worldId: "html-basics",
+    kind: "concept",
+    title: "Atributos",
+    tagline: "Datos extra que se escriben dentro de la etiqueta que abre.",
+    explain:
+      "A veces un elemento necesita más información que su contenido. Esa información va en atributos, con la forma nombre=\"valor\", dentro de la etiqueta que abre y separados del nombre por un espacio. Los atributos no se ven en la página: configuran el elemento.",
+    use: [
+      "Para darle a un elemento un dato que necesita: adónde lleva un enlace, qué imagen mostrar, cómo se llama.",
+      "Escribe siempre el valor entre comillas dobles.",
+      "Si hay varios, sepáralos con espacios: <img src=\"…\" alt=\"…\">.",
+    ],
+    avoid: [
+      "Ponerlos en la etiqueta de cierre: </h2 id=\"horarios\"> no funciona.",
+      "Olvidar las comillas o el signo =: el navegador no sabe dónde termina el valor.",
+    ],
+    example: {
+      html: `<h2 id="horarios">Horarios del faro</h2>
+<p>Abre los sábados a las 11:00.</p>
+`,
+    },
+    exampleNote: "En id=\"horarios\", id es el nombre del atributo y horarios su valor. En la página solo se ve el texto.",
+    predict: {
+      question: "¿Qué se ve en la página con <h2 id=\"horarios\">Horarios del faro</h2>?",
+      options: [
+        {
+          label: "Solo «Horarios del faro»",
+          correct: true,
+          why: "Los atributos viven dentro de la etiqueta, y las etiquetas no se muestran.",
+        },
+        {
+          label: "«id=horarios Horarios del faro»",
+          correct: false,
+          why: "El atributo configura el elemento, pero no se pinta.",
+        },
+        {
+          label: "Nada: el id oculta el título",
+          correct: false,
+          why: "id solo le pone nombre al elemento; el texto se sigue viendo igual.",
+        },
+      ],
+    },
+    mdn: { label: "MDN: Atributo", url: "https://developer.mozilla.org/es/docs/Glossary/Attribute" },
+  },
+  {
+    id: "html-a-href",
+    worldId: "html-basics",
+    kind: "element",
+    title: "<a href>",
+    tagline: "Un enlace: texto que te lleva a otro sitio al pulsarlo.",
+    explain:
+      "<a> (de «anchor», ancla) convierte su contenido en un enlace. El atributo href dice adónde lleva: para ir a otra web, la dirección completa, empezando por https://. Lo que escribes entre <a …> y </a> es el texto que se ve y se pulsa.",
+    use: [
+      "Para llevar a otra web o a otra página.",
+      "Con un texto que diga el destino: «el artículo sobre faros en Wikipedia».",
+      "Dentro de un párrafo o en un menú.",
+    ],
+    avoid: [
+      "«Clic aquí» o «ver más» como texto: fuera de la frase no dicen adónde llevan.",
+      "Olvidar el https:// de otra web: href=\"www.ejemplo.com\" se busca dentro de tu propia página y falla.",
+      "Un <a> sin texto: nadie puede verlo ni pulsarlo.",
+    ],
+    example: {
+      html: `<p>¿Cómo funciona un faro? Lee <a href="https://es.wikipedia.org/wiki/Faro">el artículo sobre faros en Wikipedia</a>.</p>
+`,
+    },
+    exampleNote:
+      "href guarda la dirección; el texto «el artículo sobre faros en Wikipedia» es lo que se ve y dice adónde vas.",
+    predict: {
+      question:
+        "Algunos lectores de pantalla pueden leer solo la lista de enlaces de la página. ¿Qué texto de enlace sirve más?",
+      options: [
+        {
+          label: "«horarios del ferri»",
+          correct: true,
+          why: "Se entiende solo, sin leer lo que tiene alrededor.",
+        },
+        {
+          label: "«clic aquí»",
+          correct: false,
+          why: "Diez «clic aquí» seguidos no dicen nada de adónde lleva cada uno.",
+        },
+        {
+          label: "«https://isla.example/ferri»",
+          correct: false,
+          why: "Una dirección leída en voz alta es un trabalenguas. Va en href, no en el texto.",
+        },
+      ],
+    },
+    mdn: {
+      label: "MDN: Crear hipervínculos",
+      url: "https://developer.mozilla.org/es/docs/Learn_web_development/Core/Structuring_content/Creating_links",
+    },
+  },
+  {
+    id: "html-id-enlace-interno",
+    worldId: "html-basics",
+    kind: "attribute",
+    title: "id y href=\"#…\"",
+    tagline: "Ponle nombre a un punto de la página y enlaza directo a él.",
+    explain:
+      "El atributo id le da a un elemento un nombre único dentro de la página, como el número de una casa. Un enlace con href=\"#nombre\" (almohadilla más ese id) no sale de la página: salta hasta ese elemento.",
+    use: [
+      "Menús que llevan a cada sección de una página larga.",
+      "Enlaces como «ir a los horarios» o «volver arriba».",
+      "Un id distinto para cada elemento: nunca se repiten.",
+    ],
+    avoid: [
+      "Escribir la almohadilla en el id: id=\"#visitas\". La # solo va en el href.",
+      "Usar espacios en el id: mejor una palabra, o varias unidas con guiones.",
+      "Repetir el mismo id en dos elementos: el enlace no sabría a cuál saltar.",
+    ],
+    example: {
+      html: `<p><a href="#visitas">Ir a las visitas guiadas</a></p>
+<h2>Historia del faro</h2>
+<p>Lleva encendido desde 1890 y nunca se ha quedado sin luz.</p>
+<h2 id="visitas">Visitas guiadas</h2>
+<p>Sábados a las 11:00. Son 99 escalones.</p>
+`,
+    },
+    exampleNote: "href=\"#visitas\" apunta al elemento con id=\"visitas\": la # significa «en esta misma página».",
+    predict: {
+      question: "Cambias el encabezado a <h2 id=\"visitas-faro\">. ¿Qué pasa con el enlace href=\"#visitas\"?",
+      options: [
+        {
+          label: "Ya no salta: los nombres no coinciden",
+          correct: true,
+          why: "El href debe ser # más el id exacto. Habría que cambiarlo a #visitas-faro.",
+        },
+        {
+          label: "Sigue funcionando, porque se parecen",
+          correct: false,
+          why: "El navegador busca el id exacto, letra por letra.",
+        },
+        {
+          label: "Abre otra web",
+          correct: false,
+          why: "Un href que empieza por # nunca sale de la página.",
+        },
+      ],
+    },
+    mdn: {
+      label: "MDN: atributo id",
+      url: "https://developer.mozilla.org/es/docs/Web/HTML/Reference/Global_attributes/id",
+    },
+  },
 ];
