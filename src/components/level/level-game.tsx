@@ -32,12 +32,16 @@ const KEY_SFX_MS = 70;
 const FILE_NAME: Record<FileKind, string> = { html: "index.html", css: "estilos.css" };
 
 /** The playable level: request, editor (code/tiles/fill), live preview, checklist, Ship it. */
-export function LevelGame({ level }: { level: Level }) {
+/**
+ * `review` = a spaced "Marea": start from the starter, never touch the saved
+ * draft, and count the review as done on success.
+ */
+export function LevelGame({ level, review = false }: { level: Level; review?: boolean }) {
   const world = getWorld(level.worldId);
   const levelNumber = (world?.levels.findIndex((l) => l.id === level.id) ?? 0) + 1;
   const next = nextLevel(level.id);
 
-  const [draft, setDraftState] = useState<Draft>(() => loadDraft(level));
+  const [draft, setDraftState] = useState<Draft>(() => (review ? initialDraft(level) : loadDraft(level)));
   // Mirrors `draft` synchronously: a Ctrl+Enter right after a keystroke must
   // ship what was typed, even before React re-renders.
   const draftRef = useRef(draft);
@@ -87,7 +91,9 @@ export function LevelGame({ level }: { level: Level }) {
     };
   }, []);
 
-  useEffect(() => saveDraft(level.id, draft), [level.id, draft]);
+  useEffect(() => {
+    if (!review) saveDraft(level.id, draft);
+  }, [review, level.id, draft]);
 
   /** Light up newly-passed lines. The first evaluation is a silent baseline. */
   const apply = useCallback((ev: Evaluation) => {
@@ -148,11 +154,13 @@ export function LevelGame({ level }: { level: Level }) {
       }
       return;
     }
-    const res = useProgress.getState().completeLevel(level.id, stars);
+    const progress = useProgress.getState();
+    if (review) progress.completeReview(level.id);
+    const res = progress.completeLevel(level.id, stars);
     playSfx("ship");
     setScene("celebrate");
     setCelebration({ stars, ...res });
-  }, [shipping, celebration, runner, apply, level]);
+  }, [shipping, celebration, runner, apply, level, review]);
 
   useEffect(() => {
     shipRef.current = () => void ship();

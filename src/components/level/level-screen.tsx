@@ -13,7 +13,8 @@ export function LevelScreen({ levelId }: { levelId: string }) {
   const isClient = useIsClient();
   if (!level) return null;
   if (!isClient) return <LevelLoading avatar={level.npc.avatar} />;
-  return <LevelGame level={level} />;
+  const review = new URLSearchParams(window.location.search).get("review") === "1";
+  return <LevelGame level={level} review={review} />;
 }
 
 export function LevelLoading({ avatar = "🏝️" }: { avatar?: string }) {
