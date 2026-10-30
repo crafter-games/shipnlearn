@@ -22,7 +22,8 @@ import { FillBoard } from "./fill-board";
 import { HintsDialog } from "./hints-dialog";
 import { NpcBubble } from "./npc-bubble";
 import { PreviewPane } from "./preview-pane";
-import { QuickKeys } from "./quick-keys";
+import { useKeyboardInset } from "./hooks";
+import { KEYBOARD_MIN, QuickKeys } from "./quick-keys";
 import { TilesBoard } from "./tiles-board";
 
 const DEBOUNCE_MS = 300; // tune
@@ -36,7 +37,14 @@ export function LevelGame({ level }: { level: Level }) {
   const levelNumber = (world?.levels.findIndex((l) => l.id === level.id) ?? 0) + 1;
   const next = nextLevel(level.id);
 
-  const [draft, setDraft] = useState<Draft>(() => loadDraft(level));
+  const [draft, setDraftState] = useState<Draft>(() => loadDraft(level));
+  // Mirrors `draft` synchronously: a Ctrl+Enter right after a keystroke must
+  // ship what was typed, even before React re-renders.
+  const draftRef = useRef(draft);
+  const setDraft = useCallback((next: Draft | ((d: Draft) => Draft)) => {
+    draftRef.current = typeof next === "function" ? next(draftRef.current) : next;
+    setDraftState(draftRef.current);
+  }, []);
   const files = useMemo(() => composeFiles(level, draft), [level, draft]);
   const filesKey = JSON.stringify(files);
   const editable = level.editable.length ? level.editable : (["html"] as FileKind[]);
@@ -52,6 +60,8 @@ export function LevelGame({ level }: { level: Level }) {
   const [hintsOpen, setHintsOpen] = useState(false);
   const [restartOpen, setRestartOpen] = useState(false);
   const [editorFocused, setEditorFocused] = useState(false);
+  // Hide Ship only while an on-screen keyboard actually covers it.
+  const keyboardOpen = useKeyboardInset() > KEYBOARD_MIN;
 
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const editorRefs = useRef<Partial<Record<FileKind, CodeEditorHandle | null>>>({});
@@ -123,13 +133,13 @@ export function LevelGame({ level }: { level: Level }) {
     if (shipping || celebration) return;
     void unlockAudio();
     setShipping(true);
-    const current = filesRef.current;
-    const ev = await runner.run(iframeRef.current, current, { axe: true });
+    const latest = draftRef.current;
+    const ev = await runner.run(iframeRef.current, composeFiles(level, latest), { axe: true });
     setShipping(false);
     if (!ev) return;
     apply(ev);
     setRevealed(true);
-    const stars = starsFor(ev.results, { hintsUsed: draft.hintsUsed, axeClean: ev.axe.clean });
+    const stars = starsFor(ev.results, { hintsUsed: latest.hintsUsed, axeClean: ev.axe.clean });
     if (stars === 0) {
       playSfx("error");
       setShakeKey((k) => k + 1);
@@ -142,7 +152,7 @@ export function LevelGame({ level }: { level: Level }) {
     playSfx("ship");
     setScene("celebrate");
     setCelebration({ stars, ...res });
-  }, [shipping, celebration, runner, apply, draft.hintsUsed, level.id]);
+  }, [shipping, celebration, runner, apply, level]);
 
   useEffect(() => {
     shipRef.current = () => void ship();
@@ -169,19 +179,20 @@ export function LevelGame({ level }: { level: Level }) {
     return () => window.removeEventListener("keydown", onKey);
   }, [openHints]);
 
-  const typed = () => {
+  /** Throttled typing tick (called from editor/input change events). */
+  const typed = useCallback(() => {
     const now = performance.now();
     if (now - lastKeySfx.current > KEY_SFX_MS) {
       lastKeySfx.current = now;
       playSfx("key");
     }
-  };
+  }, []);
 
   const restart = () => {
     playSfx("ui-tap");
     clearDraft(level.id);
     // Hints already seen can't be unseen.
-    setDraft({ ...initialDraft(level), hintsUsed: draft.hintsUsed });
+    setDraft((d) => ({ ...initialDraft(level), hintsUsed: d.hintsUsed }));
     setRevealed(false);
     setRestartOpen(false);
   };
@@ -308,7 +319,7 @@ export function LevelGame({ level }: { level: Level }) {
           <div className="flex flex-col gap-3 md:[grid-area:editor] lg:min-h-0">
             {editorPanel}
             <div
-              className={`fixed inset-x-0 bottom-0 z-30 bg-linear-to-t from-ocean-deep via-ocean-deep/80 to-transparent px-3 pt-6 pb-[max(0.75rem,env(safe-area-inset-bottom))] md:static md:bg-none md:p-0 ${editorFocused ? "max-md:hidden" : ""}`}
+              className={`fixed inset-x-0 bottom-0 z-30 bg-linear-to-t from-ocean-deep via-ocean-deep/80 to-transparent px-3 pt-6 pb-[max(0.75rem,env(safe-area-inset-bottom))] md:static md:bg-none md:p-0 ${editorFocused && keyboardOpen ? "max-md:hidden" : ""}`}
             >
               <Button
                 size="lg"
@@ -342,6 +353,7 @@ export function LevelGame({ level }: { level: Level }) {
 
       <QuickKeys
         visible={editorFocused && level.mode === "code"}
+        restingBottom="calc(5.25rem + env(safe-area-inset-bottom))"
         onKey={(t) => editorRefs.current[activeFile]?.type(t)}
         onDone={() => (document.activeElement as HTMLElement | null)?.blur()}
       />

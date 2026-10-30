@@ -137,12 +137,7 @@ export function CodeEditor({ value, lang, label, onChange, onShip, onHint, onFoc
       state: EditorState.create({
         doc: value,
         extensions: [
-          Prec.highest(
-            keymap.of([
-              { key: "Mod-Enter", run: () => (cb.current.onShip(), true) },
-              { key: "Mod-h", run: () => (cb.current.onHint(), true) },
-            ]),
-          ),
+          Prec.highest(keymap.of([{ key: "Mod-h", run: () => (cb.current.onHint(), true) }])),
           lineNumbers(),
           highlightActiveLineGutter(),
           history(),
@@ -171,7 +166,19 @@ export function CodeEditor({ value, lang, label, onChange, onShip, onHint, onFoc
       }),
     });
     viewRef.current = view;
+
+    // Ctrl/Cmd+Enter ships on every platform. Caught in the capture phase on
+    // the host: on Android, CodeMirror defers Enter before any extension sees
+    // it and replays it without modifiers (a newline instead of Ship).
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key !== "Enter" || !(e.ctrlKey || e.metaKey)) return;
+      e.preventDefault();
+      e.stopPropagation();
+      cb.current.onShip();
+    };
+    host.addEventListener("keydown", onKeyDown, { capture: true });
     return () => {
+      host.removeEventListener("keydown", onKeyDown, { capture: true });
       view.destroy();
       viewRef.current = null;
     };
