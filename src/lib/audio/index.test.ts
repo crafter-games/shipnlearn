@@ -3,8 +3,9 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 const engine = {
   applySettings: vi.fn(),
   playSfx: vi.fn(),
+  sync: vi.fn(),
   dispose: vi.fn(),
-  scene: "map" as const,
+  loaded: [] as string[],
 };
 const createEngine = vi.fn(async () => engine);
 vi.mock("./engine", () => ({ createEngine }));
@@ -27,6 +28,9 @@ describe("audio contract before unlock", () => {
       unlocked: false,
       scene: "editor",
       settings: { muted: true, musicVolume: 1, sfxVolume: 0 },
+      intensity: 0,
+      world: "html",
+      loaded: [],
     });
   });
 });
@@ -46,6 +50,26 @@ describe("unlockAudio", () => {
     await audio.unlockAudio();
     audio.applySettings({ muted: false, musicVolume: 0.5, sfxVolume: 0.5 });
     expect(engine.applySettings).toHaveBeenCalledWith({ muted: false, musicVolume: 0.5, sfxVolume: 0.5 });
+  });
+});
+
+describe("music controls", () => {
+  it("records world and clamped intensity before unlock", () => {
+    audio.setWorld("css-basics");
+    audio.setIntensity(4);
+    expect(audio.getAudioState()).toMatchObject({ world: "css", intensity: 1 });
+    audio.setIntensity(Number.NaN);
+    expect(audio.getAudioState().intensity).toBe(0);
+  });
+
+  it("re-syncs the engine on every change and hands it the celebration jingle", async () => {
+    await audio.unlockAudio();
+    audio.setScene("editor");
+    audio.setIntensity(0.5);
+    audio.setWorld("html-basics");
+    audio.setScene("celebrate");
+    expect(engine.sync.mock.calls).toEqual([[null], [], [], ["victory"]]);
+    expect(audio.getAudioState().scene).toBe("celebrate");
   });
 });
 
