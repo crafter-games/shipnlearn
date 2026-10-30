@@ -1,6 +1,6 @@
 "use client";
 
-import { type ReactNode, useEffect, useRef } from "react";
+import { type ReactNode, useLayoutEffect, useRef } from "react";
 
 type Props = {
   open: boolean;
@@ -15,19 +15,20 @@ type Props = {
  * Accessible modal built on the native <dialog>: showModal() gives a focus
  * trap, inert background, Escape to close and focus restoration for free.
  * The element marked `data-autofocus` receives focus on open.
+ *
+ * Next.js hides routes with <Activity> instead of unmounting them. A modal
+ * <dialog> stays in the top layer even under display:none and makes the
+ * visible page inert, so the cleanup closes it when the page is hidden.
  */
 export function Dialog({ open, onClose, labelledBy, children, className = "" }: Props) {
   const ref = useRef<HTMLDialogElement>(null);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const d = ref.current;
-    if (!d) return;
-    if (open && !d.open) {
-      d.showModal();
-      d.querySelector<HTMLElement>("[data-autofocus]")?.focus();
-    } else if (!open && d.open) {
-      d.close();
-    }
+    if (!d || !open) return;
+    if (!d.open) d.showModal();
+    d.querySelector<HTMLElement>("[data-autofocus]")?.focus();
+    return () => d.close();
   }, [open]);
 
   return (

@@ -2,7 +2,7 @@
 
 import { MotionConfig } from "motion/react";
 import Link from "next/link";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
 import { IconButton } from "@/components/ui/icon-button";
@@ -62,6 +62,15 @@ export function LevelGame({ level, review = false }: { level: Level; review?: bo
   const [shipping, setShipping] = useState(false);
   const [celebration, setCelebration] = useState<CelebrationData | null>(null);
   const [hintsOpen, setHintsOpen] = useState(false);
+  // Activity keeps this page mounted but hidden after navigating away: drop
+  // transient overlays so coming back shows the level, not a stale modal.
+  useLayoutEffect(
+    () => () => {
+      setCelebration(null);
+      setHintsOpen(false);
+    },
+    [],
+  );
   const [restartOpen, setRestartOpen] = useState(false);
   const [editorFocused, setEditorFocused] = useState(false);
   // Hide Ship only while an on-screen keyboard actually covers it.

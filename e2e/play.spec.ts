@@ -66,3 +66,17 @@ test("keeps the draft across reloads and restarts on demand", async ({ page }) =
   await page.getByRole("button", { name: "Reiniciar", exact: true }).click();
   await expect(page.locator(".cm-content")).not.toContainText("Borrador");
 });
+
+test("after 'Siguiente nivel' the next level is interactive (no stale modal)", async ({ page }) => {
+  await typeInEditor(page, "<h1>Isla Tuya");
+  await page.getByTestId("ship").click();
+  const dialog = page.getByRole("dialog", { name: /Lanzado/ });
+  await expect(dialog).toBeVisible();
+  await dialog.getByRole("link", { name: /Siguiente/ }).click();
+  await expect(page).toHaveURL(/html-02/);
+  // Nothing may stay modal: the previous page is hidden, not unmounted.
+  await expect.poll(() => page.evaluate(() => document.querySelectorAll("dialog:modal").length)).toBe(0);
+  const firstTile = page.getByTestId("tiles-bank").getByRole("button").first();
+  await firstTile.click({ timeout: 3000 });
+  await expect(page.getByTestId("tiles-placed").getByRole("button")).toHaveCount(1);
+});
