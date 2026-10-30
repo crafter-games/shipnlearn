@@ -12,7 +12,7 @@ import {
   syntaxHighlighting,
   type TagStyle,
 } from "@codemirror/language";
-import { EditorState, Prec } from "@codemirror/state";
+import { Annotation, EditorState, Prec } from "@codemirror/state";
 import {
   drawSelection,
   EditorView,
@@ -24,13 +24,23 @@ import {
 import { type Ref, useEffect, useImperativeHandle, useRef } from "react";
 import type { FileKind } from "@/lib/levels/types";
 
+/**
+ * Marks a document replacement that came from outside (restart). The editor
+ * is uncontrolled: syncing it from a `value` prop raced with typing, because a
+ * slow render could hand back an older value and erase the latest keystrokes.
+ */
+const External = Annotation.define<boolean>();
+
 export type CodeEditorHandle = {
   /** Insert text at the cursor as if typed (runs auto-close handlers). */
   type: (text: string) => void;
   focus: () => void;
+  /** Replace the whole document (restart). Not reported through onChange. */
+  reset: (text: string) => void;
 };
 
 type Props = {
+  /** Initial document. The editor is uncontrolled: later changes use reset(). */
   value: string;
   lang: FileKind;
   label: string;
@@ -159,7 +169,8 @@ export function CodeEditor({ value, lang, label, onChange, onShip, onHint, onFoc
             spellcheck: "false",
           }),
           EditorView.updateListener.of((u) => {
-            if (u.docChanged) cb.current.onChange(u.state.doc.toString());
+            const external = u.transactions.some((t) => t.annotation(External));
+            if (u.docChanged && !external) cb.current.onChange(u.state.doc.toString());
             if (u.focusChanged) cb.current.onFocusChange?.(u.view.hasFocus);
           }),
         ],
@@ -186,16 +197,17 @@ export function CodeEditor({ value, lang, label, onChange, onShip, onHint, onFoc
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [lang, label]);
 
-  // External changes (restart, tab switch) replace the document.
-  useEffect(() => {
-    const view = viewRef.current;
-    if (view && view.state.doc.toString() !== value) {
-      view.dispatch({ changes: { from: 0, to: view.state.doc.length, insert: value } });
-    }
-  }, [value]);
 
   useImperativeHandle(ref, () => ({
     focus: () => viewRef.current?.focus(),
+    reset: (text: string) => {
+      const view = viewRef.current;
+      if (!view || view.state.doc.toString() === text) return;
+      view.dispatch({
+        changes: { from: 0, to: view.state.doc.length, insert: text },
+        annotations: External.of(true),
+      });
+    },
     type: (text: string) => {
       const view = viewRef.current;
       if (!view) return;

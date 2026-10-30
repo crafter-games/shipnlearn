@@ -214,7 +214,9 @@ export function LevelGame({ level, review = false }: { level: Level; review?: bo
     playSfx("ui-tap");
     clearDraft(level.id);
     // Hints already seen can't be unseen.
-    setDraft((d) => ({ ...initialDraft(level), hintsUsed: d.hintsUsed }));
+    const fresh = initialDraft(level);
+    setDraft((d) => ({ ...fresh, hintsUsed: d.hintsUsed }));
+    for (const f of editable) editorRefs.current[f]?.reset(fresh.files[f] ?? "");
     setRevealed(false);
     setRestartOpen(false);
   };
