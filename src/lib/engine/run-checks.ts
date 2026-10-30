@@ -46,6 +46,12 @@ export async function runChecks(
     } catch {
       pass = false;
     }
+    // Restore after every check so a resized viewport never leaks into the next one.
+    if (iframe.style.width !== originalWidth) {
+      iframe.style.width = originalWidth;
+      await nextFrame(win);
+      await nextFrame(win);
+    }
     results.push({
       id: check.id,
       kind: check.kind,
@@ -53,10 +59,6 @@ export async function runChecks(
       explain: check.explain,
       pass,
     });
-  }
-  if (iframe.style.width !== originalWidth) {
-    iframe.style.width = originalWidth;
-    await nextFrame(win);
   }
   return results;
 }
