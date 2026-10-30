@@ -3,7 +3,7 @@
 import { Octo } from "@/components/characters/octo";
 import { worldProgress } from "@/components/island/features";
 import { Island } from "@/components/island/island";
-import { Star } from "@/components/ui/star";
+import { Star } from "@/components/icons";
 import type { World } from "@/lib/levels/types";
 import { type FlagColor, type LevelProgress, isUnlocked } from "@/lib/progress/store";
 import { ROW, leftAt, nodeTop, pathHeight, swing } from "./layout";

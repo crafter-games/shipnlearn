@@ -22,8 +22,9 @@ export function LevelScreen({ levelId }: { levelId: string }) {
 export function LevelLoading({ avatar = "octo" }: { avatar?: AvatarId }) {
   return (
     <div className="flex min-h-dvh items-center justify-center" aria-busy>
-      <p className="animate-bob font-display text-3xl text-foam text-stroke">
-        <NpcAvatar id={avatar} className="inline-block size-12 align-middle" /> Cargando…
+      <p className="flex animate-bob items-center gap-3 font-display text-3xl text-foam text-stroke">
+        <NpcAvatar id={avatar} className="size-14" />
+        Cargando…
       </p>
     </div>
   );

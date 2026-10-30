@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { SettingsDialog } from "@/components/settings/settings-dialog";
-import { Star } from "@/components/ui/star";
+import { Gear, Speaker, Star } from "@/components/icons";
 import { allLevels } from "@/lib/levels/registry";
 import { applySettings, playSfx, unlockAudio } from "@/lib/audio";
 import { XP_PER_RANK, rankOf, useProgress } from "@/lib/progress/store";
@@ -46,34 +46,6 @@ function IconButton({
     >
       {children}
     </button>
-  );
-}
-
-function SpeakerIcon({ muted }: { muted: boolean }) {
-  return (
-    <svg viewBox="0 0 24 24" className="size-6" aria-hidden>
-      <path d="M4 9h4l5-4v14l-5-4H4z" fill="var(--color-ocean)" stroke="var(--color-ink)" strokeWidth="2.2" strokeLinejoin="round" />
-      {muted ? (
-        <path d="M16 9l5 6M21 9l-5 6" stroke="var(--color-coral-deep)" strokeWidth="2.6" strokeLinecap="round" />
-      ) : (
-        <path d="M16 9.5a4 4 0 010 5M18.5 7a7.5 7.5 0 010 10" fill="none" stroke="var(--color-ink)" strokeWidth="2.2" strokeLinecap="round" />
-      )}
-    </svg>
-  );
-}
-
-function GearIcon() {
-  return (
-    <svg viewBox="0 0 24 24" className="size-6" aria-hidden>
-      <path
-        d="M10.3 2.5h3.4l.5 2.6 1.9.8 2.2-1.5 2.4 2.4-1.5 2.2.8 1.9 2.5.5v3.4l-2.5.5-.8 1.9 1.5 2.2-2.4 2.4-2.2-1.5-1.9.8-.5 2.6h-3.4l-.5-2.6-1.9-.8-2.2 1.5-2.4-2.4 1.5-2.2-.8-1.9-2.5-.5v-3.4l2.5-.5.8-1.9-1.5-2.2 2.4-2.4 2.2 1.5 1.9-.8z"
-        fill="var(--color-sand)"
-        stroke="var(--color-ink)"
-        strokeWidth="2"
-        strokeLinejoin="round"
-      />
-      <circle cx="12" cy="12" r="3.3" fill="var(--color-foam)" stroke="var(--color-ink)" strokeWidth="2" />
-    </svg>
   );
 }
 
@@ -158,7 +130,7 @@ export function Hud() {
           label={settings.muted ? "Activar sonido" : "Silenciar sonido"}
           onClick={toggleMute}
         >
-          <SpeakerIcon muted={settings.muted} />
+          <Speaker muted={settings.muted} />
         </IconButton>
         <IconButton
           label="Ajustes"
@@ -168,7 +140,7 @@ export function Hud() {
             setOpen(true);
           }}
         >
-          <GearIcon />
+          <Gear />
         </IconButton>
       </div>
       <SettingsDialog open={open} onClose={() => setOpen(false)} />

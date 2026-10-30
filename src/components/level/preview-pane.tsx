@@ -1,6 +1,7 @@
 "use client";
 
-import { type Ref, useId, useState } from "react";
+import { type ComponentType, type Ref, useId, useState } from "react";
+import { Check, Ghost, type IconProps, Monitor, Ring, Target } from "@/components/icons";
 import { playSfx } from "@/lib/audio";
 
 type Props = {
@@ -14,10 +15,10 @@ type Props = {
 
 type View = "mine" | "target" | "compare";
 
-const VIEWS: { id: View; label: string; icon: string }[] = [
-  { id: "mine", label: "Tu web", icon: "🖥️" },
-  { id: "target", label: "Objetivo", icon: "🎯" },
-  { id: "compare", label: "Comparar", icon: "👻" },
+const VIEWS: { id: View; label: string; Icon: ComponentType<IconProps> }[] = [
+  { id: "mine", label: "Tu web", Icon: Monitor },
+  { id: "target", label: "Objetivo", Icon: Target },
+  { id: "compare", label: "Comparar", Icon: Ghost },
 ];
 
 /**
@@ -49,18 +50,20 @@ export function PreviewPane({ iframeRef, ghostSrcdoc, passed, total, className =
                 playSfx("ui-tap");
                 setView(v.id);
               }}
-              className={`h-7 whitespace-nowrap rounded-full px-2.5 text-xs font-extrabold transition-colors ${view === v.id ? (v.id === "mine" ? "bg-foam text-ink" : "bg-grape text-foam") : "text-foam/80 hover:text-foam"}`}
+              className={`flex h-7 items-center gap-1 whitespace-nowrap rounded-full px-2 text-xs font-extrabold transition-colors ${view === v.id ? (v.id === "mine" ? "bg-foam text-ink" : "bg-grape text-foam") : "text-foam/80 hover:text-foam"}`}
             >
-              <span aria-hidden>{v.icon}</span> {v.label}
+              <v.Icon className="size-4.5" />
+              {v.label}
             </button>
           ))}
         </div>
         <span
-          className={`whitespace-nowrap rounded-full border-2 border-ink px-2 py-px text-xs font-extrabold ${done ? "bg-lime text-ink" : "bg-foam text-ink"}`}
+          className={`flex items-center gap-1 whitespace-nowrap rounded-full border-2 border-ink px-2 py-px text-xs font-extrabold ${done ? "bg-lime text-ink" : "bg-foam text-ink"}`}
           aria-label={`${passed} de ${total} objetivos cumplidos`}
           data-testid="progress-pill"
         >
-          {done ? "✓" : "○"} {passed}/{total}
+          {done ? <Check className="size-3.5" /> : <Ring className="size-3.5" />}
+          {passed}/{total}
         </span>
         {view === "compare" && (
           <div className="ml-auto flex items-center">
@@ -103,9 +106,10 @@ export function PreviewPane({ iframeRef, ghostSrcdoc, passed, total, className =
         {view !== "mine" && (
           <span
             aria-hidden
-            className="pointer-events-none absolute right-2 bottom-2 rounded-full border-2 border-ink bg-grape px-2 py-0.5 text-xs font-extrabold text-foam"
+            className="pointer-events-none absolute right-2 bottom-2 flex items-center gap-1 rounded-full border-2 border-ink bg-grape px-2 py-0.5 text-xs font-extrabold text-foam"
           >
-            {view === "target" ? "🎯 así debe quedar" : "👻 comparando"}
+            {view === "target" ? <Target className="size-4" /> : <Ghost className="size-4" />}
+            {view === "target" ? "así debe quedar" : "comparando"}
           </span>
         )}
       </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Check, Lock } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { TitledDialog } from "@/components/ui/titled-dialog";
 import { applySettings, playSfx } from "@/lib/audio";
@@ -165,12 +166,9 @@ export function SettingsDialog({ open, onClose }: { open: boolean; onClose: () =
                   className={`relative grid size-12 place-items-center rounded-xl border-[3px] border-ink shadow-chunky-sm active:translate-y-0.5 active:shadow-pressed disabled:cursor-not-allowed ${swatch[c]} ${locked ? "opacity-40" : ""} ${selected ? "ring-4 ring-ink ring-offset-2 ring-offset-foam" : ""}`}
                 >
                   {locked ? (
-                    <svg viewBox="0 0 24 24" className="size-6" aria-hidden>
-                      <rect x="4.5" y="10.5" width="15" height="11" rx="3" fill="var(--color-foam)" stroke="var(--color-ink)" strokeWidth="2.4" />
-                      <path d="M8 10.5V8a4 4 0 018 0v2.5" fill="none" stroke="var(--color-ink)" strokeWidth="2.6" />
-                    </svg>
+                    <Lock className="size-6" fill="var(--color-foam)" />
                   ) : selected ? (
-                    <span aria-hidden className="font-display text-xl text-ink">✓</span>
+                    <Check className="size-7 text-ink" />
                   ) : null}
                 </button>
               );

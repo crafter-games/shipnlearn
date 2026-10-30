@@ -2,6 +2,7 @@
 
 import { motion, useAnimate } from "motion/react";
 import { type Ref, useEffect } from "react";
+import { Check, Cross, Stars } from "@/components/icons";
 import type { AxeReport } from "@/lib/engine/axe";
 import type { CheckResult } from "@/lib/engine/run-checks";
 
@@ -78,7 +79,7 @@ export function Checklist({ results, axe, hintsUsed, revealed, pops, shakeKey, c
             <Line
               id="no-hints"
               label="Sin usar pistas"
-              explain="Usaste una pista: no pasa nada, solo deja la ⭐⭐⭐ para la próxima."
+              explain="Usaste una pista: no pasa nada, solo deja la tercera estrella para la próxima."
               state={hintsUsed === 0 ? "pass" : "fail"}
             />
           </Group>
@@ -93,7 +94,7 @@ function Group({ stars, title, children }: { stars: number; title: string; child
   return (
     <div>
       <h3 className="mb-1 flex items-center gap-1.5 text-xs font-extrabold uppercase tracking-wider text-ink-soft">
-        <span aria-hidden>{"⭐".repeat(stars)}</span>
+        <Stars count={stars} />
         <span>
           <span className="sr-only">{stars} {stars === 1 ? "estrella" : "estrellas"}: </span>
           {title}
@@ -104,10 +105,10 @@ function Group({ stars, title, children }: { stars: number; title: string; child
   );
 }
 
-const ICON: Record<State, { glyph: string; cls: string; sr: string }> = {
-  pass: { glyph: "✓", cls: "bg-lime text-ink", sr: "Cumplido" },
-  fail: { glyph: "✗", cls: "bg-coral text-foam", sr: "Falta" },
-  todo: { glyph: "", cls: "bg-foam text-ink", sr: "Pendiente" },
+const ICON: Record<State, { glyph: React.ReactNode; cls: string; sr: string }> = {
+  pass: { glyph: <Check className="size-4" />, cls: "bg-lime text-ink", sr: "Cumplido" },
+  fail: { glyph: <Cross className="size-3.5" />, cls: "bg-coral text-foam", sr: "Falta" },
+  todo: { glyph: null, cls: "bg-foam text-ink", sr: "Pendiente" },
 };
 
 function Line({

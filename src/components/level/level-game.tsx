@@ -3,6 +3,7 @@
 import { MotionConfig } from "motion/react";
 import Link from "next/link";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { ArrowLeft, Document, Hint, Palette, Pencil, Puzzle, Restart, Rocket } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
 import { IconButton } from "@/components/ui/icon-button";
@@ -238,14 +239,16 @@ export function LevelGame({ level, review = false }: { level: Level; review?: bo
                 playSfx("ui-tap");
                 setActiveFile(f);
               }}
-              className={`-mb-[3px] rounded-t-xl border-[3px] border-b-0 border-ink px-3 py-1.5 font-mono text-sm font-bold ${activeFile === f ? "bg-ink text-sand" : "bg-ink-soft text-foam/70"}`}
+              className={`-mb-[3px] flex items-center gap-1.5 rounded-t-xl border-[3px] border-b-0 border-ink px-3 py-1.5 font-mono text-sm font-bold ${activeFile === f ? "bg-ink text-sand" : "bg-ink-soft text-foam/70"}`}
             >
-              {f === "html" ? "📄" : "🎨"} {FILE_NAME[f]}
+              {f === "html" ? <Document className="size-4.5" /> : <Palette className="size-4.5" />}
+              {FILE_NAME[f]}
             </button>
           ))
         ) : (
-          <span className="-mb-[3px] rounded-t-xl border-[3px] border-b-0 border-ink bg-ink px-3 py-1.5 font-display text-sm tracking-wide text-sand">
-            {level.mode === "tiles" ? "🧩 Ordena las fichas" : "✏️ Rellena los huecos"}
+          <span className="-mb-[3px] flex items-center gap-1.5 rounded-t-xl border-[3px] border-b-0 border-ink bg-ink px-3 py-1.5 font-display text-sm tracking-wide text-sand">
+            {level.mode === "tiles" ? <Puzzle className="size-5" /> : <Pencil className="size-5" />}
+            {level.mode === "tiles" ? "Ordena las fichas" : "Rellena los huecos"}
           </span>
         )}
         <span className="ml-auto hidden pb-1.5 text-xs font-bold text-foam/60 lg:inline">
@@ -301,9 +304,9 @@ export function LevelGame({ level, review = false }: { level: Level; review?: bo
             href="/"
             aria-label="Volver al mapa"
             onClick={() => playSfx("ui-tap")}
-            className="flex size-11 shrink-0 items-center justify-center rounded-full border-[3px] border-ink bg-foam font-display text-xl text-ink shadow-chunky-sm active:translate-y-0.5 active:shadow-pressed"
+            className="flex size-11 shrink-0 items-center justify-center rounded-full border-[3px] border-ink bg-foam text-ink shadow-chunky-sm active:translate-y-0.5 active:shadow-pressed"
           >
-            ←
+            <ArrowLeft className="size-6" />
           </Link>
           <div className="min-w-0 flex-1 leading-none">
             <p className="truncate text-xs font-extrabold uppercase tracking-wider text-foam/90">
@@ -312,10 +315,10 @@ export function LevelGame({ level, review = false }: { level: Level; review?: bo
             <h1 className="truncate font-display text-2xl tracking-wide text-foam text-stroke sm:text-3xl">{level.title}</h1>
           </div>
           <IconButton aria-label="Reiniciar nivel" onClick={() => (playSfx("ui-tap"), setRestartOpen(true))}>
-            ↺
+            <Restart className="size-6" />
           </IconButton>
           <IconButton aria-label={`Pistas (${draft.hintsUsed} de 3 usadas)`} tone="sand" onClick={openHints}>
-            ?
+            <Hint className="size-7" />
             {draft.hintsUsed > 0 && (
               <span aria-hidden className="absolute -top-1.5 -right-1.5 flex size-5 items-center justify-center rounded-full border-2 border-ink bg-coral font-sans text-[11px] font-black text-foam">
                 {draft.hintsUsed}
@@ -353,7 +356,12 @@ export function LevelGame({ level, review = false }: { level: Level; review?: bo
                 aria-keyshortcuts="Control+Enter Meta+Enter"
                 data-testid="ship"
               >
-                {shipping ? "Comprobando…" : "¡Ship it! 🚀"}
+                {shipping ? "Comprobando…" : (
+                  <>
+                    ¡Ship it!
+                    <Rocket className="size-8" />
+                  </>
+                )}
               </Button>
             </div>
           </div>
@@ -392,7 +400,7 @@ export function LevelGame({ level, review = false }: { level: Level; review?: bo
 
       <Dialog open={restartOpen} onClose={() => setRestartOpen(false)} labelledBy="restart-title">
         <div className="rounded-chunk border-[3px] border-ink bg-foam p-5 text-center shadow-chunky">
-          <p aria-hidden className="text-5xl">↺</p>
+          <Restart className="mx-auto size-14 text-coral-deep" />
           <h2 id="restart-title" className="mt-1 font-display text-2xl tracking-wide">
             ¿Empezar de cero?
           </h2>

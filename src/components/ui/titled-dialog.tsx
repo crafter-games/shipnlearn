@@ -1,6 +1,7 @@
 "use client";
 
 import { type ReactNode, useId } from "react";
+import { Close } from "@/components/icons";
 import { Dialog } from "./dialog";
 
 type Props = {
@@ -25,9 +26,9 @@ export function TitledDialog({ open, onClose, title, children, className = "" }:
             type="button"
             onClick={onClose}
             aria-label="Cerrar"
-            className="grid size-10 place-items-center rounded-xl border-[3px] border-ink bg-foam font-display text-xl shadow-chunky-sm active:translate-y-0.5 active:shadow-pressed"
+            className="grid size-10 place-items-center rounded-xl border-[3px] border-ink bg-foam text-ink shadow-chunky-sm active:translate-y-0.5 active:shadow-pressed"
           >
-            ✕
+            <Close className="size-5" />
           </button>
         </div>
         <div className="max-h-[calc(100dvh-8rem)] overflow-y-auto p-5">{children}</div>

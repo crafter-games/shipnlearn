@@ -64,8 +64,8 @@ export async function runChecks(
 }
 
 /**
- * ⭐ all required checks pass · ⭐⭐ + all a11y checks (and axe) pass ·
- * ⭐⭐⭐ + no hints used.
+ * 1 star: all required checks pass · 2 stars: + all a11y checks (and axe) pass ·
+ * 3 stars: + no hints used.
  */
 export function starsFor(
   results: CheckResult[],

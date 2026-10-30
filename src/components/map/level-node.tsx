@@ -3,7 +3,7 @@
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useRef } from "react";
 import { LinkButton } from "@/components/ui/link-button";
-import { Star } from "@/components/ui/star";
+import { Crown, Lock, Question, Star } from "@/components/icons";
 import { useReducedMotion } from "@/components/ui/use-reduced-motion";
 import { playSfx, unlockAudio } from "@/lib/audio";
 import type { Level } from "@/lib/levels/types";
@@ -32,25 +32,6 @@ const fills: Record<NodeState, string> = {
 };
 
 const plural = (n: number) => `${n} ${n === 1 ? "estrella" : "estrellas"}`;
-
-function Lock() {
-  return (
-    <svg viewBox="0 0 24 24" className="size-8" aria-hidden>
-      <rect x="4.5" y="10.5" width="15" height="11" rx="3" fill="var(--color-ink-soft)" stroke="var(--color-ink)" strokeWidth="2.4" />
-      <path d="M8 10.5V8a4 4 0 018 0v2.5" fill="none" stroke="var(--color-ink)" strokeWidth="2.6" />
-      <circle cx="12" cy="15.5" r="1.8" fill="var(--color-foam)" />
-    </svg>
-  );
-}
-
-function Crown() {
-  return (
-    <svg viewBox="0 0 40 26" className="absolute -top-6 left-1/2 w-12 -translate-x-1/2 drop-shadow-[0_3px_0_var(--color-ink)]" aria-hidden>
-      <path d="M4 22 L2 6 L12 13 L20 2 L28 13 L38 6 L36 22 Z" fill="var(--color-sand)" stroke="var(--color-ink)" strokeWidth="3" strokeLinejoin="round" />
-      <circle cx="20" cy="15" r="3" fill="var(--color-coral)" stroke="var(--color-ink)" strokeWidth="2" />
-    </svg>
-  );
-}
 
 /** One chunky circular level node on the map path, with its popover. */
 export function LevelNode({ level, number, state, stars, s, top, open, onToggle, onClose }: Props) {
@@ -121,9 +102,9 @@ export function LevelNode({ level, number, state, stars, s, top, open, onToggle,
             <span aria-hidden className="absolute -inset-2.5 animate-ping rounded-full border-4 border-foam/80 [animation-duration:1.6s]" />
           )}
           <span aria-hidden className="pointer-events-none absolute inset-x-3 top-1.5 h-1/3 rounded-full bg-foam/30" />
-          {boss && <Crown />}
+          {boss && <Crown className="absolute -top-6 left-1/2 w-12 -translate-x-1/2 drop-shadow-[0_3px_0_var(--color-ink)]" />}
           {locked ? (
-            <Lock />
+            <Lock className="size-8" />
           ) : (
             <span aria-hidden className={`relative font-display leading-none text-foam text-stroke ${boss ? "text-4xl" : "text-3xl"}`}>
               {number}
@@ -169,8 +150,9 @@ export function LevelNode({ level, number, state, stars, s, top, open, onToggle,
                 <code className="font-mono text-sm">{level.concept}</code>
               </p>
             ) : (
-              <p className="mt-1 text-base text-ink-soft">
-                <span aria-hidden>❓</span> Descubre el concepto al completarlo
+              <p className="mt-1 flex items-center gap-1.5 text-base text-ink-soft">
+                <Question className="size-5" />
+                Descubre el concepto al completarlo
               </p>
             )}
             <div className="mt-2 flex items-center gap-1" role="img" aria-label={plural(stars) + " de 3"}>
@@ -180,7 +162,8 @@ export function LevelNode({ level, number, state, stars, s, top, open, onToggle,
             </div>
             {locked ? (
               <p className="mt-3 flex items-center gap-2 rounded-xl bg-ink/10 px-3 py-2 font-bold">
-                <span aria-hidden>🔒</span> Completa el nivel anterior para abrirlo
+                <Lock className="size-6" fill="var(--color-foam)" />
+                Completa el nivel anterior para abrirlo
               </p>
             ) : (
               <LinkButton

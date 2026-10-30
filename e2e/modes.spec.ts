@@ -53,7 +53,7 @@ for (const level of playable) {
     await page.getByTestId("ship").click();
     const dialog = page.getByRole("dialog", { name: /Lanzado/ });
     await expect(dialog).toBeVisible({ timeout: 15_000 });
-    // The reference solution is semantic and accessible: it must earn ⭐⭐⭐.
+    // The reference solution is semantic and accessible: it must earn 3 stars.
     await expect(dialog.locator("[data-stars]")).toHaveAttribute("data-stars", "3");
   });
 }
