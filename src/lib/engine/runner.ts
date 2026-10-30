@@ -11,15 +11,26 @@ export type Evaluation = {
 
 const frame = (win: Window) => new Promise<void>((r) => win.requestAnimationFrame(() => r()));
 
-/** Load `srcdoc` into `iframe` and resolve once it has laid out. */
+/** A load that never fires must not block the serialised queue forever. */
+const LOAD_TIMEOUT_MS = 3000;
+
+/** Load `srcdoc` into `iframe` and resolve once it has laid out (or timed out). */
 export function loadSrcdoc(iframe: HTMLIFrameElement, srcdoc: string): Promise<void> {
   return new Promise<void>((resolve) => {
-    const done = async () => {
+    let settled = false;
+    const finish = () => {
+      if (settled) return;
+      settled = true;
+      window.clearTimeout(timer);
       iframe.removeEventListener("load", done);
-      const win = iframe.contentWindow;
-      if (win) await frame(win);
       resolve();
     };
+    const done = async () => {
+      const win = iframe.contentWindow;
+      if (win) await frame(win);
+      finish();
+    };
+    const timer = window.setTimeout(finish, LOAD_TIMEOUT_MS);
     iframe.addEventListener("load", done);
     iframe.srcdoc = srcdoc;
   });
