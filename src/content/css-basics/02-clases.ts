@@ -98,5 +98,5 @@ export const clases: Level = {
       url: "https://developer.mozilla.org/es/docs/Web/CSS/Reference/Selectors/ID_selectors",
     },
   ],
-  cards: [],
+  cards: ["css-clase-id", "css-font-weight"],
 };
