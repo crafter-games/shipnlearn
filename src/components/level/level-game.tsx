@@ -6,7 +6,7 @@ import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } fr
 import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
 import { IconButton } from "@/components/ui/icon-button";
-import { playSfx, setScene, unlockAudio } from "@/lib/audio";
+import { playSfx, setIntensity, setScene, setWorld, unlockAudio } from "@/lib/audio";
 import { type AxeReport, preloadAxe } from "@/lib/engine/axe";
 import { buildSrcdoc } from "@/lib/engine/preview";
 import { type CheckResult, starsFor } from "@/lib/engine/run-checks";
@@ -89,6 +89,8 @@ export function LevelGame({ level, review = false }: { level: Level; review?: bo
 
   // Music + audio unlock on the first gesture (autoplay policy).
   useEffect(() => {
+    setWorld(level.worldId);
+    setIntensity(0);
     setScene("editor");
     preloadAxe();
     const unlock = () => void unlockAudio();
@@ -98,7 +100,7 @@ export function LevelGame({ level, review = false }: { level: Level; review?: bo
       window.removeEventListener("pointerdown", unlock);
       window.removeEventListener("keydown", unlock);
     };
-  }, []);
+  }, [level.worldId]);
 
   useEffect(() => {
     if (!review) saveDraft(level.id, draft);
@@ -127,6 +129,8 @@ export function LevelGame({ level, review = false }: { level: Level; review?: bo
         });
       }
     }
+    // The music opens up as the player gets closer to shipping.
+    setIntensity(ev.results.length ? ev.results.filter((r) => r.pass).length / ev.results.length : 0);
     setResults(ev.results);
     setAxe(ev.axe);
   }, []);
