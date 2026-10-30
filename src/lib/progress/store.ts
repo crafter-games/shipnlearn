@@ -105,7 +105,12 @@ export function migrateProgress(persisted: unknown, version: number): Persisted 
     settings: { ...defaultSettings, ...s.settings },
     // v1 players who already beat a level skip the intro.
     seenIntro: version < 2 ? Object.keys(levels).length > 0 : (s.seenIntro ?? false),
-    seenCards: s.seenCards ?? [],
+    // Before v3 there were no cards: levels already beaten unlock theirs, so
+    // the Fichero doesn't show them as locked behind a level the player won.
+    seenCards:
+      version < 3
+        ? allLevels.filter((l) => (levels[l.id]?.stars ?? 0) > 0).flatMap((l) => l.cards)
+        : (s.seenCards ?? []),
     equipped: { ...initial.equipped, ...s.equipped },
   };
 }

@@ -23,6 +23,12 @@ describe("progress store", () => {
     expect(migrateProgress({ levels: {} }, 1).seenIntro).toBe(false);
   });
 
+  it("unlocks the cards of levels beaten before cards existed (v2 → v3)", () => {
+    const v2 = { levels: { "html-01-titulo": { stars: 1, completedAt: 1 } }, seenIntro: true };
+    expect(migrateProgress(v2, 2).seenCards).toEqual(["html-elemento", "html-h1"]);
+    expect(migrateProgress({ ...v2, seenCards: ["x"] }, 3).seenCards).toEqual(["x"]);
+  });
+
   it("marks the intro as seen and clears it on reset", () => {
     useProgress.getState().markIntroSeen();
     expect(useProgress.getState().seenIntro).toBe(true);
