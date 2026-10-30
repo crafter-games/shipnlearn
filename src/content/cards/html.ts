@@ -1,4 +1,13 @@
+import { svgUri } from "@/content/html-basics/_helpers";
 import type { ConceptCard } from "@/lib/levels/types";
+
+/** Tiny lighthouse illustration for the image cards (160 x 100). */
+const LIGHTHOUSE_SRC = svgUri(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 100">
+<rect width="160" height="100" fill="#8EDBFF"/>
+<path d="M70 88 L75 32 H85 L90 88 Z" fill="#FF5D73"/>
+<circle cx="80" cy="25" r="8" fill="#FFD66B"/>
+<rect y="86" width="160" height="14" fill="#4C6FFF"/>
+</svg>`);
 
 /** Concept cards for Isla Marcado (HTML fundamental), in teaching order. */
 export const htmlCards: ConceptCard[] = [
@@ -507,5 +516,146 @@ export const htmlCards: ConceptCard[] = [
       label: "MDN: atributo id",
       url: "https://developer.mozilla.org/es/docs/Web/HTML/Reference/Global_attributes/id",
     },
+  },
+  {
+    id: "html-img",
+    worldId: "html-basics",
+    kind: "element",
+    title: "<img src>",
+    tagline: "Muestra una imagen en la página.",
+    explain:
+      "<img> coloca una imagen, y su atributo src (de «source», origen) dice dónde está el archivo. Es un elemento vacío: no tiene contenido ni etiqueta de cierre, porque todo lo que necesita va en sus atributos.",
+    use: [
+      "Fotos, dibujos y gráficos que forman parte del contenido.",
+      "Siempre con src y con alt, el texto que la describe.",
+      "Escribe <img …> y listo: no hace falta </img>.",
+    ],
+    avoid: [
+      "Escribir la descripción entre <img> y </img>: no se muestra. La descripción va en el atributo alt.",
+      "Borrar o cambiar el src sin querer: sin él no hay imagen que mostrar.",
+    ],
+    example: {
+      html: `<h2>Faro del Norte</h2>
+<img src="${LIGHTHOUSE_SRC}" alt="Faro rojo con la luz encendida junto al mar">
+`,
+    },
+    exampleNote:
+      "El <img> no tiene cierre. El src es largo porque aquí el dibujo va escrito dentro de la propia dirección; normalmente sería algo como src=\"faro.png\".",
+    predict: {
+      question: "¿Dónde va la dirección del archivo de la imagen?",
+      options: [
+        {
+          label: "En el atributo src",
+          correct: true,
+          why: "src es el origen: le dice al navegador qué archivo cargar.",
+        },
+        {
+          label: "Entre <img> y </img>",
+          correct: false,
+          why: "<img> es un elemento vacío: no tiene contenido ni etiqueta de cierre.",
+        },
+        {
+          label: "En el atributo alt",
+          correct: false,
+          why: "alt describe la imagen con palabras; la dirección va en src.",
+        },
+      ],
+    },
+    mdn: { label: "MDN: <img>", url: "https://developer.mozilla.org/es/docs/Web/HTML/Reference/Elements/img" },
+  },
+  {
+    id: "html-alt",
+    worldId: "html-basics",
+    kind: "attribute",
+    title: "alt",
+    tagline: "El texto que sustituye a la imagen cuando no se puede ver.",
+    explain:
+      "alt (de «alternative», alternativo) describe con palabras lo que aporta la imagen. El lector de pantalla lo lee en voz alta, y el navegador lo muestra en su lugar si la imagen no carga. Si la imagen solo decora, se escribe alt=\"\" (vacío) para que el lector la salte.",
+    use: [
+      "Describe lo que se ve y lo que importa: «Faro rojo con la luz encendida junto al mar».",
+      "alt=\"\" en imágenes que solo decoran: adornos, olas, líneas.",
+      "Cada <img> lleva su alt, aunque sea vacío.",
+    ],
+    avoid: [
+      "Escribir «imagen» o «foto»: el lector ya avisa de que es una imagen. Di qué aparece.",
+      "Quitar el alt a una imagen decorativa: sin él, el lector puede leer en voz alta la dirección entera del archivo.",
+      "Descripciones larguísimas: una o dos frases bastan.",
+    ],
+    example: {
+      html: `<h2>Faro del Norte</h2>
+<img src="faro-perdido.png" alt="Faro rojo con la luz encendida junto al mar">
+<p>Esta imagen no existe, así que el navegador muestra su alt en su lugar.</p>
+`,
+    },
+    exampleNote:
+      "La imagen no carga y aparece el texto del alt: eso mismo es lo que oye quien usa lector de pantalla.",
+    predict: {
+      question: "Una ola de adorno separa dos partes del póster. ¿Qué alt le pones?",
+      options: [
+        {
+          label: "alt=\"\"",
+          correct: true,
+          why: "Solo decora: el alt vacío le dice al lector de pantalla que la salte.",
+        },
+        {
+          label: "alt=\"Imagen de una ola\"",
+          correct: false,
+          why: "No aporta nada al contenido: oírlo solo distrae de lo importante.",
+        },
+        {
+          label: "Ningún alt",
+          correct: false,
+          why: "Sin alt, el lector no sabe que es decorativa y puede leer la dirección del archivo.",
+        },
+      ],
+    },
+    mdn: {
+      label: "MDN: Imágenes en HTML",
+      url: "https://developer.mozilla.org/es/docs/Learn_web_development/Core/Structuring_content/HTML_images",
+    },
+  },
+  {
+    id: "html-width-height",
+    worldId: "html-basics",
+    kind: "attribute",
+    title: "width y height",
+    tagline: "El tamaño de la imagen, para guardarle su hueco.",
+    explain:
+      "width (ancho) y height (alto) dicen cuánto mide la imagen en píxeles, los puntitos que forman la pantalla. Se escribe solo el número, sin unidades. Con ellos el navegador reserva el hueco antes de que la imagen llegue, y el texto de abajo no da un salto al cargar.",
+    use: [
+      "En cada <img>, con las medidas reales del archivo: width=\"320\" height=\"200\".",
+      "También en las imágenes decorativas: también ocupan sitio.",
+    ],
+    avoid: [
+      "Escribir unidades: width=\"320px\" no es válido. Solo el número.",
+      "Inventar medidas que no respetan la forma de la imagen: saldría estirada o aplastada.",
+    ],
+    example: {
+      html: `<img src="${LIGHTHOUSE_SRC}" alt="Faro rojo con la luz encendida junto al mar" width="160" height="100">
+<p>Este texto ya sabe dónde va, aunque la imagen tarde en llegar.</p>
+`,
+    },
+    exampleNote: "width=\"160\" height=\"100\" reservan un hueco de 160 por 100 píxeles desde el primer momento.",
+    predict: {
+      question: "Con internet lento, una imagen sin width ni height tarda en llegar. ¿Qué nota quien está leyendo?",
+      options: [
+        {
+          label: "El texto salta hacia abajo cuando aparece la imagen",
+          correct: true,
+          why: "Sin medidas, el navegador no sabe cuánto hueco guardar hasta que la imagen llega.",
+        },
+        {
+          label: "La imagen sale más pequeña",
+          correct: false,
+          why: "Sin width ni height se muestra a su tamaño real: el problema es el salto.",
+        },
+        {
+          label: "La imagen no aparece nunca",
+          correct: false,
+          why: "Aparece igual; width y height solo sirven para reservarle el sitio.",
+        },
+      ],
+    },
+    mdn: { label: "MDN: <img>", url: "https://developer.mozilla.org/es/docs/Web/HTML/Reference/Elements/img" },
   },
 ];
