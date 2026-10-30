@@ -1,9 +1,32 @@
 import type { World } from "@/lib/levels/types";
+import { color } from "./01-color";
+import { clases } from "./02-clases";
+import { cartel } from "./03-cartel";
+import { tipografia } from "./04-tipografia";
+import { caja } from "./05-caja";
+import { especificidad } from "./06-especificidad";
+import { pseudoclases } from "./07-pseudoclases";
+import { unidades } from "./08-unidades";
+import { display } from "./09-display";
+import { flexbox } from "./10-flexbox";
+import { perfil } from "./11-perfil";
 
 export const cssBasics: World = {
   id: "css-basics",
   title: "Isla Estilo",
   subtitle: "CSS fundamental",
   accent: "#FF5D73",
-  levels: [],
+  levels: [
+    color,
+    clases,
+    cartel,
+    tipografia,
+    caja,
+    especificidad,
+    pseudoclases,
+    unidades,
+    display,
+    flexbox,
+    perfil,
+  ],
 };
