@@ -940,4 +940,295 @@ p {
       url: "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/important",
     },
   },
+
+  // -------------------------------------------------------------------------
+  // css-07: pseudo-classes
+  // -------------------------------------------------------------------------
+  {
+    id: "css-hover",
+    worldId: "css-basics",
+    kind: "selector",
+    title: ":hover",
+    tagline: "Aplica estilos mientras el puntero del ratón está encima.",
+    explain:
+      "Una pseudoclase describe un estado del elemento y se pega al selector con dos puntos, sin espacio: .boton:hover. Sus estilos solo se aplican mientras el ratón pasa por encima; al salir, todo vuelve a como estaba.",
+    use: [
+      "Dar respuesta visual a botones y enlaces: cambiar el fondo o el subrayado.",
+      "Confirmar que algo se puede pulsar antes de hacer clic.",
+    ],
+    avoid: [
+      "Esconder información importante solo en :hover: en un móvil no hay ratón y no se ve.",
+      "Dejar un espacio: .boton :hover busca elementos dentro del botón y no funciona como esperas.",
+    ],
+    example: {
+      html: `<button class="boton" type="button">Pedir helado</button>
+`,
+      css: `.boton {
+  padding: 12px 20px;
+  border: 3px solid #1B1F3B;
+  border-radius: 999px;
+  background-color: lightpink;
+}
+
+.boton:hover {
+  background-color: hotpink;
+}
+`,
+    },
+    exampleNote: "Pasa el ratón por el botón: .boton:hover cambia el fondo solo mientras estás encima.",
+    predict: {
+      question: "Si escribes .boton :hover (con un espacio), ¿qué pasa al pasar el ratón por el botón?",
+      options: [
+        {
+          label: "Nada: el espacio busca elementos dentro del botón",
+          correct: true,
+          why: "Un espacio significa «dentro de». La pseudoclase va pegada: .boton:hover.",
+        },
+        {
+          label: "Lo mismo que sin espacio",
+          correct: false,
+          why: "En CSS los espacios importan: separan un elemento de lo que hay dentro de él.",
+        },
+      ],
+    },
+    mdn: {
+      label: "MDN: :hover",
+      url: "https://developer.mozilla.org/es/docs/Web/CSS/Reference/Selectors/:hover",
+    },
+  },
+  {
+    id: "css-focus-visible",
+    worldId: "css-basics",
+    kind: "selector",
+    title: ":focus-visible",
+    tagline: "Muestra dónde está el foco cuando alguien navega con el teclado.",
+    explain:
+      "Mucha gente no usa ratón: recorre la página con la tecla Tab. El elemento que recibe el foco necesita una marca visible, normalmente un contorno hecho con outline. :focus-visible aplica estilos cuando el foco llega desde el teclado, sin molestar a quien hace clic.",
+    use: [
+      "En todos los botones y enlaces a los que cambies el estilo.",
+      "outline: 3px solid con un color que contraste al menos 3:1 con el fondo.",
+      "outline-offset separa el contorno del borde para que se vea mejor.",
+    ],
+    avoid: [
+      "Poner outline: none sin dar otro indicador: quien usa teclado se pierde.",
+      "Un contorno pálido o de 1px: si no contrasta, es como no tenerlo.",
+    ],
+    example: {
+      html: `<button class="sabor" type="button">Fresa</button>
+<button class="sabor" type="button">Mango</button>
+`,
+      css: `.sabor {
+  padding: 12px 20px;
+  border: 3px solid #1B1F3B;
+  border-radius: 999px;
+  background-color: lightpink;
+}
+
+.sabor:focus-visible {
+  outline: 3px solid navy;
+  outline-offset: 3px;
+}
+`,
+    },
+    exampleNote:
+      "Haz clic en la vista y pulsa Tab: el botón enfocado muestra un contorno navy de 3px.",
+    predict: {
+      question: "Alguien pone outline: none en .sabor y borra la regla :focus-visible. ¿Qué le pasa a quien usa Tab?",
+      options: [
+        {
+          label: "No ve qué botón tiene el foco",
+          correct: true,
+          why: "El foco sigue moviéndose, pero sin contorno nada indica dónde está.",
+        },
+        {
+          label: "Nada: el navegador lo arregla solo",
+          correct: false,
+          why: "outline: none quita justamente el contorno que pone el navegador.",
+        },
+        {
+          label: "Los botones dejan de funcionar con el teclado",
+          correct: false,
+          why: "Siguen funcionando con Enter, pero a ciegas: no sabe cuál va a pulsar.",
+        },
+      ],
+    },
+    mdn: {
+      label: "MDN: :focus-visible",
+      url: "https://developer.mozilla.org/es/docs/Web/CSS/Reference/Selectors/:focus-visible",
+    },
+  },
+
+  // -------------------------------------------------------------------------
+  // css-08: units and overflow
+  // -------------------------------------------------------------------------
+  {
+    id: "css-unidades",
+    worldId: "css-basics",
+    kind: "concept",
+    title: "px, rem, ch y %",
+    tagline: "Formas de medir: unas fijas y otras relativas a algo.",
+    explain:
+      "px es una medida fija. rem depende del tamaño de letra base del navegador (1rem son 16px por defecto). ch es el ancho del carácter «0» de la fuente actual, ideal para medir líneas de texto. % depende del contenedor: width: 50% ocupa la mitad del ancho de su padre.",
+    use: [
+      "px para detalles que no deben cambiar, como bordes de 2px o 3px.",
+      "rem para letras y espacios que deben crecer con el texto.",
+      "ch para el ancho de un texto; % para que una caja se adapte a su contenedor.",
+    ],
+    avoid: [
+      "Medir todo en px: la página no se adapta a quien agranda la letra ni a pantallas pequeñas.",
+      "Pensar que % depende de la pantalla: depende de la caja que lo contiene.",
+    ],
+    example: {
+      html: `<div class="fija">width: 120px</div>
+<div class="mitad">width: 50%</div>
+<div class="letras">width: 30ch</div>
+`,
+      css: `div {
+  margin-bottom: 8px;
+  padding: 4px 8px;
+  border: 2px solid sienna;
+  background-color: wheat;
+}
+
+.fija {
+  width: 120px;
+}
+
+.mitad {
+  width: 50%;
+}
+
+.letras {
+  width: 30ch;
+}
+`,
+    },
+    exampleNote:
+      "Estrecha la vista: la caja de 50% se encoge con su contenedor; la de 120px no cambia.",
+    predict: {
+      question: "Si la persona agranda la letra de su navegador, ¿qué caja se ensancha?",
+      options: [
+        {
+          label: "La de 30ch",
+          correct: true,
+          why: "ch mide en caracteres; si la letra crece, cada carácter es más ancho y la caja también.",
+        },
+        {
+          label: "La de 120px",
+          correct: false,
+          why: "px es fijo: mide lo mismo con letra grande o pequeña.",
+        },
+        {
+          label: "La de 50%",
+          correct: false,
+          why: "% depende del ancho del contenedor, no del tamaño de la letra.",
+        },
+      ],
+    },
+    mdn: {
+      label: "MDN: Valores y unidades CSS",
+      url: "https://developer.mozilla.org/es/docs/Learn_web_development/Core/Styling_basics/Values_and_units",
+    },
+  },
+  {
+    id: "css-max-width",
+    worldId: "css-basics",
+    kind: "property",
+    title: "max-width",
+    tagline: "Pone un tope al ancho de una caja sin impedir que se encoja.",
+    explain:
+      "width fija un ancho exacto: si la pantalla es más estrecha, la caja se sale y aparece scroll horizontal. max-width solo marca un máximo: la caja crece hasta ese límite y, en pantallas pequeñas, se encoge para caber. Con max-width: 60ch, las líneas no pasan de unos 60 caracteres, una medida cómoda de leer.",
+    use: [
+      "Textos largos: entre 45ch y 75ch las líneas se siguen sin esfuerzo.",
+      "Tarjetas e imágenes: max-width: 100% impide que sean más anchas que su contenedor.",
+    ],
+    avoid: [
+      "Darle un width grande (900px) a una caja de texto: en el móvil provoca scroll horizontal.",
+      "Esperar que ensanche la caja: max-width solo la limita.",
+    ],
+    example: {
+      html: `<p class="pergamino">Las mareas suben dos veces al día. Antes de salir a pescar, mira la tabla del muelle y vuelve antes de que oscurezca.</p>
+`,
+      css: `.pergamino {
+  max-width: 30ch;
+  padding: 12px;
+  background-color: wheat;
+}
+`,
+    },
+    exampleNote:
+      "max-width: 30ch corta las líneas a unos 30 caracteres; en una vista estrecha la caja se encoge.",
+    predict: {
+      question: "En una pantalla más estrecha que 30ch, ¿qué hace el pergamino?",
+      options: [
+        {
+          label: "Se encoge al espacio disponible, sin scroll horizontal",
+          correct: true,
+          why: "max-width es solo un tope: por debajo de él, la caja se adapta.",
+        },
+        {
+          label: "Mantiene sus 30ch y se sale de la pantalla",
+          correct: false,
+          why: "Eso pasaría con width: 30ch, que fija el ancho aunque no quepa.",
+        },
+      ],
+    },
+    mdn: {
+      label: "MDN: max-width (inglés)",
+      url: "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/max-width",
+    },
+  },
+  {
+    id: "css-overflow-wrap",
+    worldId: "css-basics",
+    kind: "property",
+    title: "overflow-wrap",
+    tagline: "Permite partir palabras larguísimas para que no se salgan de su caja.",
+    explain:
+      "El navegador solo corta las líneas en los espacios. Una palabra enorme sin espacios, como una dirección web, no cabe y desborda: sobresale de su caja. overflow-wrap: anywhere permite cortarla en cualquier punto para que encaje.",
+    use: [
+      "Direcciones web, correos o códigos largos dentro de cajas estrechas.",
+      "Textos que escriben otras personas, que pueden traer palabras enormes.",
+    ],
+    avoid: [
+      "Tapar el desborde con overflow: hidden: recorta lo que sobra y parte del texto deja de verse.",
+      "Esperar que parta palabras normales: solo actúa cuando una palabra no cabe en la línea.",
+    ],
+    example: {
+      html: `<p>faro.islaestilo.example/horariosDeLaLuzYDeLasMareas</p>
+<p class="partida">faro.islaestilo.example/horariosDeLaLuzYDeLasMareas</p>
+`,
+      css: `p {
+  width: 12rem;
+  padding: 8px;
+  border: 2px solid sienna;
+}
+
+.partida {
+  overflow-wrap: anywhere;
+}
+`,
+    },
+    exampleNote:
+      "La primera dirección se sale del borde; en la segunda, overflow-wrap: anywhere la parte en dos líneas.",
+    predict: {
+      question: "¿Y si a la primera caja le pones overflow: hidden en vez de overflow-wrap?",
+      options: [
+        {
+          label: "El final de la dirección queda recortado y no se puede leer",
+          correct: true,
+          why: "overflow: hidden oculta lo que sobresale; no lo recoloca.",
+        },
+        {
+          label: "La dirección se parte en varias líneas",
+          correct: false,
+          why: "Partir palabras es cosa de overflow-wrap. overflow solo decide qué hacer con lo que sobresale.",
+        },
+      ],
+    },
+    mdn: {
+      label: "MDN: overflow-wrap (inglés)",
+      url: "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/overflow-wrap",
+    },
+  },
 ];
