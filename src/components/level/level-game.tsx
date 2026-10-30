@@ -331,7 +331,7 @@ export function LevelGame({ level, review = false }: { level: Level; review?: bo
             <ArrowLeft className="size-6" />
           </Link>
           <div className="min-w-0 flex-1 leading-none">
-            <p className="truncate text-xs font-extrabold uppercase tracking-wider text-foam/90">
+            <p className="truncate text-xs font-extrabold uppercase tracking-wider text-ink">
               {world?.title} · Nivel {levelNumber}
             </p>
             <h1 className="truncate font-display text-2xl tracking-wide text-foam text-stroke sm:text-3xl">{level.title}</h1>
