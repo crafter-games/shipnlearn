@@ -80,3 +80,13 @@ test("after 'Siguiente nivel' the next level is interactive (no stale modal)", a
   await firstTile.click({ timeout: 3000 });
   await expect(page.getByTestId("tiles-placed").getByRole("button")).toHaveCount(1);
 });
+
+test("the preview shows only the player's page until the target is asked for", async ({ page }) => {
+  const target = page.locator('iframe[title="Objetivo"]');
+  await expect(page.getByTestId("view-mine")).toHaveAttribute("aria-checked", "true");
+  await expect(target).toHaveCount(0);
+  await page.getByTestId("view-target").click();
+  await expect(target).toHaveCount(1);
+  await page.getByTestId("view-compare").click();
+  await expect(page.getByLabel("Opacidad del objetivo")).toBeVisible();
+});
