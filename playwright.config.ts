@@ -14,7 +14,8 @@ export default defineConfig({
     // Standalone output: run the server the Docker image runs.
     command: `pnpm build && cp -R .next/static .next/standalone/.next/ && cp -R public .next/standalone/ && PORT=${PORT} node .next/standalone/server.js`,
     url: `http://localhost:${PORT}`,
-    reuseExistingServer: !process.env.CI,
+    // Never test against a stale server left on the port by another run.
+    reuseExistingServer: false,
     timeout: 240_000,
   },
 });
