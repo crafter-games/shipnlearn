@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { allCards } from "../src/lib/levels/cards";
 import { allLevels } from "../src/lib/levels/registry";
 import type { FillSpec, Level } from "../src/lib/levels/types";
 
@@ -18,16 +19,19 @@ function fillAnswers(level: Level, spec: FillSpec): string[] {
 const playable = allLevels.filter((l) => l.mode === "tiles" || l.mode === "fill");
 
 test.beforeEach(async ({ page }) => {
-  // Every level unlocked, no intro, no saved drafts.
+  // Every level unlocked, no intro, every concept card seen, no saved drafts.
   await page.goto("/");
-  await page.evaluate((ids) => {
-    localStorage.clear();
-    const levels = Object.fromEntries(ids.map((id) => [id, { stars: 1, completedAt: 1 }]));
-    localStorage.setItem(
-      "shipnlearn-progress",
-      JSON.stringify({ state: { levels, xp: 0, reviews: [], seenIntro: true }, version: 2 }),
-    );
-  }, allLevels.map((l) => l.id));
+  await page.evaluate(
+    ([ids, seenCards]) => {
+      localStorage.clear();
+      const levels = Object.fromEntries(ids.map((id) => [id, { stars: 1, completedAt: 1 }]));
+      localStorage.setItem(
+        "shipnlearn-progress",
+        JSON.stringify({ state: { levels, xp: 0, reviews: [], seenIntro: true, seenCards }, version: 3 }),
+      );
+    },
+    [allLevels.map((l) => l.id), allCards.map((c) => c.id)] as const,
+  );
 });
 
 for (const level of playable) {

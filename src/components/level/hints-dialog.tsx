@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "motion/react";
-import { Close, ExternalLink, Hint } from "@/components/icons";
+import { Card, Close, ExternalLink, Hint } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
 import type { Level } from "@/lib/levels/types";
@@ -12,12 +12,14 @@ type Props = {
   hintsUsed: number;
   onReveal: () => void;
   onClose: () => void;
+  /** Opens the level's concept cards; omitted when the level has none. */
+  onOpenCards?: () => void;
 };
 
 const TITLES = ["La idea", "Un trocito de código", "Aprende más en MDN"];
 
 /** Three graduated hints: concept → code fragment → MDN pointer. */
-export function HintsDialog({ level, open, hintsUsed, onReveal, onClose }: Props) {
+export function HintsDialog({ level, open, hintsUsed, onReveal, onClose, onOpenCards }: Props) {
   return (
     <Dialog open={open} onClose={onClose} labelledBy="hints-title">
       <div className="rounded-chunk border-[3px] border-ink bg-foam p-5 shadow-chunky">
@@ -61,6 +63,16 @@ export function HintsDialog({ level, open, hintsUsed, onReveal, onClose }: Props
                 </pre>
               ) : (
                 <p className="mt-1 text-[15px] font-semibold">{hint}</p>
+              )}
+              {i === 0 && onOpenCards && (
+                <button
+                  type="button"
+                  onClick={onOpenCards}
+                  className="mt-2 inline-flex items-center gap-1.5 rounded-xl border-[3px] border-ink bg-sand px-3 py-1.5 font-display text-base tracking-wide shadow-chunky-sm active:translate-y-0.5 active:shadow-pressed"
+                >
+                  <Card className="size-5" />
+                  {level.cards.length > 1 ? "Ver fichas" : "Ver ficha"}
+                </button>
               )}
               {i === 2 && (
                 <ul className="mt-2 space-y-1">

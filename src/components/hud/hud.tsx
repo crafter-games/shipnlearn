@@ -1,8 +1,9 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { SettingsDialog } from "@/components/settings/settings-dialog";
-import { Gear, Speaker, Star } from "@/components/icons";
+import { Cards, Gear, Speaker, Star } from "@/components/icons";
 import { allLevels } from "@/lib/levels/registry";
 import { applySettings, playSfx, unlockAudio } from "@/lib/audio";
 import { XP_PER_RANK, rankOf, useProgress } from "@/lib/progress/store";
@@ -56,7 +57,7 @@ function toggleMute() {
   playSfx("ui-tap");
 }
 
-/** Fixed top HUD: shipper rank + XP bar, total stars, mute and settings. */
+/** Fixed top HUD: shipper rank + XP bar, total stars, Fichero, mute and settings. */
 export function Hud() {
   const hydrated = useHydrated();
   const xp = useProgress((s) => s.xp);
@@ -126,6 +127,18 @@ export function Hud() {
             {stars}
           </span>
         </div>
+        <Link
+          href="/fichero"
+          aria-label="Fichero: tus fichas"
+          onClick={() => {
+            void unlockAudio();
+            playSfx("ui-tap");
+          }}
+          data-testid="hud-fichero"
+          className="grid size-11 shrink-0 place-items-center rounded-xl border-[3px] border-ink bg-sand shadow-chunky-sm transition-transform duration-75 active:translate-y-0.5 active:shadow-pressed"
+        >
+          <Cards className="size-7" />
+        </Link>
         <IconButton
           label={settings.muted ? "Activar sonido" : "Silenciar sonido"}
           onClick={toggleMute}

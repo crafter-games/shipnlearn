@@ -3,7 +3,8 @@
 import { MotionConfig } from "motion/react";
 import Link from "next/link";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { ArrowLeft, Document, Hint, Palette, Pencil, Puzzle, Restart, Rocket } from "@/components/icons";
+import { ArrowLeft, Card, Document, Hint, Palette, Pencil, Puzzle, Restart, Rocket } from "@/components/icons";
+import { CardsDialog } from "@/components/cards/cards-dialog";
 import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
 import { IconButton } from "@/components/ui/icon-button";
@@ -13,9 +14,11 @@ import { buildSrcdoc } from "@/lib/engine/preview";
 import { type CheckResult, starsFor } from "@/lib/engine/run-checks";
 import { createRunner, type Evaluation } from "@/lib/engine/runner";
 import { clearDraft, composeFiles, type Draft, initialDraft, loadDraft, saveDraft } from "@/lib/engine/session";
+import { getCard } from "@/lib/levels/cards";
 import { getWorld, nextLevel } from "@/lib/levels/registry";
-import type { FileKind, Level } from "@/lib/levels/types";
+import type { ConceptCard, FileKind, Level } from "@/lib/levels/types";
 import { useProgress } from "@/lib/progress/store";
+import { useHydrated } from "@/lib/progress/use-hydrated";
 import { Celebration, type CelebrationData } from "./celebration";
 import { Checklist } from "./checklist";
 import { CodeEditor, type CodeEditorHandle } from "./code-editor";
@@ -63,12 +66,27 @@ export function LevelGame({ level, review = false }: { level: Level; review?: bo
   const [shipping, setShipping] = useState(false);
   const [celebration, setCelebration] = useState<CelebrationData | null>(null);
   const [hintsOpen, setHintsOpen] = useState(false);
+  const [cardsOpen, setCardsOpen] = useState(false);
+
+  // Concept cards: shown first, once, when the level brings cards the player hasn't seen.
+  const cards = useMemo(() => level.cards.map(getCard).filter((c): c is ConceptCard => !!c), [level]);
+  const hydrated = useHydrated();
+  const seenCards = useProgress((s) => s.seenCards);
+  const [introDone, setIntroDone] = useState(false);
+  const unseen = useMemo(() => cards.filter((c) => !seenCards.includes(c.id)), [cards, seenCards]);
+  const introOpen = !review && hydrated && !introDone && unseen.length > 0;
+  const finishIntro = () => {
+    useProgress.getState().markCardsSeen(unseen.map((c) => c.id));
+    setIntroDone(true);
+  };
+
   // Activity keeps this page mounted but hidden after navigating away: drop
   // transient overlays so coming back shows the level, not a stale modal.
   useLayoutEffect(
     () => () => {
       setCelebration(null);
       setHintsOpen(false);
+      setCardsOpen(false);
     },
     [],
   );
@@ -189,6 +207,8 @@ export function LevelGame({ level, review = false }: { level: Level; review?: bo
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.defaultPrevented || !(e.metaKey || e.ctrlKey)) return;
+      // A modal (cards, hints…) owns the keyboard.
+      if (document.querySelector("dialog:modal")) return;
       if (e.key === "Enter") {
         e.preventDefault();
         shipRef.current();
@@ -319,6 +339,15 @@ export function LevelGame({ level, review = false }: { level: Level; review?: bo
           <IconButton aria-label="Reiniciar nivel" onClick={() => (playSfx("ui-tap"), setRestartOpen(true))}>
             <Restart className="size-6" />
           </IconButton>
+          {cards.length > 0 && (
+            <IconButton
+              aria-label={cards.length > 1 ? `Fichas del nivel (${cards.length})` : "Ficha del nivel"}
+              onClick={() => (playSfx("ui-tap"), setCardsOpen(true))}
+              data-testid="open-cards"
+            >
+              <Card className="size-7" />
+            </IconButton>
+          )}
           <IconButton aria-label={`Pistas (${draft.hintsUsed} de 3 usadas)`} tone="sand" onClick={openHints}>
             <Hint className="size-7" />
             {draft.hintsUsed > 0 && (
@@ -394,11 +423,22 @@ export function LevelGame({ level, review = false }: { level: Level; review?: bo
         open={hintsOpen}
         hintsUsed={draft.hintsUsed}
         onClose={() => setHintsOpen(false)}
+        onOpenCards={
+          cards.length
+            ? () => {
+                setHintsOpen(false);
+                setCardsOpen(true);
+              }
+            : undefined
+        }
         onReveal={() => {
           playSfx("ui-tap");
           setDraft((d) => ({ ...d, hintsUsed: Math.min(3, d.hintsUsed + 1) }));
         }}
       />
+
+      <CardsDialog open={introOpen} cards={unseen} mode="intro" onClose={finishIntro} />
+      <CardsDialog open={cardsOpen} cards={cards} mode="browse" onClose={() => setCardsOpen(false)} />
 
       <Dialog open={restartOpen} onClose={() => setRestartOpen(false)} labelledBy="restart-title">
         <div className="rounded-chunk border-[3px] border-ink bg-foam p-5 text-center shadow-chunky">
