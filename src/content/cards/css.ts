@@ -18,6 +18,47 @@ const LIGHTHOUSE_SRC = svgDataUri(`<svg xmlns="http://www.w3.org/2000/svg" width
 
 /** Concept cards for Isla Estilo (CSS fundamental), in teaching order. */
 export const cssCards: ConceptCard[] = [
+  {
+    id: "css-que-es",
+    worldId: "css-basics",
+    kind: "concept",
+    title: "CSS",
+    tagline: "El idioma que decide cómo se ve cada parte de la página.",
+    explain:
+      "En la isla anterior usaste HTML para decir qué es cada cosa. CSS es el segundo idioma de la web: no cambia el contenido, cambia su aspecto. Colores, tamaños, espacios, bordes y la posición de cada caja se escriben en CSS, normalmente en un archivo aparte que el navegador aplica sobre el HTML.",
+    use: [
+      "Úsalo para todo lo visual: colores, letras, espacios, bordes, columnas.",
+      "Deja el HTML para el significado y el CSS para el diseño: así puedes rediseñar sin tocar el contenido.",
+    ],
+    avoid: [
+      "Cambiar una etiqueta HTML solo para que se vea distinta (un <h3> porque es más pequeño): eso se hace con CSS.",
+    ],
+    example: {
+      html: "<h1>Floristería Rosa</h1>\n<p>Ramos frescos cada día.</p>\n",
+      css: "h1 {\n  color: #D63A52;\n}\np {\n  color: #4FA82F;\n}\n",
+    },
+    exampleNote:
+      "El HTML es el mismo de siempre; el CSS solo pinta el título de coral y el párrafo de verde.",
+    predict: {
+      question: "Si borras todo el CSS de este ejemplo, ¿qué le pasa al título?",
+      options: [
+        {
+          label: "Sigue ahí, pero con el color por defecto",
+          correct: true,
+          why: "El contenido vive en el HTML. Sin CSS, el navegador lo muestra con su estilo básico.",
+        },
+        {
+          label: "Desaparece de la página",
+          correct: false,
+          why: "CSS no crea ni borra contenido: solo cambia cómo se ve lo que ya está en el HTML.",
+        },
+      ],
+    },
+    mdn: {
+      label: "MDN: ¿Qué es CSS?",
+      url: "https://developer.mozilla.org/es/docs/Learn_web_development/Core/Styling_basics/What_is_CSS",
+    },
+  },
   // -------------------------------------------------------------------------
   // css-01: the first rule
   // -------------------------------------------------------------------------

@@ -93,5 +93,5 @@ export const color: Level = {
       url: "https://developer.mozilla.org/es/docs/Web/CSS/Reference/Properties/color",
     },
   ],
-  cards: ["css-regla", "css-color", "css-text-align"],
+  cards: ["css-que-es", "css-regla", "css-color", "css-text-align"],
 };
