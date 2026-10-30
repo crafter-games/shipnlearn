@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Dialog } from "@/components/ui/dialog";
+import { TitledDialog } from "@/components/ui/titled-dialog";
 import { applySettings, playSfx } from "@/lib/audio";
 import {
   FLAG_RANKS,
@@ -118,7 +118,7 @@ export function SettingsDialog({ open, onClose }: { open: boolean; onClose: () =
   };
 
   return (
-    <Dialog open={open} onClose={close} title="Ajustes">
+    <TitledDialog open={open} onClose={close} title="Ajustes">
       <div className="divide-y-2 divide-ink/10">
         <Switch
           label="Sonido"
@@ -211,6 +211,6 @@ export function SettingsDialog({ open, onClose }: { open: boolean; onClose: () =
           )}
         </div>
       </div>
-    </Dialog>
+    </TitledDialog>
   );
 }

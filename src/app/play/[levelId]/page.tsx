@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { LevelScreen } from "@/components/level/level-screen";
+import { Suspense } from "react";
+import { LevelLoading, LevelScreen } from "@/components/level/level-screen";
 import { allLevels, getLevel } from "@/lib/levels/registry";
 
 export function generateStaticParams() {
@@ -15,8 +16,17 @@ export async function generateMetadata({
   return { title: level ? `${level.title} · ShipNLearn` : "ShipNLearn" };
 }
 
-export default async function PlayPage({ params }: PageProps<"/play/[levelId]">) {
+export default function PlayPage({ params }: PageProps<"/play/[levelId]">) {
+  // Reading params suspends: keep it inside a boundary so navigation is instant.
+  return (
+    <Suspense fallback={<LevelLoading />}>
+      <PlayLevel params={params} />
+    </Suspense>
+  );
+}
+
+async function PlayLevel({ params }: { params: PageProps<"/play/[levelId]">["params"] }) {
   const { levelId } = await params;
   if (!getLevel(levelId)) notFound();
-  return <LevelScreen levelId={levelId} />;
+  return <LevelScreen key={levelId} levelId={levelId} />;
 }

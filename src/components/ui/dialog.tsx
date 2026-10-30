@@ -1,58 +1,50 @@
 "use client";
 
-import { type ReactNode, useEffect, useId, useRef } from "react";
+import { type ReactNode, useEffect, useRef } from "react";
 
 type Props = {
   open: boolean;
   onClose: () => void;
-  title: string;
+  /** id of the element that names the dialog. */
+  labelledBy: string;
   children: ReactNode;
   className?: string;
 };
 
 /**
- * Chunky modal built on the native <dialog>: focus trap, Escape to close and
- * inert background come for free. Clicking the backdrop closes it too.
+ * Accessible modal built on the native <dialog>: showModal() gives a focus
+ * trap, inert background, Escape to close and focus restoration for free.
+ * The element marked `data-autofocus` receives focus on open.
  */
-export function Dialog({ open, onClose, title, children, className = "" }: Props) {
+export function Dialog({ open, onClose, labelledBy, children, className = "" }: Props) {
   const ref = useRef<HTMLDialogElement>(null);
-  const titleId = useId();
 
   useEffect(() => {
     const d = ref.current;
     if (!d) return;
-    if (open && !d.open) d.showModal();
-    if (!open && d.open) d.close();
+    if (open && !d.open) {
+      d.showModal();
+      d.querySelector<HTMLElement>("[data-autofocus]")?.focus();
+    } else if (!open && d.open) {
+      d.close();
+    }
   }, [open]);
 
   return (
     <dialog
       ref={ref}
-      aria-labelledby={titleId}
-      onClose={onClose}
+      aria-labelledby={labelledBy}
       onCancel={(e) => {
         e.preventDefault();
         onClose();
       }}
       onClick={(e) => {
-        if (e.target === ref.current) onClose();
+        // Click on the backdrop (the dialog box itself, outside the content).
+        if (e.target === e.currentTarget) onClose();
       }}
-      className={`m-auto w-[min(92vw,26rem)] rounded-chunk border-[3px] border-ink bg-foam p-0 text-ink shadow-chunky backdrop:bg-ink/60 open:animate-pop ${className}`}
+      className={`m-auto max-h-[calc(100dvh-2rem)] w-[min(100vw-2rem,30rem)] overflow-visible bg-transparent p-0 text-ink backdrop:bg-ink/60 backdrop:backdrop-blur-[2px] ${className}`}
     >
-      <div className="flex items-center justify-between gap-3 border-b-[3px] border-ink bg-sand px-5 py-3">
-        <h2 id={titleId} className="font-display text-2xl tracking-wide">
-          {title}
-        </h2>
-        <button
-          type="button"
-          onClick={onClose}
-          aria-label="Cerrar"
-          className="grid size-10 place-items-center rounded-xl border-[3px] border-ink bg-foam font-display text-xl shadow-chunky-sm active:translate-y-0.5 active:shadow-pressed"
-        >
-          ✕
-        </button>
-      </div>
-      <div className="p-5">{children}</div>
+      {open && children}
     </dialog>
   );
 }
