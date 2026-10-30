@@ -30,12 +30,15 @@ export function loadSrcdoc(iframe: HTMLIFrameElement, srcdoc: string): Promise<v
  * serialised: a render never starts while checks are measuring the
  * previous document.
  */
-export function createRunner(level: Level, getIframe: () => HTMLIFrameElement | null) {
+export function createRunner(level: Level) {
   let queue: Promise<unknown> = Promise.resolve();
   let lastSrcdoc = "";
 
-  const evaluate = async (files: LevelFiles, withAxe: boolean): Promise<Evaluation | null> => {
-    const iframe = getIframe();
+  const evaluate = async (
+    iframe: HTMLIFrameElement | null,
+    files: LevelFiles,
+    withAxe: boolean,
+  ): Promise<Evaluation | null> => {
     if (!iframe) return null;
     const srcdoc = buildSrcdoc(files);
     if (srcdoc !== lastSrcdoc || !iframe.contentDocument?.body) {
@@ -48,8 +51,12 @@ export function createRunner(level: Level, getIframe: () => HTMLIFrameElement | 
   };
 
   return {
-    run(files: LevelFiles, opts: { axe?: boolean } = {}): Promise<Evaluation | null> {
-      const next = queue.then(() => evaluate(files, opts.axe ?? true));
+    run(
+      iframe: HTMLIFrameElement | null,
+      files: LevelFiles,
+      opts: { axe?: boolean } = {},
+    ): Promise<Evaluation | null> {
+      const next = queue.then(() => evaluate(iframe, files, opts.axe ?? true));
       queue = next.catch(() => null);
       return next;
     },
