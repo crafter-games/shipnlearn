@@ -116,7 +116,7 @@ export function Island({ name, accent, progress, flag = "coral", label, classNam
 
       {Array.from({ length: f.houses }, (_, i) => {
         const spots = [
-          { x: 126, y: 140, roof: "var(--color-coral)" },
+          { x: 140, y: 136, roof: "var(--color-coral)" },
           { x: 196, y: 150, roof: "var(--color-ocean)" },
           { x: 160, y: 164, roof: "var(--color-grape)" },
         ];
@@ -132,9 +132,9 @@ export function Island({ name, accent, progress, flag = "coral", label, classNam
 
       {Array.from({ length: f.palms }, (_, i) => {
         const spots = [
-          { x: 70, y: 150 },
-          { x: 232, y: 168 },
-          { x: 98, y: 176 },
+          { x: 236, y: 170 },
+          { x: 96, y: 178 },
+          { x: 104, y: 150 },
         ];
         const p = spots[i];
         return (
@@ -144,7 +144,7 @@ export function Island({ name, accent, progress, flag = "coral", label, classNam
             {[-1, 1].map((s) => (
               <path
                 key={s}
-                d={`M${p.x + 2} ${p.y - 42} q${s * 12} -12 ${s * 26} 2 q${s * -12} -4 ${s * -26} -2Z`}
+                d={`M${p.x + 2} ${p.y - 42} q${s * 12} -14 ${s * 26} 2 q${s * -14} 2 ${s * -26} -2Z`}
                 fill="var(--color-lime)"
                 stroke={INK}
                 strokeWidth="3"
