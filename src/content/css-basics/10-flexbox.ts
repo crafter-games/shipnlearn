@@ -138,5 +138,5 @@ export const flexbox: Level = {
       url: "https://developer.mozilla.org/es/docs/Web/CSS/Reference/Properties/justify-content",
     },
   ],
-  cards: [],
+  cards: ["css-flex", "css-justify-content", "css-gap"],
 };

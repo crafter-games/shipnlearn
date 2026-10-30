@@ -111,5 +111,5 @@ export const pseudoclases: Level = {
       url: "https://developer.mozilla.org/es/docs/Web/CSS/Reference/Properties/outline",
     },
   ],
-  cards: [],
+  cards: ["css-hover", "css-focus-visible"],
 };
