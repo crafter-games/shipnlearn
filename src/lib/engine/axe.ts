@@ -17,6 +17,8 @@ export type AxeReport = {
   ran: boolean;
 };
 
+export const WCAG_TAGS = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"];
+
 /** Only these impacts cost the ⭐⭐. */
 const BLOCKING: ImpactValue[] = ["serious", "critical"];
 
@@ -59,7 +61,9 @@ function loadSource(): Promise<string> {
   ]).then(([axeMod, locale]) => {
     const axe = (axeMod as unknown as { default?: { source: string } }).default ?? axeMod;
     const json = JSON.stringify((locale as { default?: unknown }).default ?? locale);
-    return `${(axe as { source: string }).source}\n;axe.configure({locale:${json}});`;
+    // Bundlers may rewrite the UMD's `typeof module` checks inside the
+    // function whose source axe exposes, so give it a throwaway CommonJS scope.
+    return `(function(module,exports,define){${(axe as { source: string }).source}\n}).call(window,{exports:{}},{},undefined);\naxe.configure({locale:${json}});`;
   });
   return sourcePromise;
 }
@@ -104,8 +108,9 @@ export async function runAxe(iframe: HTMLIFrameElement): Promise<AxeReport> {
     if (!win.axe) return { clean: true, issues: [], ran: false };
     const results = await win.axe.run(doc, {
       resultTypes: ["violations"],
-      // The preview is a fragment of a page: landmark/region rules are noise here.
-      rules: { region: { enabled: false } },
+      // WCAG rules only: best-practice rules (region, landmark-one-main,
+      // page-has-heading-one) would punish fragment levels taught before landmarks.
+      runOnly: { type: "tag", values: WCAG_TAGS },
     });
     const issues = summarize(results);
     return { clean: issues.length === 0, issues, ran: true };

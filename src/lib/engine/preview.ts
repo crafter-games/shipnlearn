@@ -16,8 +16,9 @@ export const PREVIEW_NONCE =
  * The preview iframe may run with `allow-scripts` (for axe). This policy
  * blocks every player-authored script path that `stripScripts` can't see:
  * inline handlers (`onerror=`), `javascript:` URLs and nested srcdoc frames.
+ * 'unsafe-eval' is for axe's locale templates; no player code can run to call eval.
  */
-const CSP = `<meta http-equiv="Content-Security-Policy" content="script-src 'nonce-${PREVIEW_NONCE}'; object-src 'none'; base-uri 'none'">`;
+const CSP = `<meta http-equiv="Content-Security-Policy" content="script-src 'nonce-${PREVIEW_NONCE}' 'unsafe-eval'; object-src 'none'; base-uri 'none'">`;
 
 /** Remove scripts: v1 teaches HTML/CSS only, and user JS must not run. */
 const stripScripts = (html: string) =>
