@@ -134,3 +134,4 @@ M2–M6 se construyen en paralelo por subagentes sobre contratos definidos en M1
 ## Changelog
 
 - 2026-10-30: GDD creado tras investigación (gamificación + currículo MDN) y 2 rondas de entrevista.
+- 2026-10-30: M1–M6 entregados en paralelo (motor, mapa, audio, 20 niveles); Mareas jugables como repaso; desplegado en shipnlearn.crafter.games.
