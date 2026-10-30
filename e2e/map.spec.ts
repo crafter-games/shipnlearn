@@ -138,7 +138,9 @@ test("the M key toggles mute on the map", async ({ page }) => {
   await expect(page.getByRole("button", { name: "Activar sonido" })).toBeVisible();
 });
 
-type AxeResult = { violations: { id: string; impact: string | null }[] };
+type AxeResult = {
+  violations: { id: string; impact: string | null; nodes: { target: string[] }[] }[];
+};
 
 test("map and settings have no serious axe violations", async ({ page }) => {
   await seed(page, {
@@ -157,7 +159,7 @@ test("map and settings have no serious axe violations", async ({ page }) => {
       const r = await axe.run(document);
       return r.violations
         .filter((v) => v.impact === "serious" || v.impact === "critical")
-        .map((v) => v.id);
+        .map((v) => `${v.id}: ${v.nodes.map((n) => n.target.join(" ")).join(", ")}`);
     });
   expect(await run()).toEqual([]);
   await page.getByRole("button", { name: "Ajustes" }).click();

@@ -67,8 +67,8 @@ export function WorldSection({ world, index, levels, currentId, openId, setOpenI
       </div>
 
       {n === 0 ? (
-        <div className="mx-auto w-full max-w-md rounded-[2.5rem] border-4 border-dashed border-foam/70 bg-ocean-deep/40 p-8 text-center">
-          <p className="font-display text-3xl text-foam text-stroke">¡Próximamente!</p>
+        <div className="mx-auto w-full max-w-md rounded-[2.5rem] border-4 border-dashed border-foam/70 bg-ocean-deep p-8 text-center">
+          <p className="font-display text-3xl tracking-wide text-sand">¡Próximamente!</p>
           <p className="mt-1 font-bold text-foam">Octo está repartiendo los pedidos de esta isla.</p>
         </div>
       ) : (
