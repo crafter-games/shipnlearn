@@ -13,6 +13,7 @@ test("every level solution passes its checks and its starter does not", async ({
 
 test("first level is playable from the map", async ({ page }) => {
   await page.goto("/");
-  await page.getByRole("link", { name: /Ponle nombre/ }).click();
+  // First visit lands on the intro; «¡Vamos!» opens level 1.
+  await page.getByRole("button", { name: "¡Vamos!" }).click();
   await expect(page).toHaveURL(/\/play\/html-01-titulo/);
 });
