@@ -5,11 +5,12 @@ import { enfasis } from "./03-enfasis";
 import { listas } from "./04-listas";
 import { enlaces } from "./05-enlaces";
 import { imagenes } from "./06-imagenes";
+import { documento } from "./07-documento";
 
 export const htmlBasics: World = {
   id: "html-basics",
   title: "Isla Marcado",
   subtitle: "HTML fundamental",
   accent: "#FFD66B",
-  levels: [titulo, encabezados, enfasis, listas, enlaces, imagenes],
+  levels: [titulo, encabezados, enfasis, listas, enlaces, imagenes, documento],
 };
