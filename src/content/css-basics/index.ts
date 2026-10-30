@@ -1,6 +1,7 @@
 import type { World } from "@/lib/levels/types";
 import { color } from "./01-color";
 import { clases } from "./02-clases";
+import { cartel } from "./03-cartel";
 
 export const cssBasics: World = {
   id: "css-basics",
@@ -10,5 +11,6 @@ export const cssBasics: World = {
   levels: [
     color,
     clases,
+    cartel,
   ],
 };
