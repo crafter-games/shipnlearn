@@ -5,6 +5,7 @@ import { cartel } from "./03-cartel";
 import { tipografia } from "./04-tipografia";
 import { caja } from "./05-caja";
 import { especificidad } from "./06-especificidad";
+import { pseudoclases } from "./07-pseudoclases";
 
 export const cssBasics: World = {
   id: "css-basics",
@@ -18,5 +19,6 @@ export const cssBasics: World = {
     tipografia,
     caja,
     especificidad,
+    pseudoclases,
   ],
 };
