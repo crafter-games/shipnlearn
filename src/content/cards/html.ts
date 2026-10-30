@@ -173,4 +173,91 @@ export const htmlCards: ConceptCard[] = [
     },
     mdn: { label: "MDN: <p>", url: "https://developer.mozilla.org/es/docs/Web/HTML/Reference/Elements/p" },
   },
+  {
+    id: "html-strong",
+    worldId: "html-basics",
+    kind: "element",
+    title: "<strong>",
+    tagline: "Marca algo importante, serio o urgente.",
+    explain:
+      "<strong> le dice al navegador «esto es importante». Se ve en negrita y, además, los lectores de pantalla y los buscadores entienden que ese texto pesa más. Va dentro de un párrafo, rodeando solo la parte importante.",
+    use: [
+      "Advertencias y prohibiciones: «Prohibido pescar en la cueva».",
+      "El dato que nadie debe pasar por alto: una hora, un peligro, una fecha límite.",
+    ],
+    avoid: [
+      "Usar <b>: también pone negrita, pero no dice que sea importante.",
+      "Marcar párrafos enteros: si todo es importante, nada lo es.",
+      "Usarlo solo porque quieres negrita: el aspecto se cambia con CSS.",
+    ],
+    example: {
+      html: "<p><strong>El ferri sale a las 9:00 en punto.</strong> No espera a nadie, ni al alcalde.</p>\n",
+    },
+    exampleNote: "Solo la frase importante va dentro de <strong>; el resto del párrafo queda normal.",
+    predict: {
+      question: "<b> y <strong> se ven igual de negritas. ¿Qué gana con <strong> alguien que usa lector de pantalla?",
+      options: [
+        {
+          label: "Sabe que esa frase es importante",
+          correct: true,
+          why: "<strong> lleva significado: dice «importante». <b> solo cambia el aspecto, y eso no se oye.",
+        },
+        {
+          label: "Nada, son idénticos",
+          correct: false,
+          why: "Se ven igual, pero solo <strong> comunica importancia. El aspecto no es el mensaje.",
+        },
+        {
+          label: "Oye la frase más despacio",
+          correct: false,
+          why: "No cambia la velocidad de lectura: lo que aporta es el significado de «esto importa».",
+        },
+      ],
+    },
+    mdn: { label: "MDN: <strong>", url: "https://developer.mozilla.org/es/docs/Web/HTML/Reference/Elements/strong" },
+  },
+  {
+    id: "html-em",
+    worldId: "html-basics",
+    kind: "element",
+    title: "<em>",
+    tagline: "Marca la palabra que dirías con énfasis.",
+    explain:
+      "<em> (de «emphasis», énfasis) señala la palabra que pronunciarías con otro tono de voz. Se ve en cursiva y un lector de pantalla puede cambiar la entonación. Si mueves el <em> a otra palabra, cambia el sentido de la frase.",
+    use: [
+      "La palabra que remarcarías al decirla en voz alta: «es <em>muy</em> gruñón».",
+      "Para aclarar qué quieres decir: «yo <em>no</em> me comí el último bollo».",
+    ],
+    avoid: [
+      "Usar <i>: también pone cursiva, pero no indica énfasis.",
+      "Confundirlo con <strong>: <em> cambia cómo suena una palabra; <strong> marca que algo es importante.",
+    ],
+    example: {
+      html: `<p>El pulpo de la cueva es <em>muy</em> gruñón.</p>
+<p>Yo <em>no</em> me comí el último bollo.</p>
+`,
+    },
+    exampleNote: "Solo la palabra con énfasis va dentro de <em>, y por eso solo ella sale en cursiva.",
+    predict: {
+      question: "Quieres que «Prohibido nadar: hay medusas» destaque porque es un peligro. ¿Qué usas?",
+      options: [
+        {
+          label: "<strong>",
+          correct: true,
+          why: "Es una advertencia seria: importancia, no entonación.",
+        },
+        {
+          label: "<em>",
+          correct: false,
+          why: "<em> cambia el tono de una palabra. Para algo serio o urgente, <strong>.",
+        },
+        {
+          label: "<i>",
+          correct: false,
+          why: "Solo inclina las letras: no comunica ni énfasis ni importancia.",
+        },
+      ],
+    },
+    mdn: { label: "MDN: <em>", url: "https://developer.mozilla.org/es/docs/Web/HTML/Reference/Elements/em" },
+  },
 ];
