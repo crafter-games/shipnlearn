@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import type { Level } from "@/lib/levels/types";
 import { summarize } from "./axe";
-import { assembleFill, blankCount, blankWidth, parseFill } from "./fill";
+import { assembleFill, blankCount, blankWidth, fillTemplate, parseFill } from "./fill";
 import { buildSrcdoc, PREVIEW_NONCE } from "./preview";
 import type { CheckResult } from "./run-checks";
 import { starsFor } from "./run-checks";
@@ -65,6 +65,10 @@ describe("tiles", () => {
     expect(assembleTiles({ file: "html", lines: [] }, ["a"])).toBe("a");
   });
 
+  it("with nothing placed yields just the fixed code (the tiles starter)", () => {
+    expect(assembleTiles(tilesLevel.tiles!, [])).toBe("<ul>\n\n</ul>");
+  });
+
   it("resolves placed ids and drops unknown ones", () => {
     const tiles = makeTiles(tilesLevel.tiles!);
     expect(placedLines(tiles, ["l1", "nope", "d0"])).toEqual(["<li>dos</li>", "<li>tres"]);
@@ -95,6 +99,7 @@ describe("fill", () => {
     expect(blankCount(t)).toBe(2);
     expect(blankCount("no blanks")).toBe(0);
     expect(assembleFill(t, ["blue"])).toBe("h1 { color: blue; font-size: ; }");
+    expect(fillTemplate(fillLevel.fill!, ["red", "2rem"])).toBe("h1 { color: red; font-size: 2rem; }");
   });
 
   it("sizes inputs to content", () => {

@@ -1,3 +1,5 @@
+import type { FillSpec } from "@/lib/levels/types";
+
 export type FillPart =
   | { kind: "text"; text: string }
   | { kind: "blank"; index: number };
@@ -28,6 +30,9 @@ export function blankCount(template: string): number {
 export function assembleFill(template: string, values: string[]): string {
   return template.replace(MARKER, (_, n: string) => values[Number(n)] ?? "");
 }
+
+/** File contents for a fill spec: the template with `values` in its blanks. */
+export const fillTemplate = (spec: FillSpec, values: string[]) => assembleFill(spec.template, values);
 
 /** Input width in `ch`, fitted to the longest of value and placeholder. */
 export function blankWidth(value: string, placeholder = ""): number {

@@ -1,5 +1,5 @@
 import type { FileKind, Level, LevelFiles } from "@/lib/levels/types";
-import { assembleFill, blankCount } from "./fill";
+import { blankCount, fillTemplate } from "./fill";
 import { assembleTiles, makeTiles, placedLines } from "./tiles";
 
 /** Everything the player has changed in a level. Persisted as a draft. */
@@ -38,7 +38,7 @@ export function composeFiles(level: Level, draft: Draft): LevelFiles {
     return withFile(level.starter, level.tiles.file, assembleTiles(level.tiles, lines));
   }
   if (level.mode === "fill" && level.fill) {
-    return withFile(level.starter, level.fill.file, assembleFill(level.fill.template, draft.values));
+    return withFile(level.starter, level.fill.file, fillTemplate(level.fill, draft.values));
   }
   return draft.files;
 }
