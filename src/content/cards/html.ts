@@ -260,4 +260,105 @@ export const htmlCards: ConceptCard[] = [
     },
     mdn: { label: "MDN: <em>", url: "https://developer.mozilla.org/es/docs/Web/HTML/Reference/Elements/em" },
   },
+  {
+    id: "html-ul-li",
+    worldId: "html-basics",
+    kind: "element",
+    title: "<ul> y <li>",
+    tagline: "Una lista de cosas en la que el orden da igual.",
+    explain:
+      "<ul> (de «unordered list», lista sin orden) agrupa varias cosas, y cada una va en su propio <li> («list item», elemento de la lista). El navegador pone un punto delante de cada <li>. Dentro de un <ul> solo puede haber <li>.",
+    use: [
+      "Cosas que se pueden leer en cualquier orden: lo que llevas en la mochila, los ingredientes.",
+      "Grupos de opciones o de enlaces.",
+      "Un <li> por cada cosa.",
+    ],
+    avoid: [
+      "Separar las cosas con <br> (un simple salto de línea): se ve parecido, pero no es una lista y nadie puede contar sus elementos.",
+      "Meter texto o un <p> directamente en el <ul>, fuera de un <li>.",
+      "Cerrar con otro nombre: lo que abre <ul> lo cierra </ul>.",
+    ],
+    example: {
+      html: `<h2>Cesta del mercado</h2>
+<ul>
+  <li>Pan</li>
+  <li>Queso</li>
+  <li>Naranjas</li>
+</ul>
+`,
+    },
+    exampleNote: "<ul> abre y cierra la lista; cada cosa va en su propio <li> y recibe su punto.",
+    predict: {
+      question: "Si cambias de orden los <li> de esta cesta, ¿qué pasa?",
+      options: [
+        {
+          label: "Nada importante: siguen siendo las mismas cosas",
+          correct: true,
+          why: "En una lista sin orden, el orden no cambia el sentido. Por eso es un <ul>.",
+        },
+        {
+          label: "Los números se reordenan",
+          correct: false,
+          why: "<ul> no pone números, sino puntos. Los números son cosa de <ol>.",
+        },
+        {
+          label: "La lista se rompe",
+          correct: false,
+          why: "Los <li> se pueden mover libremente mientras sigan dentro del <ul>.",
+        },
+      ],
+    },
+    mdn: { label: "MDN: <ul>", url: "https://developer.mozilla.org/es/docs/Web/HTML/Reference/Elements/ul" },
+  },
+  {
+    id: "html-ol",
+    worldId: "html-basics",
+    kind: "element",
+    title: "<ol>",
+    tagline: "Una lista de pasos en la que el orden importa.",
+    explain:
+      "<ol> (de «ordered list», lista ordenada) funciona como <ul>, con un <li> por elemento, pero los numera sola: 1, 2, 3. Si añades un paso en medio, los números se recalculan. Los lectores de pantalla anuncian cuántos pasos hay y en cuál estás.",
+    use: [
+      "Instrucciones y recetas: pasos que hay que seguir en orden.",
+      "Clasificaciones: el primero, el segundo, el tercero.",
+      "Cualquier lista en la que cambiar el orden cambiaría el resultado.",
+    ],
+    avoid: [
+      "Escribir los números a mano (1., 2.) en párrafos: al añadir un paso tendrías que renumerarlo todo.",
+      "Usar <ol> para cosas sin orden, como lo que llevas en la mochila.",
+      "Separar los pasos con <br>: cada paso es un <li>.",
+    ],
+    example: {
+      html: `<h2>Cómo hacer pan</h2>
+<ol>
+  <li>Mezcla harina, agua y sal.</li>
+  <li>Deja reposar la masa.</li>
+  <li>Hornea 40 minutos.</li>
+</ol>
+`,
+    },
+    exampleNote: "No hay ningún número escrito en el código: <ol> los pone en el orden de los <li>.",
+    predict: {
+      question:
+        "Añades <li>Amasa 10 minutos.</li> entre el primer y el segundo paso. ¿Qué número tendrá «Hornea 40 minutos.»?",
+      options: [
+        {
+          label: "El 4",
+          correct: true,
+          why: "<ol> renumera sola: ahora hay cuatro pasos y hornear es el último.",
+        },
+        {
+          label: "El 3, como antes",
+          correct: false,
+          why: "Los números no están escritos en el código: se recalculan con cada <li>.",
+        },
+        {
+          label: "Ninguno, hay que escribirlo a mano",
+          correct: false,
+          why: "<ol> numera sin que escribas nada. Esa es justo su ventaja.",
+        },
+      ],
+    },
+    mdn: { label: "MDN: <ol>", url: "https://developer.mozilla.org/es/docs/Web/HTML/Reference/Elements/ol" },
+  },
 ];
