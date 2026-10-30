@@ -4,7 +4,7 @@ import { textContrast, tilesCss } from "./_helpers";
 
 const html = `<header class="floristeria">
   <h1>Flores de Rosa</h1>
-  <p>Ramos frescos cada mañana 🌷</p>
+  <p>Ramos frescos cada mañana</p>
 </header>
 `;
 
