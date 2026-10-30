@@ -658,4 +658,175 @@ export const htmlCards: ConceptCard[] = [
     },
     mdn: { label: "MDN: <img>", url: "https://developer.mozilla.org/es/docs/Web/HTML/Reference/Elements/img" },
   },
+  {
+    id: "html-doctype-lang",
+    worldId: "html-basics",
+    kind: "concept",
+    title: "<!doctype html> y <html lang>",
+    tagline: "La primera línea de la página y la caja que lo envuelve todo.",
+    explain:
+      "Una página completa empieza con <!doctype html>, que le dice al navegador «esto es HTML moderno». Después, el elemento <html> envuelve todo lo demás, y su atributo lang dice en qué idioma está escrita: lang=\"es\" para español. Gracias a lang, el lector de pantalla pronuncia con el acento correcto.",
+    use: [
+      "<!doctype html> siempre en la primera línea, antes que nada.",
+      "<html lang=\"es\"> justo debajo, y </html> al final del todo.",
+      "Otro idioma, otro valor: lang=\"en\" para inglés, lang=\"pt\" para portugués.",
+    ],
+    avoid: [
+      "Olvidar el doctype: el navegador entra en «modo antiguo» y dibuja algunas cosas como hace 30 años.",
+      "Dejar <html> sin lang: el lector de pantalla puede leer tu español con acento inglés.",
+    ],
+    example: {
+      html: `<!doctype html>
+<html lang="es">
+  <head>
+    <title>Faro del Norte</title>
+  </head>
+  <body>
+    <h1>Faro del Norte</h1>
+    <p>Visitas guiadas los sábados.</p>
+  </body>
+</html>
+`,
+    },
+    exampleNote:
+      "Fíjate en las dos primeras líneas: el doctype va antes que todo, y <html lang=\"es\"> abre la caja que se cierra en la última línea.",
+    predict: {
+      question: "Tu página está escrita en inglés, pero dice <html lang=\"es\">. ¿Qué pasa?",
+      options: [
+        {
+          label: "El lector de pantalla lee el inglés con pronunciación española",
+          correct: true,
+          why: "lang le dice qué voz y qué reglas usar. Si no coincide con el texto, suena raro o no se entiende.",
+        },
+        {
+          label: "El navegador traduce la página al español",
+          correct: false,
+          why: "lang no traduce nada: solo informa del idioma en que ya está escrito el texto.",
+        },
+        {
+          label: "Nada, lang es solo decorativo",
+          correct: false,
+          why: "No se ve, pero lo usan los lectores de pantalla, los traductores y los buscadores.",
+        },
+      ],
+    },
+    mdn: {
+      label: "MDN: atributo lang",
+      url: "https://developer.mozilla.org/es/docs/Web/HTML/Reference/Global_attributes/lang",
+    },
+  },
+  {
+    id: "html-head-body",
+    worldId: "html-basics",
+    kind: "element",
+    title: "<head> y <body>",
+    tagline: "Lo que el navegador necesita saber y lo que la gente ve.",
+    explain:
+      "Dentro de <html> hay dos partes, una detrás de otra. <head> (cabeza) guarda datos sobre la página que no aparecen en ella, como el nombre de la pestaña. <body> (cuerpo) contiene todo lo visible: encabezados, párrafos, listas, imágenes y enlaces.",
+    use: [
+      "En <head>: datos para el navegador, como <title> y <meta>.",
+      "En <body>: todo lo que quieras que se vea.",
+      "Primero <head>, después <body>, y uno de cada por página.",
+    ],
+    avoid: [
+      "Poner un <h1> o un <p> dentro de <head>: ese no es su sitio.",
+      "Poner el <title> en <body>: la pestaña no lo encontraría.",
+    ],
+    example: {
+      html: `<!doctype html>
+<html lang="es">
+  <head>
+    <title>Panadería La Miga</title>
+  </head>
+  <body>
+    <h1>Panadería La Miga</h1>
+    <p>Pan recién horneado cada mañana.</p>
+  </body>
+</html>
+`,
+    },
+    exampleNote:
+      "Todo lo que ves en la vista previa sale de <body>. El <title> de <head> no aparece en la página: va a la pestaña.",
+    predict: {
+      question: "¿Dónde va un <h2> con el nombre de una sección?",
+      options: [
+        {
+          label: "Dentro de <body>",
+          correct: true,
+          why: "Es algo que se ve en la página, así que es contenido del body.",
+        },
+        {
+          label: "Dentro de <head>",
+          correct: false,
+          why: "<head> es para datos que no se muestran en la página.",
+        },
+        {
+          label: "Fuera de <html>",
+          correct: false,
+          why: "Todo va dentro de <html>; fuera solo queda el doctype.",
+        },
+      ],
+    },
+    mdn: {
+      label: "MDN: ¿Qué hay en el head? Metadatos",
+      url: "https://developer.mozilla.org/es/docs/Learn_web_development/Core/Structuring_content/Webpage_metadata",
+    },
+  },
+  {
+    id: "html-meta-title",
+    worldId: "html-basics",
+    kind: "element",
+    title: "<meta> y <title>",
+    tagline: "Los datos del <head>: letras, móviles y nombre de la pestaña.",
+    explain:
+      "<meta charset=\"utf-8\"> hace que las tildes y las eñes se vean bien. <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"> ajusta la página al ancho del móvil en vez de mostrarla diminuta. <title> es el texto de la pestaña y de los resultados de búsqueda. <meta> es un elemento vacío, como <img>: no se cierra.",
+    use: [
+      "<meta charset=\"utf-8\"> lo primero dentro de <head>.",
+      "El meta viewport en todas las páginas, para que se lean bien en el móvil.",
+      "Un <title> corto que diga qué es la página: «Panadería La Miga».",
+    ],
+    avoid: [
+      "Añadir user-scalable=no o maximum-scale=1 al viewport: impiden hacer zoom, y mucha gente lo necesita para leer.",
+      "Dejar el <title> vacío o repetido en todas las páginas: nadie sabría qué pestaña es cuál.",
+      "Poner <meta> o <title> dentro de <body>.",
+    ],
+    example: {
+      html: `<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Faro del Norte</title>
+  </head>
+  <body>
+    <h1>Faro del Norte</h1>
+    <p>Señal de niebla: dos pitidos largos. Año de construcción: 1890.</p>
+  </body>
+</html>
+`,
+    },
+    exampleNote:
+      "Nada del <head> aparece en la vista previa: el <title> va a la pestaña y los <meta> trabajan sin verse, pero gracias al charset la ñ de «Año» se ve bien.",
+    predict: {
+      question: "Una página sin <meta charset=\"utf-8\"> dice «Año nuevo en la isla». ¿Qué puede salir mal?",
+      options: [
+        {
+          label: "Que la ñ se vea como letras raras: «AÃ±o»",
+          correct: true,
+          why: "charset le dice al navegador cómo leer las letras. Sin él, puede confundir tildes y eñes.",
+        },
+        {
+          label: "Que se vea diminuta en el móvil",
+          correct: false,
+          why: "Eso lo evita el meta viewport, no el charset.",
+        },
+        {
+          label: "Que la pestaña no tenga nombre",
+          correct: false,
+          why: "El nombre de la pestaña sale de <title>, no del charset.",
+        },
+      ],
+    },
+    mdn: { label: "MDN: <meta>", url: "https://developer.mozilla.org/es/docs/Web/HTML/Reference/Elements/meta" },
+  },
 ];
