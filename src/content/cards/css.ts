@@ -275,4 +275,323 @@ p {
       url: "https://developer.mozilla.org/es/docs/Web/CSS/Reference/Properties/font-weight",
     },
   },
+
+  // -------------------------------------------------------------------------
+  // css-03: backgrounds, borders and corners
+  // -------------------------------------------------------------------------
+  {
+    id: "css-background-color",
+    worldId: "css-basics",
+    kind: "property",
+    title: "background-color",
+    tagline: "Pinta el fondo de la caja de un elemento.",
+    explain:
+      "Cada elemento es una caja rectangular, aunque no la veas. background-color rellena esa caja de color, por detrás del texto. Cuando cambias el fondo, revisa también color: CSS no cambia el color del texto por ti.",
+    use: [
+      "Dar fondo a un cartel, un botón o una tarjeta para separarlos del resto.",
+      "Marcar una zona de la página, como un aviso.",
+    ],
+    avoid: [
+      "Cambiar el fondo y olvidar el texto: letras oscuras sobre morado apenas se leen (pide al menos 4.5:1 de contraste).",
+      "Confundirlo con color: color pinta las letras; background-color, el fondo.",
+    ],
+    example: {
+      html: `<p class="aviso">Hoy hay fiesta en la playa</p>
+<p>Trae tu toalla.</p>
+`,
+      css: `.aviso {
+  padding: 12px;
+  background-color: navy;
+  color: white;
+}
+`,
+    },
+    exampleNote:
+      "background-color: navy pinta la caja entera del párrafo, de lado a lado; color: white mantiene el texto legible.",
+    predict: {
+      question: "Si borras color: white, ¿qué pasa con el aviso?",
+      options: [
+        {
+          label: "El texto vuelve a ser oscuro y casi no se lee sobre navy",
+          correct: true,
+          why: "El color del texto no cambia solo al cambiar el fondo: vuelve al de siempre, que es oscuro.",
+        },
+        {
+          label: "El texto se pone blanco igualmente, porque el fondo es oscuro",
+          correct: false,
+          why: "CSS no adivina contrastes. Si quieres texto claro, tienes que pedirlo con color.",
+        },
+      ],
+    },
+    mdn: {
+      label: "MDN: background-color",
+      url: "https://developer.mozilla.org/es/docs/Web/CSS/Reference/Properties/background-color",
+    },
+  },
+  {
+    id: "css-border",
+    worldId: "css-basics",
+    kind: "property",
+    title: "border",
+    tagline: "Dibuja un contorno alrededor de la caja.",
+    explain:
+      "border es un atajo que lleva tres valores separados por espacios: grosor, estilo y color, por ejemplo 4px solid gold. El estilo dice cómo es la línea: solid (continua), dashed (rayas) o dotted (puntos). Sin estilo no hay borde, porque el estilo por defecto es none (ninguno).",
+    use: [
+      "Enmarcar un cartel, una tarjeta o una foto.",
+      "Separar zonas con una línea, por ejemplo border-bottom bajo un título.",
+    ],
+    avoid: [
+      "Olvidar el estilo: border: 4px gold; no dibuja nada.",
+      "Separar los valores con comas: border: 4px, solid, gold; es inválido; van con espacios.",
+    ],
+    example: {
+      html: `<p class="cartel">Entrada libre</p>
+`,
+      css: `.cartel {
+  padding: 12px;
+  border: 4px dashed darkorange;
+}
+`,
+    },
+    exampleNote: "4px es el grosor, dashed el estilo (rayas) y darkorange el color.",
+    predict: {
+      question: "Si cambias dashed por solid, ¿qué cambia?",
+      options: [
+        {
+          label: "La línea pasa de rayas a continua",
+          correct: true,
+          why: "El segundo valor es el estilo de la línea. Grosor y color se quedan igual.",
+        },
+        {
+          label: "El borde se hace más grueso",
+          correct: false,
+          why: "El grosor es el primer valor (4px) y no lo has tocado.",
+        },
+        {
+          label: "El borde desaparece",
+          correct: false,
+          why: "Desaparecería con none o sin estilo. solid es un estilo válido: una línea continua.",
+        },
+      ],
+    },
+    mdn: {
+      label: "MDN: border",
+      url: "https://developer.mozilla.org/es/docs/Web/CSS/Reference/Properties/border",
+    },
+  },
+  {
+    id: "css-border-radius",
+    worldId: "css-basics",
+    kind: "property",
+    title: "border-radius",
+    tagline: "Redondea las esquinas de la caja.",
+    explain:
+      "border-radius recibe un tamaño: cuanto mayor, más redonda la esquina. 8px suaviza, 16px redondea bastante, y 50% convierte una caja cuadrada en un círculo. Redondea a la vez el fondo y el borde.",
+    use: [
+      "Suavizar botones, tarjetas y carteles.",
+      "Hacer fotos de perfil redondas con border-radius: 50% en una imagen cuadrada.",
+    ],
+    avoid: [
+      "Esperar un círculo de una caja rectangular: con 50%, una caja ancha se vuelve un óvalo.",
+      "Ponerlo en un elemento sin fondo ni borde: redondea igual, pero no se nota.",
+    ],
+    example: {
+      html: `<p class="boton">Pedir canción a DJ Marea</p>
+`,
+      css: `.boton {
+  padding: 12px;
+  background-color: teal;
+  color: white;
+  text-align: center;
+  border-radius: 16px;
+}
+`,
+    },
+    exampleNote: "border-radius: 16px redondea las cuatro esquinas del fondo teal.",
+    predict: {
+      question: "Tienes una imagen cuadrada de 100px. ¿Qué valor la vuelve un círculo?",
+      options: [
+        {
+          label: "border-radius: 50%",
+          correct: true,
+          why: "Cada esquina se redondea la mitad del lado, y las curvas se juntan formando un círculo.",
+        },
+        {
+          label: "border-radius: 10%",
+          correct: false,
+          why: "Solo suaviza un poco las esquinas: sigue pareciendo un cuadrado.",
+        },
+        {
+          label: "border-radius: 5px",
+          correct: false,
+          why: "5px apenas redondea las puntas de un cuadrado de 100px.",
+        },
+      ],
+    },
+    mdn: {
+      label: "MDN: border-radius",
+      url: "https://developer.mozilla.org/es/docs/Web/CSS/Reference/Properties/border-radius",
+    },
+  },
+
+  // -------------------------------------------------------------------------
+  // css-04: typography
+  // -------------------------------------------------------------------------
+  {
+    id: "css-font-family",
+    worldId: "css-basics",
+    kind: "property",
+    title: "font-family",
+    tagline: "Elige la fuente (la tipografía) del texto.",
+    explain:
+      "font-family recibe una lista de fuentes separadas por comas, de la preferida a la de respaldo. El navegador usa la primera que tenga instalada. Al final va siempre una familia genérica, como serif (letras con remates) o sans-serif (sin remates), que existe en todos los dispositivos.",
+    use: [
+      "Dar personalidad a un título o a todo un texto.",
+      "Una fuente serif para un cuento largo, una sans-serif para botones y menús.",
+      "Si el nombre lleva espacios, escríbelo entre comillas: \"Courier New\".",
+    ],
+    avoid: [
+      "Poner una sola fuente sin respaldo: si no está instalada, el navegador usa la suya por defecto.",
+      "Poner comillas a la genérica: \"serif\" entre comillas se busca como una fuente llamada así y deja de ser el respaldo.",
+    ],
+    example: {
+      html: `<p class="bitacora">Bitácora del faro: noche tranquila, mar en calma, tres barcos a la vista.</p>
+`,
+      css: `.bitacora {
+  font-family: "Courier New", monospace;
+}
+`,
+    },
+    exampleNote:
+      "\"Courier New\" es la preferida; monospace, la genérica de respaldo si no está instalada.",
+    predict: {
+      question: "Si el dispositivo no tiene Courier New, ¿qué fuente se usa?",
+      options: [
+        {
+          label: "Una fuente monoespaciada cualquiera, la genérica monospace",
+          correct: true,
+          why: "El navegador recorre la lista de izquierda a derecha y usa la primera que tiene. La genérica siempre existe.",
+        },
+        {
+          label: "Ninguna: el texto no se ve",
+          correct: false,
+          why: "El texto siempre se muestra; como mucho, con otra fuente.",
+        },
+        {
+          label: "Courier New igualmente: el navegador la descarga",
+          correct: false,
+          why: "font-family no descarga nada; solo elige entre las fuentes que ya hay en el dispositivo.",
+        },
+      ],
+    },
+    mdn: {
+      label: "MDN: font-family",
+      url: "https://developer.mozilla.org/es/docs/Web/CSS/Reference/Properties/font-family",
+    },
+  },
+  {
+    id: "css-font-size-rem",
+    worldId: "css-basics",
+    kind: "property",
+    title: "font-size y rem",
+    tagline: "Cambia el tamaño de la letra; en rem, respeta a quien lee.",
+    explain:
+      "font-size fija el tamaño de la letra. 1rem es el tamaño base que cada persona tiene en su navegador (16px si nunca lo tocó), así que 1.25rem son 20px. Si alguien con baja visión sube su tamaño base, todo lo que mediste en rem crece con él; lo que mediste en px se queda igual.",
+    use: [
+      "Mide el texto en rem para que crezca con los ajustes de cada persona.",
+      "Unos 1rem para texto normal, 1.25rem para lecturas largas, de 1.5rem a 2rem para títulos.",
+    ],
+    avoid: [
+      "Fijar el texto en px: ignora a quien agrandó la letra del navegador.",
+      "Bajar de 1rem en textos largos: 12px se lee con lupa.",
+    ],
+    example: {
+      html: `<p class="chica">Con 0.75rem hay que entornar los ojos.</p>
+<p class="comoda">Con 1.25rem se lee sin esfuerzo.</p>
+`,
+      css: `.chica {
+  font-size: 0.75rem;
+}
+
+.comoda {
+  font-size: 1.25rem;
+}
+`,
+    },
+    exampleNote: "Con el tamaño base de 16px, 0.75rem son 12px y 1.25rem son 20px.",
+    predict: {
+      question: "Una persona sube el tamaño base de su navegador a 20px. ¿Cuánto mide ahora el texto .comoda?",
+      options: [
+        {
+          label: "25px",
+          correct: true,
+          why: "1.25rem es 1.25 veces el tamaño base: 1.25 por 20 da 25px. Creció con su ajuste.",
+        },
+        {
+          label: "20px, igual que antes",
+          correct: false,
+          why: "Eso pasaría con font-size: 20px. En rem, el tamaño sigue a la base de cada persona.",
+        },
+      ],
+    },
+    mdn: {
+      label: "MDN: font-size",
+      url: "https://developer.mozilla.org/es/docs/Web/CSS/Reference/Properties/font-size",
+    },
+  },
+  {
+    id: "css-line-height",
+    worldId: "css-basics",
+    kind: "property",
+    title: "line-height",
+    tagline: "Controla el espacio entre las líneas de un texto.",
+    explain:
+      "line-height marca la altura de cada línea. Escrito como número sin unidad (1.6), multiplica el tamaño de la letra: con letra de 20px, cada línea mide 32px. Las líneas apretadas cansan la vista; entre 1.4 y 1.8 el texto respira.",
+    use: [
+      "Párrafos largos: 1.5 o 1.6 hace la lectura más cómoda.",
+      "Títulos de varias líneas: algo menos, como 1.2, para que no se separen de más.",
+    ],
+    avoid: [
+      "line-height: 1 en párrafos: las líneas casi se tocan.",
+      "Darle unidad (24px): si luego agrandas la letra, el interlineado no crece con ella y las líneas se pisan.",
+    ],
+    example: {
+      html: `<p class="apretado">Cada noche Lumi sube los escalones del faro, limpia el cristal y enciende la luz para los barcos.</p>
+<p class="aireado">Cada noche Lumi sube los escalones del faro, limpia el cristal y enciende la luz para los barcos.</p>
+`,
+      css: `.apretado {
+  line-height: 1;
+}
+
+.aireado {
+  line-height: 1.6;
+}
+`,
+    },
+    exampleNote: "El mismo texto: con line-height 1.6 las líneas se separan y se leen mejor.",
+    predict: {
+      question: "Con font-size de 20px y line-height: 1.5, ¿cuánto mide cada línea?",
+      options: [
+        {
+          label: "30px",
+          correct: true,
+          why: "Un número sin unidad multiplica el tamaño de la letra: 20 por 1.5 da 30px.",
+        },
+        {
+          label: "21.5px",
+          correct: false,
+          why: "No se suma al tamaño de la letra: lo multiplica.",
+        },
+        {
+          label: "1.5px",
+          correct: false,
+          why: "Sin unidad no son píxeles, sino veces el tamaño de la letra.",
+        },
+      ],
+    },
+    mdn: {
+      label: "MDN: line-height",
+      url: "https://developer.mozilla.org/es/docs/Web/CSS/Reference/Properties/line-height",
+    },
+  },
 ];
