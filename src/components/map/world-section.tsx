@@ -48,7 +48,7 @@ export function WorldSection({ world, index, levels, currentId, openId, setOpenI
           </div>
         </div>
         <div className="mt-3 text-center">
-          <p className="font-display text-sm uppercase tracking-[0.2em] text-foam/90">
+          <p className="inline-block rounded-full border-2 border-ink bg-ocean-deep px-3 py-0.5 font-display text-sm uppercase tracking-[0.18em] text-foam">
             Mundo {index + 1} · {world.subtitle}
           </p>
           <h2 id={headingId} className="font-display text-4xl tracking-wide text-foam text-stroke md:text-5xl">

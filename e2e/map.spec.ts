@@ -1,3 +1,4 @@
+import path from "node:path";
 import { type Page, expect, test } from "@playwright/test";
 
 const KEY = "shipnlearn-progress";
@@ -135,4 +136,31 @@ test("the M key toggles mute on the map", async ({ page }) => {
   await expect(page.getByRole("button", { name: "Silenciar sonido" })).toBeVisible();
   await page.keyboard.press("m");
   await expect(page.getByRole("button", { name: "Activar sonido" })).toBeVisible();
+});
+
+type AxeResult = { violations: { id: string; impact: string | null }[] };
+
+test("map and settings have no serious axe violations", async ({ page }) => {
+  await seed(page, {
+    levels: { [FIRST]: { stars: 2, completedAt: 1 } },
+    xp: 20,
+    reviews: [{ levelId: FIRST, dueAt: 0 }],
+    settings,
+    seenIntro: true,
+  });
+  await page.goto("/");
+  await page.getByRole("button", { name: /^Nivel 1:/ }).first().click();
+  await page.addScriptTag({ path: path.join(process.cwd(), "node_modules/axe-core/axe.min.js") });
+  const run = () =>
+    page.evaluate(async () => {
+      const axe = (window as unknown as { axe: { run: (c: Document) => Promise<AxeResult> } }).axe;
+      const r = await axe.run(document);
+      return r.violations
+        .filter((v) => v.impact === "serious" || v.impact === "critical")
+        .map((v) => v.id);
+    });
+  expect(await run()).toEqual([]);
+  await page.getByRole("button", { name: "Ajustes" }).click();
+  await expect(page.getByRole("dialog", { name: "Ajustes" })).toBeVisible();
+  expect(await run()).toEqual([]);
 });

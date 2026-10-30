@@ -137,7 +137,7 @@ export function Hud() {
               >
                 <div className="h-1/3 bg-foam/40" />
               </div>
-              <span className="absolute inset-0 flex items-center justify-center pl-2 font-display text-sm tracking-wide text-foam text-stroke [-webkit-text-stroke-width:3px]">
+              <span className="absolute inset-0 flex items-center justify-center pl-2 font-display text-sm tracking-wide text-foam [text-shadow:0_1.5px_0_var(--color-ink),0_-1.5px_0_var(--color-ink),1.5px_0_0_var(--color-ink),-1.5px_0_0_var(--color-ink)]">
                 {into}/{XP_PER_RANK} XP
               </span>
             </div>
