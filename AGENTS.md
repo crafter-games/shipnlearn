@@ -33,5 +33,6 @@ Gamified web to learn HTML and CSS by building. Design source of truth: `GDD.md`
 - UI copy in Spanish, code and comments in English.
 - Mobile first and desktop first: verify at 390px and 1280px.
 - Respect `prefers-reduced-motion`. Errors never rely on colour alone.
+- No emojis or Unicode symbols as icons, anywhere (UI, NPCs, level content): use custom SVGs (`src/components/icons/`, `src/components/characters/`).
 - Feedback explains WHY (`Check.explain`), never just "wrong". No punishment for failing.
 - Atomic commits with conventional messages (`feat(engine): …`). One concern per commit.
