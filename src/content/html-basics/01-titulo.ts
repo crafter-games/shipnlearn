@@ -51,5 +51,5 @@ export const titulo: Level = {
       url: "https://developer.mozilla.org/es/docs/Learn_web_development/Core/Structuring_content/Headings_and_paragraphs",
     },
   ],
-  cards: ["html-elemento", "html-h1"],
+  cards: ["web-que-es", "html-que-es", "html-elemento", "html-h1"],
 };

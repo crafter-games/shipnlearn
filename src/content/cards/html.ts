@@ -12,6 +12,94 @@ const LIGHTHOUSE_SRC = svgUri(`<svg xmlns="http://www.w3.org/2000/svg" width="16
 /** Concept cards for Isla Marcado (HTML fundamental), in teaching order. */
 export const htmlCards: ConceptCard[] = [
   {
+    id: "web-que-es",
+    worldId: "html-basics",
+    kind: "concept",
+    title: "Una página web",
+    tagline: "Un archivo de texto que el navegador convierte en lo que ves.",
+    explain:
+      "Toda página web empieza siendo texto escrito por una persona: el código. Cuando abres una web, tu navegador (Chrome, Safari, Firefox…) descarga ese texto, lo lee y lo dibuja en pantalla con sus títulos, párrafos, imágenes y colores. En este juego tú escribes el código y ves al momento lo que dibuja el navegador.",
+    use: [
+      "Escribe el código en el editor: es el texto que leerá el navegador.",
+      "Mira la vista «Tu web»: es lo que dibuja el navegador con tu código.",
+      "Si algo no se ve como esperas, el problema está en el código: cámbialo y vuelve a mirar.",
+    ],
+    avoid: [
+      "Pensar que la página se dibuja a mano: el navegador la construye leyendo el código, letra a letra.",
+    ],
+    example: {
+      html: "<h1>Panadería de la isla</h1>\n<p>Pan recién hecho cada mañana.</p>\n",
+    },
+    exampleNote:
+      "A la izquierda, el código tal y como lo escribe una persona; a la derecha, la página que dibuja el navegador al leerlo.",
+    predict: {
+      question: "Cuando abres una web en el móvil, ¿quién convierte el código en la página que ves?",
+      options: [
+        {
+          label: "El navegador",
+          correct: true,
+          why: "Exacto: el navegador lee el código y dibuja la página. Por eso la misma web se ve en cualquier móvil u ordenador.",
+        },
+        {
+          label: "La persona que hizo la web, a mano, cada vez",
+          correct: false,
+          why: "Esa persona solo escribe el código una vez; el navegador de cada visitante lo convierte en página.",
+        },
+        {
+          label: "Nadie: el código ya es la imagen que ves",
+          correct: false,
+          why: "El código es texto. Necesita que el navegador lo lea para convertirse en títulos, párrafos e imágenes.",
+        },
+      ],
+    },
+    mdn: {
+      label: "MDN: Cómo funciona la web",
+      url: "https://developer.mozilla.org/es/docs/Learn_web_development/Getting_started/Web_standards/How_the_web_works",
+    },
+  },
+  {
+    id: "html-que-es",
+    worldId: "html-basics",
+    kind: "concept",
+    title: "HTML",
+    tagline: "El idioma que le dice al navegador qué es cada parte de la página.",
+    explain:
+      "HTML es el primer idioma de toda web. No hace cuentas ni toma decisiones: marca el texto para decir qué es cada trozo. Es como subrayar un folleto con rotuladores: esto es el título, esto un párrafo, esto una lista. Esas marcas se llaman etiquetas y van entre los signos < y >.",
+    use: [
+      "Úsalo para dar estructura a todo el contenido: títulos, textos, listas, enlaces, imágenes.",
+      "Elige cada etiqueta por lo que el contenido es, no por cómo quieres que se vea.",
+      "Más adelante, CSS se encargará de los colores y el diseño.",
+    ],
+    avoid: [
+      "Escribir texto sin etiquetas y esperar que el navegador adivine qué es un título.",
+      "Confundir HTML con diseño: el aspecto se cambia con CSS, en la siguiente isla.",
+    ],
+    example: {
+      html: "Panadería\n<h1>Panadería</h1>\n<p>Abrimos a las 7.</p>\n",
+    },
+    exampleNote:
+      "La primera «Panadería» no lleva etiquetas y queda como texto suelto; la segunda va dentro de <h1> y el navegador la trata como título.",
+    predict: {
+      question: "Si escribes solo «Panadería», sin etiquetas, ¿sabe el navegador que es el título de la página?",
+      options: [
+        {
+          label: "No: hay que marcarlo, por ejemplo con <h1>",
+          correct: true,
+          why: "Sin etiquetas, para el navegador es texto suelto. La etiqueta es lo que le dice «esto es un título».",
+        },
+        {
+          label: "Sí, porque es la primera palabra",
+          correct: false,
+          why: "El navegador no adivina por la posición: solo sabe qué es cada cosa por sus etiquetas.",
+        },
+      ],
+    },
+    mdn: {
+      label: "MDN: HTML",
+      url: "https://developer.mozilla.org/es/docs/Web/HTML",
+    },
+  },
+  {
     id: "html-elemento",
     worldId: "html-basics",
     kind: "concept",

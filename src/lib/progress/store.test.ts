@@ -25,7 +25,7 @@ describe("progress store", () => {
 
   it("unlocks the cards of levels beaten before cards existed (v2 → v3)", () => {
     const v2 = { levels: { "html-01-titulo": { stars: 1, completedAt: 1 } }, seenIntro: true };
-    expect(migrateProgress(v2, 2).seenCards).toEqual(["html-elemento", "html-h1"]);
+    expect(migrateProgress(v2, 2).seenCards).toEqual(["web-que-es", "html-que-es", "html-elemento", "html-h1"]);
     expect(migrateProgress({ ...v2, seenCards: ["x"] }, 3).seenCards).toEqual(["x"]);
   });
 
