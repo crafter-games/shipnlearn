@@ -1,7 +1,8 @@
 /**
  * Synthesized SFX (no samples). Only loaded together with the engine chunk.
- * Levels are per-voice trims in dB into the SFX bus (-4 dB trim + slider);
- * a single SFX peaks around -16..-30 dBFS so nothing pokes over the music.
+ * Levels are per-voice trims in dB into the SFX bus (+4 dB trim + slider);
+ * with the +4 dB SFX bus trim a single SFX peaks around -11..-19 dBFS at the
+ * default slider: above the music bed (~ -21 dBFS RMS) without clipping.
  */
 import * as Tone from "tone";
 import type { Sfx } from "./index";
@@ -64,7 +65,7 @@ export function createSfxKit(out: Tone.ToneAudioNode): SfxKit {
     }).connect(errLp),
   );
 
-  // star: FM bell with a long, shimmering tail.
+  // star: FM bell with a long, shimmering tail. +6 dB so it rings over the music loops.
   const bell = keep(
     new Tone.PolySynth(Tone.FMSynth, {
       harmonicity: 3.5,
@@ -73,7 +74,7 @@ export function createSfxKit(out: Tone.ToneAudioNode): SfxKit {
       modulation: { type: "sine" },
       envelope: { attack: 0.001, decay: 1.2, sustain: 0, release: 1.2 },
       modulationEnvelope: { attack: 0.001, decay: 0.4, sustain: 0, release: 0.4 },
-      volume: -16,
+      volume: -10,
     }).connect(out),
   );
 

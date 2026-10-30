@@ -2,50 +2,57 @@
  * ShipNLearn audio engine (Tone.js). Loaded lazily by `./index` on the first
  * user gesture, so `tone` never ships in the initial bundle or runs on the server.
  *
- * DESIGN
- * - Tempo/key: 110 BPM, 4/4, C major. Instrumental, no voices (lyrics hurt
- *   reading/writing). Lo-fi tropical / soft chiptune palette.
- * - Form (horizontal re-sequencing): 8-bar sections A B A C = 32 bars (~70 s),
- *   then loops with seeded variation (rests, neighbour tones, velocity).
- *     A: C Am F G C Am F G · B: F G Em Am F G C C · C: Am F C G Am F Dm G
- * - Layers (vertical): pad (fat-triangle triad, slow attack, LP 1.6 kHz),
- *   bass (round triangle MonoSynth, 3 notes/bar), drums (soft kick, offbeat
- *   shaker, pink-noise rim), lead (FM marimba + light dotted-8th delay).
- * - Scenes (dB per layer, plus whole-bed offset):
- *     map       bed 0   | pad 0, bass 0,  drums 0,    lead 0      (full, energetic)
- *     editor    bed -15 | pad 0, bass -4, drums -inf, lead -inf   (calm, still)
- *     celebrate bed 0   | pad 0, bass 0,  drums 0,    lead -6     + 2-bar stinger,
- *               then returns on its own to the previous scene.
- *   Changes apply on the next downbeat and crossfade over one bar.
- * - Buses: Master(Volume, mute) -> Limiter(-1 dBFS) -> out.
- *   Music trim -6 dB, SFX trim -4 dB, each + linearToDb(slider). Voice trims
- *   (pad -22 per voice, bass -12, kick -12, lead -14 ...) put the summed bed
- *   peaks around -6 dBFS pre-bus, ~-16 dBFS at default settings on the map
- *   and ~-33 dBFS in the editor; single SFX peak ~-16..-30 dBFS.
+ * MUSIC: CC0 chiptune loops from /public/audio (see CREDITS.md and ./tracks).
+ *   map    -> "Stage Select"      editor -> "Stage 1" (HTML) / "Stage 2" (CSS)
+ *   celebrate -> a short victory jingle over the ducked loop, then back.
+ * Graph:
+ *   player[track] -> fade[track] -+-> lowpass -> shape(Volume) -> duck(Volume) -> music bus
+ *   jingle player ---------------------------------------------------------------> music bus
+ *   synthesized SFX (./sfx) ------------------------------------------------------> sfx bus
+ *   music bus + sfx bus -> master (mute) -> limiter (-1 dBFS) -> out
+ * Scene changes crossfade (equal power, CROSSFADE_S); intensity glides the
+ * low-pass and gain (INTENSITY_RAMP_S). Files load in the background, the
+ * current scene's track first; SFX work immediately.
  */
 import * as Tone from "tone";
-import type { MusicScene, Sfx } from "./index";
-import { planBar, planStinger, type NoteEvent } from "./composition";
-import { activeLayers, busLevels, LAYERS, LIMITER_THRESHOLD_DB, safeDb, SCENE_MIX, SETTINGS_RAMP_S, type Layer, type Settings } from "./mix";
-import type { SceneDirector } from "./scene";
+import type { Sfx } from "./index";
+import {
+  busLevels,
+  CROSSFADE_S,
+  DUCK_ATTACK_S,
+  DUCK_DB,
+  DUCK_RELEASE_S,
+  equalPowerCurve,
+  INTENSITY_RAMP_S,
+  LIMITER_THRESHOLD_DB,
+  SETTINGS_RAMP_S,
+  type Settings,
+} from "./mix";
+import type { MusicTarget, SceneDirector } from "./scene";
 import { createSfxKit } from "./sfx";
-import { midiToHz, sfxStartTime } from "./sfx-plan";
-import { BPM, SECONDS_PER_BAR, SECONDS_PER_BEAT } from "./timing";
+import { sfxStartTime } from "./sfx-plan";
+import { firstSound, JINGLES, type JingleId, loadOrder, loopPoints, loopSeconds, type TrackId, TRACKS } from "./tracks";
 
 export type Engine = {
   applySettings(s: Settings): void;
   playSfx(name: Sfx, step: number): void;
-  readonly scene: MusicScene;
+  /** Re-render the director's target; `jingle` starts a celebration. */
+  sync(jingle?: JingleId | null): void;
+  /** Tracks whose audio finished loading (for the lab and tests). */
+  readonly loaded: readonly string[];
   dispose(): void;
 };
 
 type Deps = { director: SceneDirector; settings: () => Settings };
 
-const S16 = SECONDS_PER_BEAT / 4;
+/** Gap after a jingle before the loop comes back up. */
+const JINGLE_TAIL_S = 0.15;
 
 export async function createEngine(raw: AudioContext | null, deps: Deps): Promise<Engine> {
   if (raw) Tone.setContext(raw);
   await Tone.start();
+  const { director } = deps;
+  director.settle();
 
   // ---- Buses -------------------------------------------------------------
   const levels = busLevels(deps.settings());
@@ -54,140 +61,153 @@ export async function createEngine(raw: AudioContext | null, deps: Deps): Promis
   const musicBus = new Tone.Volume(levels.music).connect(master);
   const sfxBus = new Tone.Volume(levels.sfx).connect(master);
 
-  const reverb = new Tone.Reverb({ decay: 2.8, wet: 0.18 }).connect(musicBus);
-  const bed = new Tone.Volume(0).connect(reverb); // scene offset
-  const layer = {} as Record<Layer, Tone.Volume>;
-  for (const l of LAYERS) layer[l] = new Tone.Volume(0).connect(bed);
+  // ---- Music chain -------------------------------------------------------
+  const first = director.resolve();
+  const duck = new Tone.Volume(0).connect(musicBus);
+  const shape = new Tone.Volume(first.sceneDb + first.gainDb).connect(duck);
+  const lowpass = new Tone.Filter({ type: "lowpass", frequency: first.cutoffHz, Q: 0.5, rolloff: -12 }).connect(shape);
 
-  // ---- Instruments -------------------------------------------------------
-  const padLp = new Tone.Filter(1600, "lowpass").connect(layer.pad);
-  const pad = new Tone.PolySynth(Tone.Synth, {
-    oscillator: { type: "fattriangle", count: 3, spread: 18 },
-    envelope: { attack: 0.6, decay: 0.4, sustain: 0.7, release: 1.6 },
-    volume: -22,
-  }).connect(padLp);
+  type Voice = { player: Tone.Player; fade: Tone.Gain; ready: boolean; stopTimer: number | null };
+  const voices = {} as Record<TrackId, Voice>;
+  for (const id of Object.keys(TRACKS) as TrackId[]) {
+    const fade = new Tone.Gain(0).connect(lowpass);
+    const player = new Tone.Player({ loop: true, fadeIn: 0.005, fadeOut: 0.05, volume: TRACKS[id].gainDb }).connect(fade);
+    voices[id] = { player, fade, ready: false, stopTimer: null };
+  }
 
-  const bass = new Tone.MonoSynth({
-    oscillator: { type: "triangle" },
-    filter: { type: "lowpass", Q: 1 },
-    filterEnvelope: { attack: 0.005, decay: 0.2, sustain: 0.4, release: 0.4, baseFrequency: 180, octaves: 2 },
-    envelope: { attack: 0.01, decay: 0.3, sustain: 0.6, release: 0.4 },
-    volume: -12,
-  }).connect(layer.bass);
-
-  const kick = new Tone.MembraneSynth({
-    pitchDecay: 0.03,
-    octaves: 5,
-    envelope: { attack: 0.001, decay: 0.25, sustain: 0, release: 0.1 },
-    volume: -12,
-  }).connect(layer.drums);
-  const shakerHp = new Tone.Filter(7000, "highpass").connect(layer.drums);
-  const shaker = new Tone.NoiseSynth({
-    noise: { type: "white" },
-    envelope: { attack: 0.002, decay: 0.05, sustain: 0, release: 0.02 },
-    volume: -28,
-  }).connect(shakerHp);
-  const rimBp = new Tone.Filter({ type: "bandpass", frequency: 1900, Q: 1.5 }).connect(layer.drums);
-  const rim = new Tone.NoiseSynth({
-    noise: { type: "pink" },
-    envelope: { attack: 0.001, decay: 0.07, sustain: 0, release: 0.03 },
-    volume: -20,
-  }).connect(rimBp);
-
-  const leadDelay = new Tone.FeedbackDelay({ delayTime: "8n.", feedback: 0.2, wet: 0.15 }).connect(layer.lead);
-  const lead = new Tone.PolySynth(Tone.FMSynth, {
-    harmonicity: 4,
-    modulationIndex: 1.5,
-    oscillator: { type: "sine" },
-    modulation: { type: "sine" },
-    envelope: { attack: 0.002, decay: 0.5, sustain: 0, release: 0.3 },
-    modulationEnvelope: { attack: 0.002, decay: 0.08, sustain: 0, release: 0.1 },
-    volume: -14,
-  }).connect(leadDelay);
-
-  // Stinger bypasses the scene offset so it always reads clearly.
-  const stingerLp = new Tone.Filter(3500, "lowpass").connect(musicBus);
-  const stinger = new Tone.PolySynth(Tone.Synth, {
-    oscillator: { type: "square8" },
-    envelope: { attack: 0.005, decay: 0.2, sustain: 0.4, release: 0.4 },
-    volume: -18,
-  }).connect(stingerLp);
+  const jingleOut = new Tone.Volume(0).connect(musicBus);
+  const jingles = {} as Record<JingleId, Tone.Player | null>;
+  for (const id of Object.keys(JINGLES) as JingleId[]) jingles[id] = null;
 
   const sfx = createSfxKit(sfxBus);
+  const loaded: string[] = [];
+  const timers = new Set<number>();
+  let disposed = false;
+  let current: TrackId | null = null;
+  let applied: MusicTarget = first;
+  let jingleTimer: number | null = null;
 
-  // ---- Scene mix ---------------------------------------------------------
-  const setMix = (scene: MusicScene, time?: number) => {
-    const mix = SCENE_MIX[scene];
-    if (time === undefined) {
-      bed.volume.value = safeDb(mix.scene);
-      for (const l of LAYERS) layer[l].volume.value = safeDb(mix.layers[l]);
-      return;
-    }
-    bed.volume.rampTo(safeDb(mix.scene), SECONDS_PER_BAR, time);
-    for (const l of LAYERS) layer[l].volume.rampTo(safeDb(mix.layers[l]), SECONDS_PER_BAR, time);
+  const later = (fn: () => void, seconds: number) => {
+    const id = window.setTimeout(() => {
+      timers.delete(id);
+      if (!disposed) fn();
+    }, seconds * 1000);
+    timers.add(id);
+    return id;
+  };
+  const cancel = (id: number | null) => {
+    if (id === null) return;
+    window.clearTimeout(id);
+    timers.delete(id);
   };
 
-  const director = deps.director;
-  setMix(director.settle());
-  let audible = new Set<Layer>(activeLayers(director.current));
+  /** Equal-power fade of one track's gain from wherever it is now. */
+  const fadeTo = (v: Voice, to: number, seconds: number) => {
+    const now = Tone.now();
+    const from = v.fade.gain.getValueAtTime(now);
+    v.fade.gain.cancelAndHoldAtTime(now);
+    v.fade.gain.setValueCurveAtTime(Array.from(equalPowerCurve(from, to)), now, seconds);
+  };
 
-  // ---- Sequencer: one callback per bar schedules the whole bar ------------
-  const transport = Tone.getTransport();
-  transport.bpm.value = BPM;
-  transport.timeSignature = 4;
-  let formBar = 0;
-  let salt = 0;
+  const startVoice = (id: TrackId) => {
+    const v = voices[id];
+    cancel(v.stopTimer);
+    v.stopTimer = null;
+    if (!v.ready || v.player.state === "started") return;
+    v.player.start(Tone.now() + 0.02, v.player.loopStart);
+  };
 
-  const notes = (ev: NoteEvent) => ev.notes.map(midiToHz);
-  const at = (time: number, step: number) => time + step * S16;
+  const switchTrack = (to: TrackId) => {
+    if (current === to) return;
+    const from = current;
+    current = to;
+    if (from) {
+      const old = voices[from];
+      fadeTo(old, 0, CROSSFADE_S);
+      cancel(old.stopTimer);
+      old.stopTimer = later(() => {
+        old.stopTimer = null;
+        if (current !== from) old.player.stop();
+      }, CROSSFADE_S + 0.1);
+    }
+    startVoice(to);
+    if (voices[to].ready) fadeTo(voices[to], 1, from ? CROSSFADE_S : 0.4);
+  };
 
-  const barId = transport.scheduleRepeat((time) => {
-    const decision = director.onBar();
-    const fadingFrom = audible;
-    if (decision.stinger) {
-      formBar = 0; // land the stinger on section A, bar 0 (I chord)
-      salt++;
-      for (const ev of planStinger()) {
-        stinger.triggerAttackRelease(notes(ev), ev.durSteps * S16, at(time, ev.step), ev.velocity);
+  const render = (target: MusicTarget) => {
+    switchTrack(target.track);
+    lowpass.frequency.rampTo(target.cutoffHz, INTENSITY_RAMP_S);
+    shape.volume.rampTo(target.sceneDb + target.gainDb, INTENSITY_RAMP_S);
+    if (target.ducked !== applied.ducked) {
+      duck.volume.rampTo(target.ducked ? DUCK_DB : 0, target.ducked ? DUCK_ATTACK_S : DUCK_RELEASE_S);
+    }
+    applied = target;
+  };
+
+  const playJingle = (id: JingleId) => {
+    cancel(jingleTimer);
+    const player = jingles[id];
+    const endCelebration = () => {
+      jingleTimer = null;
+      if (director.jingleEnded()) render(director.resolve());
+    };
+    if (!player || deps.settings().muted) {
+      jingleTimer = later(endCelebration, 0.3);
+      return;
+    }
+    const t = Tone.now() + DUCK_ATTACK_S;
+    player.start(t);
+    jingleTimer = later(endCelebration, DUCK_ATTACK_S + player.buffer.duration + JINGLE_TAIL_S);
+  };
+
+  // ---- Loading (background, current track first) -------------------------
+  const loadTrack = async (id: TrackId) => {
+    const buf = await new Tone.ToneAudioBuffer().load(TRACKS[id].url);
+    if (disposed) return;
+    const v = voices[id];
+    const lead = firstSound(buf.getChannelData(0), buf.sampleRate);
+    const { start, end } = loopPoints(buf.duration, lead, loopSeconds(TRACKS[id]));
+    v.player.buffer = buf;
+    v.player.setLoopPoints(start, end);
+    v.ready = true;
+    loaded.push(id);
+    if (current === id) {
+      startVoice(id);
+      fadeTo(v, 1, 0.4);
+    }
+  };
+  const loadJingle = async (id: JingleId) => {
+    const buf = await new Tone.ToneAudioBuffer().load(JINGLES[id].url);
+    if (disposed) return;
+    jingles[id] = new Tone.Player(buf).connect(jingleOut);
+    loaded.push(`jingle:${id}`);
+  };
+  void (async () => {
+    for (const id of loadOrder(first.track)) {
+      try {
+        await loadTrack(id);
+      } catch (err) {
+        console.warn(`[audio] could not load ${id}`, err);
+      }
+      if (id === first.track) {
+        for (const j of Object.keys(JINGLES) as JingleId[]) loadJingle(j).catch((err) => console.warn(`[audio] could not load jingle ${j}`, err));
       }
     }
-    if (decision.apply) setMix(decision.apply, time);
-    audible = new Set(activeLayers(director.current));
-    // During a crossfade, keep playing layers that are fading out.
-    const play = new Set<Layer>([...audible, ...(decision.apply ? fadingFrom : [])]);
+  })();
 
-    const plan = planBar(formBar++, salt);
-    if (play.has("pad")) for (const ev of plan.pad) pad.triggerAttackRelease(notes(ev), ev.durSteps * S16, at(time, ev.step), ev.velocity);
-    if (play.has("bass")) for (const ev of plan.bass) bass.triggerAttackRelease(notes(ev)[0], ev.durSteps * S16, at(time, ev.step), ev.velocity);
-    if (play.has("lead")) for (const ev of plan.lead) lead.triggerAttackRelease(notes(ev), ev.durSteps * S16, at(time, ev.step), ev.velocity);
-    if (play.has("drums")) {
-      for (const hit of plan.drums) {
-        const t = at(time, hit.step);
-        if (hit.voice === "kick") kick.triggerAttackRelease(65.4, S16, t, hit.velocity);
-        else if (hit.voice === "shaker") shaker.triggerAttackRelease(S16 / 2, t, hit.velocity);
-        else rim.triggerAttackRelease(S16 / 2, t, hit.velocity);
-      }
-    }
-  }, "1m", 0);
+  render(first);
 
-  // ---- Visibility: pause the music while the tab is hidden ---------------
+  // ---- Visibility: silence the context while the tab is hidden -----------
+  const ctx = Tone.getContext().rawContext as AudioContext;
   const onVisibility = () => {
-    if (document.hidden) {
-      if (transport.state === "started") transport.pause();
-      pad.releaseAll();
-      lead.releaseAll();
-      stinger.releaseAll();
-    } else if (transport.state !== "started") {
-      transport.start("+0.05");
-    }
+    if (document.hidden) void ctx.suspend?.().catch(() => {});
+    else void ctx.resume?.().catch(() => {});
   };
   document.addEventListener("visibilitychange", onVisibility);
 
-  if (!document.hidden) transport.start("+0.05");
-
   return {
-    get scene() {
-      return director.current;
+    get loaded() {
+      return loaded;
     },
     applySettings(s) {
       const lv = busLevels(s);
@@ -198,20 +218,24 @@ export async function createEngine(raw: AudioContext | null, deps: Deps): Promis
     playSfx(name, step) {
       if (deps.settings().muted) return;
       const now = Tone.now();
-      const running = transport.state === "started";
-      const t = sfxStartTime(name, step, {
-        now,
-        musicRunning: running,
-        nextEighth: running ? transport.nextSubdivision("8n") : now,
-      });
-      sfx.play(name, step, t);
+      sfx.play(name, step, sfxStartTime(name, step, { now, musicRunning: false, nextEighth: now }));
+    },
+    sync(jingle) {
+      render(director.resolve());
+      if (jingle) playJingle(jingle);
     },
     dispose() {
+      disposed = true;
       document.removeEventListener("visibilitychange", onVisibility);
-      transport.clear(barId);
-      transport.stop();
+      for (const id of timers) window.clearTimeout(id);
+      timers.clear();
       sfx.dispose();
-      for (const n of [pad, bass, kick, shaker, rim, lead, stinger, padLp, shakerHp, rimBp, leadDelay, stingerLp, bed, reverb, musicBus, sfxBus, master, limiter, ...Object.values(layer)]) n.dispose();
+      for (const v of Object.values(voices)) {
+        v.player.dispose();
+        v.fade.dispose();
+      }
+      for (const p of Object.values(jingles)) p?.dispose();
+      for (const n of [lowpass, shape, duck, jingleOut, musicBus, sfxBus, master, limiter]) n.dispose();
     },
   };
 }

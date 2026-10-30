@@ -1,19 +1,20 @@
 /**
  * Audio contract. Every caller uses only these functions, so the engine
- * behind them (Tone.js, adaptive layers, beat sync) can change freely.
+ * behind them (Tone.js, CC0 music loops, synthesized SFX) can change freely.
  *
- * This module is server-safe and tiny: it only keeps state (settings, scene).
- * The Tone.js engine (`./engine`) is imported dynamically on `unlockAudio()`.
- * Before unlocking, `setScene` and `applySettings` just record state and
- * `playSfx` is a silent no-op.
+ * This module is server-safe and tiny: it only keeps state (settings, scene,
+ * world, intensity). The Tone.js engine (`./engine`) is imported dynamically
+ * on `unlockAudio()`. Before unlocking, `setScene`, `setWorld`, `setIntensity`
+ * and `applySettings` just record state and `playSfx` is a silent no-op.
  */
 import type { Engine } from "./engine";
-import type { Settings } from "./mix";
+import { clamp01, type Settings } from "./mix";
 import { SceneDirector } from "./scene";
 import { KEY_THROTTLE_MS } from "./sfx-plan";
 import { createThrottle } from "./timing";
+import { worldTrack } from "./tracks";
 
-/** Music state: map = full mix, editor = calm layers ducked, celebrate = full + stinger. */
+/** Music state: map = energetic loop, editor = the world's loop (shaped by intensity), celebrate = jingle over the ducked loop, then back. */
 export type MusicScene = "map" | "editor" | "celebrate";
 
 export type Sfx =
@@ -61,7 +62,24 @@ export async function unlockAudio(): Promise<void> {
 }
 
 export function setScene(scene: MusicScene): void {
-  director.request(scene);
+  const jingle = director.request(scene);
+  engine?.sync(jingle);
+}
+
+/**
+ * How far the player is through the current level, 0..1 (e.g. passed checks /
+ * total checks). In the editor the music opens up as it rises: a low-pass
+ * sweeps from ~1.2 kHz to fully open and the loop gains 2 dB. Ignored on the map.
+ */
+export function setIntensity(level: number): void {
+  director.setIntensity(level);
+  engine?.sync();
+}
+
+/** Picks the editor track for a world id (e.g. "html-basics", "css-basics"). */
+export function setWorld(worldId: string): void {
+  director.setWorld(worldTrack(worldId));
+  engine?.sync();
 }
 
 /**
@@ -89,8 +107,22 @@ export function applySettings(s: {
 }
 
 /** Snapshot for debugging UIs (e.g. the audio lab). */
-export function getAudioState(): { unlocked: boolean; scene: MusicScene; settings: Settings } {
-  return { unlocked: engine !== null, scene: director.target, settings };
+export function getAudioState(): {
+  unlocked: boolean;
+  scene: MusicScene;
+  settings: Settings;
+  intensity: number;
+  world: "html" | "css";
+  loaded: readonly string[];
+} {
+  return {
+    unlocked: engine !== null,
+    scene: director.target,
+    settings,
+    intensity: director.intensity,
+    world: director.world,
+    loaded: engine?.loaded ?? [],
+  };
 }
 
 /** Test-only: drop all state and the engine. */
@@ -101,10 +133,6 @@ export function __resetAudioForTests(): void {
   director = new SceneDirector("map");
   settings = { muted: false, musicVolume: 0.6, sfxVolume: 0.8 };
   keyGate = createThrottle(KEY_THROTTLE_MS);
-}
-
-function clamp01(v: number): number {
-  return Number.isFinite(v) ? Math.min(1, Math.max(0, v)) : 0;
 }
 
 function createRawContext(): AudioContext | null {

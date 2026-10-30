@@ -1,81 +1,72 @@
 /**
- * Pure scene state machine. Requests are queued and only take effect at the
- * next bar boundary (`onBar`), so every transition lands on the downbeat.
- * `celebrate` plays a stinger for STINGER_BARS bars and then returns on its own
- * to the last non-celebrate scene (unless something else was requested).
+ * Pure music state machine. It records what the game asked for (scene, world,
+ * intensity) and resolves it into a target the engine renders:
+ *   - which looping track plays (map track, or the world's editor track),
+ *   - how it is shaped (scene level, intensity filter + gain),
+ *   - whether it is ducked under a celebration jingle.
+ * `celebrate` keeps the current loop, ducks it under a jingle, and returns on
+ * its own when the engine reports the jingle ended (unless something else was
+ * requested meanwhile).
  */
 import type { MusicScene } from "./index";
-import { STINGER_BARS } from "./composition";
+import { clamp01, type LoopScene, musicShape, type MusicShape } from "./mix";
+import { JINGLE_ORDER, type JingleId, type TrackId, trackFor, type WorldTrack } from "./tracks";
 
-export type BarDecision = {
-  /** Scene whose mix should start ramping now (over one bar). */
-  apply: MusicScene | null;
-  /** Start the celebration stinger on this bar and jump the form to section A. */
-  stinger: boolean;
-};
+export type MusicTarget = MusicShape & { track: TrackId; ducked: boolean };
 
 export class SceneDirector {
-  /** Scene currently audible (or that will be on unlock). */
-  current: MusicScene;
-  private pending: MusicScene | null = null;
-  private returnTo: Exclude<MusicScene, "celebrate">;
-  private barsLeft = 0;
+  /** The looping scene underneath (celebrate rides on top of it). */
+  base: LoopScene;
+  world: WorldTrack = "html";
+  intensity = 0;
+  private celebrating = false;
+  private jingles = 0;
 
-  constructor(initial: Exclude<MusicScene, "celebrate"> = "map") {
-    this.current = initial;
-    this.returnTo = initial;
+  constructor(initial: LoopScene = "map") {
+    this.base = initial;
   }
 
-  /** The scene the caller last asked for (pending or current). */
+  /** The scene the caller last asked for (celebrate until the jingle ends). */
   get target(): MusicScene {
-    return this.pending ?? this.current;
+    return this.celebrating ? "celebrate" : this.base;
   }
 
-  request(scene: MusicScene): void {
-    if (scene !== "celebrate" && scene === this.current && this.barsLeft === 0) {
-      this.pending = null;
-      return;
+  /** Returns the jingle to play when the request starts a celebration. */
+  request(scene: MusicScene): JingleId | null {
+    if (scene === "celebrate") {
+      this.celebrating = true;
+      return JINGLE_ORDER[this.jingles++ % JINGLE_ORDER.length];
     }
-    this.pending = scene;
+    this.celebrating = false;
+    this.base = scene;
+    return null;
   }
 
-  /**
-   * Resolves the state instantly (used on unlock: nothing was audible yet, so
-   * no ramp and no stinger). Returns the scene to apply.
-   */
-  settle(): MusicScene {
-    const want = this.pending ?? this.current;
-    this.pending = null;
-    this.barsLeft = 0;
-    const resolved = want === "celebrate" ? this.returnTo : want;
-    this.current = resolved;
-    this.returnTo = resolved;
-    return resolved;
+  setWorld(world: WorldTrack): void {
+    this.world = world;
   }
 
-  /** Call once per bar, at the downbeat. */
-  onBar(): BarDecision {
-    if (this.pending) {
-      const next = this.pending;
-      this.pending = null;
-      if (next === "celebrate") {
-        if (this.current !== "celebrate") this.returnTo = this.current;
-        this.current = "celebrate";
-        this.barsLeft = STINGER_BARS;
-        return { apply: "celebrate", stinger: true };
-      }
-      this.barsLeft = 0;
-      this.current = next;
-      this.returnTo = next;
-      return { apply: next, stinger: false };
-    }
-    if (this.current === "celebrate" && this.barsLeft > 0) {
-      this.barsLeft--;
-      if (this.barsLeft === 0) {
-        this.current = this.returnTo;
-        return { apply: this.current, stinger: false };
-      }
-    }
-    return { apply: null, stinger: false };
+  setIntensity(level: number): void {
+    this.intensity = clamp01(level);
+  }
+
+  /** The engine calls this when the jingle finished. True if the mix should change back. */
+  jingleEnded(): boolean {
+    if (!this.celebrating) return false;
+    this.celebrating = false;
+    return true;
+  }
+
+  /** On unlock nothing was audible yet: a pending celebration is stale, drop it. */
+  settle(): void {
+    this.celebrating = false;
+  }
+
+  resolve(): MusicTarget {
+    return {
+      track: trackFor(this.base, this.world),
+      ducked: this.celebrating,
+      ...musicShape(this.base, this.intensity),
+    };
   }
 }

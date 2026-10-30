@@ -1,51 +1,69 @@
 import { describe, expect, it } from "vitest";
-import { STINGER_BARS } from "./composition";
+import { INTENSITY, SCENE_DB } from "./mix";
 import { SceneDirector } from "./scene";
+import { JINGLE_ORDER } from "./tracks";
 
 describe("SceneDirector", () => {
-  it("only switches at the next bar", () => {
+  it("maps scenes to tracks: map loop on the map, the world's loop in the editor", () => {
     const d = new SceneDirector("map");
+    expect(d.resolve().track).toBe("map");
     d.request("editor");
-    expect(d.current).toBe("map");
-    expect(d.target).toBe("editor");
-    expect(d.onBar()).toEqual({ apply: "editor", stinger: false });
-    expect(d.current).toBe("editor");
-    expect(d.onBar()).toEqual({ apply: null, stinger: false });
-  });
-
-  it("ignores requests for the scene already playing", () => {
-    const d = new SceneDirector("map");
+    expect(d.resolve().track).toBe("html");
+    d.setWorld("css");
+    expect(d.resolve().track).toBe("css");
     d.request("map");
-    expect(d.onBar().apply).toBeNull();
+    expect(d.resolve().track).toBe("map");
   });
 
-  it("celebrates for STINGER_BARS bars, then returns to the previous scene", () => {
-    const d = new SceneDirector("map");
-    d.request("editor");
-    d.onBar();
-    d.request("celebrate");
-    expect(d.onBar()).toEqual({ apply: "celebrate", stinger: true });
-    for (let i = 1; i < STINGER_BARS; i++) expect(d.onBar().apply).toBeNull();
-    expect(d.onBar()).toEqual({ apply: "editor", stinger: false });
-    expect(d.current).toBe("editor");
+  it("intensity shapes the editor only", () => {
+    const d = new SceneDirector("editor");
+    d.setIntensity(0);
+    const calm = d.resolve();
+    d.setIntensity(1);
+    const full = d.resolve();
+    expect(calm.cutoffHz).toBe(INTENSITY.minHz);
+    expect(full.cutoffHz).toBeCloseTo(INTENSITY.maxHz, 6);
+    expect(full.gainDb - calm.gainDb).toBe(2);
+    expect(full.sceneDb).toBe(SCENE_DB.editor);
+    d.request("map");
+    expect(d.resolve().cutoffHz).toBe(INTENSITY.maxHz);
+    d.setIntensity(3);
+    expect(d.intensity).toBe(1);
+  });
+
+  it("celebrate ducks the current loop under a jingle, then returns on its own", () => {
+    const d = new SceneDirector("editor");
+    expect(d.request("celebrate")).toBe(JINGLE_ORDER[0]);
+    expect(d.target).toBe("celebrate");
+    expect(d.resolve()).toMatchObject({ track: "html", ducked: true });
+    expect(d.jingleEnded()).toBe(true);
+    expect(d.target).toBe("editor");
+    expect(d.resolve()).toMatchObject({ track: "html", ducked: false });
+    expect(d.jingleEnded()).toBe(false);
+  });
+
+  it("alternates jingles across celebrations", () => {
+    const d = new SceneDirector("editor");
+    const got = [d.request("celebrate"), d.request("celebrate"), d.request("celebrate")];
+    const n = JINGLE_ORDER.length;
+    expect(got).toEqual([JINGLE_ORDER[0], JINGLE_ORDER[1 % n], JINGLE_ORDER[2 % n]]);
   });
 
   it("an explicit request during the celebration wins over the auto-return", () => {
     const d = new SceneDirector("editor");
     d.request("celebrate");
-    d.onBar();
-    d.request("map");
-    expect(d.onBar()).toEqual({ apply: "map", stinger: false });
-    for (let i = 0; i < 4; i++) expect(d.onBar().apply).toBeNull();
-    expect(d.current).toBe("map");
+    expect(d.request("map")).toBeNull();
+    expect(d.resolve()).toMatchObject({ track: "map", ducked: false });
+    expect(d.jingleEnded()).toBe(false);
+    expect(d.target).toBe("map");
   });
 
-  it("settle applies the requested scene instantly and skips a stale celebration", () => {
+  it("settle drops a stale celebration requested before unlock", () => {
     const d = new SceneDirector("map");
     d.request("editor");
-    expect(d.settle()).toBe("editor");
     d.request("celebrate");
-    expect(d.settle()).toBe("editor");
-    expect(d.onBar().apply).toBeNull();
+    d.settle();
+    expect(d.target).toBe("editor");
+    expect(d.resolve().ducked).toBe(false);
   });
 });
