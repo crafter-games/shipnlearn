@@ -2,7 +2,7 @@ import { svgUri } from "@/content/html-basics/_helpers";
 import type { ConceptCard } from "@/lib/levels/types";
 
 /** Tiny lighthouse illustration for the image cards (160 x 100). */
-const LIGHTHOUSE_SRC = svgUri(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 100">
+const LIGHTHOUSE_SRC = svgUri(`<svg xmlns="http://www.w3.org/2000/svg" width="160" height="100" viewBox="0 0 160 100">
 <rect width="160" height="100" fill="#8EDBFF"/>
 <path d="M70 88 L75 32 H85 L90 88 Z" fill="#FF5D73"/>
 <circle cx="80" cy="25" r="8" fill="#FFD66B"/>
