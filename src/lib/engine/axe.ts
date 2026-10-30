@@ -56,14 +56,13 @@ let sourcePromise: Promise<string> | null = null;
 /** axe-core source + Spanish locale, loaded once and only when needed. */
 function loadSource(): Promise<string> {
   sourcePromise ??= Promise.all([
-    import("axe-core"),
+    import("./axe-source").then((m) => m.fetchAxeSource()),
     import("axe-core/locales/es.json"),
-  ]).then(([axeMod, locale]) => {
-    const axe = (axeMod as unknown as { default?: { source: string } }).default ?? axeMod;
+  ]).then(([raw, locale]) => {
+    const source = raw;
     const json = JSON.stringify((locale as { default?: unknown }).default ?? locale);
-    // Bundlers may rewrite the UMD's `typeof module` checks inside the
-    // function whose source axe exposes, so give it a throwaway CommonJS scope.
-    return `(function(module,exports,define){${(axe as { source: string }).source}\n}).call(window,{exports:{}},{},undefined);\naxe.configure({locale:${json}});`;
+    // Empty CommonJS/AMD scope so the UMD wrapper only sets window.axe.
+    return `(function(module,exports,define){${source}\n}).call(window,undefined,undefined,undefined);\naxe.configure({locale:${json}});`;
   });
   return sourcePromise;
 }
