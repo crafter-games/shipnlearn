@@ -101,5 +101,5 @@ export const enfasis: Level = {
       url: "https://developer.mozilla.org/es/docs/Web/HTML/Reference/Elements/em",
     },
   ],
-  cards: [],
+  cards: ["html-strong", "html-em"],
 };

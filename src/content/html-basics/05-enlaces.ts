@@ -88,5 +88,5 @@ export const enlaces: Level = {
     },
     { label: "MDN: <a>", url: "https://developer.mozilla.org/es/docs/Web/HTML/Reference/Elements/a" },
   ],
-  cards: [],
+  cards: ["html-atributo", "html-a-href", "html-id-enlace-interno"],
 };
