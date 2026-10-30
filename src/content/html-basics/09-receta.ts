@@ -183,4 +183,5 @@ Receta original: ${SOURCE}
       url: "https://developer.mozilla.org/es/docs/Learn_web_development/Core/Structuring_content/HTML_images",
     },
   ],
+  cards: [],
 };

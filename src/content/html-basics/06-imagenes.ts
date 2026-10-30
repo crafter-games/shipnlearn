@@ -95,4 +95,5 @@ export const imagenes: Level = {
     },
     { label: "MDN: <img>", url: "https://developer.mozilla.org/es/docs/Web/HTML/Reference/Elements/img" },
   ],
+  cards: [],
 };

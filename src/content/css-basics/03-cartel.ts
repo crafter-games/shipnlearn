@@ -112,4 +112,5 @@ export const cartel: Level = {
       url: "https://developer.mozilla.org/es/docs/Web/CSS/Reference/Properties/border-radius",
     },
   ],
+  cards: [],
 };

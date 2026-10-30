@@ -119,4 +119,5 @@ export const display: Level = {
       url: "https://developer.mozilla.org/es/docs/Learn_web_development/Core/Styling_basics/Box_model",
     },
   ],
+  cards: [],
 };

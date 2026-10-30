@@ -151,4 +151,5 @@ export const tipografia: Level = {
       url: "https://developer.mozilla.org/es/docs/Web/CSS/Reference/Properties/line-height",
     },
   ],
+  cards: [],
 };

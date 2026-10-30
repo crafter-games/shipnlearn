@@ -249,4 +249,5 @@ export const perfil: Level = {
       url: "https://developer.mozilla.org/es/docs/Web/CSS/Reference/Selectors/:focus-visible",
     },
   ],
+  cards: [],
 };

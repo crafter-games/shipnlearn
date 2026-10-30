@@ -111,4 +111,5 @@ export const especificidad: Level = {
       url: "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/important",
     },
   ],
+  cards: [],
 };

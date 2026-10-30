@@ -115,4 +115,5 @@ export const documento: Level = {
       url: "https://developer.mozilla.org/es/docs/Web/HTML/Reference/Elements/meta/name/viewport",
     },
   ],
+  cards: [],
 };

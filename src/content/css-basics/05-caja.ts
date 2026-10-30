@@ -107,4 +107,5 @@ export const caja: Level = {
       url: "https://developer.mozilla.org/es/docs/Web/CSS/Guides/Box_model/Margin_collapsing",
     },
   ],
+  cards: [],
 };

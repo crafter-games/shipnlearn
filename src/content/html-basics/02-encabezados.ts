@@ -93,4 +93,5 @@ export const encabezados: Level = {
       url: "https://developer.mozilla.org/es/docs/Web/HTML/Reference/Elements/Heading_Elements",
     },
   ],
+  cards: [],
 };

@@ -120,6 +120,44 @@ export type Level = {
   hints: [string, string, string];
   mdn: MdnLink[];
   boss?: boolean;
+  /**
+   * Concept cards shown before the level (worked example first, then
+   * practice). Ids from src/content/cards. Empty for review-only levels.
+   */
+  cards: string[];
+};
+
+/**
+ * A collectible "ficha": what a concept is, when to use it, a live example
+ * and one predict question. Shown before the level that introduces it and
+ * kept in the player's Fichero as a glossary.
+ */
+export type ConceptCard = {
+  /** Kebab-case, globally unique: "html-h1-h6", "css-padding". */
+  id: string;
+  worldId: WorldId;
+  kind: "element" | "attribute" | "property" | "selector" | "concept";
+  /** What the player sees as the card name: "<h1> … <h6>", "padding". */
+  title: string;
+  /** One-line plain-Spanish definition: "Títulos y subtítulos de la página." */
+  tagline: string;
+  /** 2–4 short sentences: what it is and how it works. No jargon unexplained. */
+  explain: string;
+  /** When to use it, 2–4 bullets. */
+  use: string[];
+  /** Common misuses, 1–3 bullets ("No uses <h3> solo porque se ve más pequeño"). */
+  avoid: string[];
+  /** Minimal worked example, rendered live next to its code. */
+  example: LevelFiles;
+  /** One sentence pointing at the key part of the example. */
+  exampleNote: string;
+  /** PRIMM "predict": a quick retrieval question with explained answers. */
+  predict: {
+    question: string;
+    /** 2–3 options; exactly one correct. */
+    options: { label: string; correct: boolean; why: string }[];
+  };
+  mdn: MdnLink;
 };
 
 export type WorldId = "html-basics" | "css-basics";

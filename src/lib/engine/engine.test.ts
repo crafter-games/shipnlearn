@@ -22,6 +22,7 @@ const base: Omit<Level, "mode"> = {
   checks: [],
   hints: ["a", "b", "c"],
   mdn: [],
+  cards: [],
 };
 
 const tilesLevel: Level = {
