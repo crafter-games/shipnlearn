@@ -97,8 +97,7 @@ Un habitante pide algo (1–2 líneas) → ves el **objetivo fantasma** → edit
 
 ## Audio
 
-- **Music**: procedural con Tone.js, 110 BPM (tune), instrumental, tonalidad mayor. Capas: `pad`, `bass`, `drums`, `lead`.
-  - Mapa: todas. Editor: pad + bass a −15 dB (tune). Éxito: + drums + stinger. Volumen por buses en dB.
+- **Music**: loops chiptune CC0 (Juhani Junkala, ver `CREDITS.md`), instrumentales. Mapa: "Stage Select". Editor: una pista por isla (HTML "Stage 1", CSS "Stage 2") a −6 dB del mapa, con intensidad dinámica: un filtro paso bajo se abre de 1.2 kHz a abierto y +2 dB según la proporción de checks cumplidos. Celebración: jingle de victoria sobre el loop atenuado −12 dB. Crossfades de 1 s.
 - **SFX**: `key` (sutil, pitch ±6 %), `check` (nota ascendente en escala), `error` (suave), `ship`, `star`, `levelup`, `ui-tap`. Cuantizados al beat cuando son celebración.
 - Ajustes: mute, slider música, slider SFX (persistidos).
 
@@ -106,11 +105,13 @@ Un habitante pide algo (1–2 líneas) → ves el **objetivo fantasma** → edit
 
 | Key | Description | Source | Status |
 | --- | --- | --- | --- |
-| islands | Islas, mar, palmeras, faro en SVG | code (SVG inline) | todo |
+| islands | Islas, mar, palmeras, faro en SVG | code (SVG inline) | done |
+| npcs | Retratos SVG de los 19 habitantes (sin emojis) | code (SVG inline) | in progress |
+| icons | Set de iconos SVG chunky (sin emojis) | code (SVG inline) | in progress |
 | octo | Pulpo cartero (guía) | code (SVG inline) | todo |
 | fonts | Lilita One, Nunito, JetBrains Mono | next/font/google | todo |
-| music | Capas pad/bass/drums/lead | generate (Tone.js) | todo |
-| sfx | key, check, error, ship, star, levelup, ui-tap | generate (Tone.js) | todo |
+| music | Loops de mapa y editor por isla, jingles de victoria | opengameart CC0 (`public/audio/`, `CREDITS.md`) | done |
+| sfx | key, check, error, ship, star, levelup, ui-tap | generate (Tone.js) | done |
 
 ## Milestones
 
@@ -135,3 +136,4 @@ M2–M6 se construyen en paralelo por subagentes sobre contratos definidos en M1
 
 - 2026-10-30: GDD creado tras investigación (gamificación + currículo MDN) y 2 rondas de entrevista.
 - 2026-10-30: M1–M6 entregados en paralelo (motor, mapa, audio, 20 niveles); Mareas jugables como repaso; desplegado en shipnlearn.crafter.games.
+- 2026-10-30: Música procedural sustituida por loops chiptune CC0 con intensidad dinámica en el editor (feedback: no se oía y no sonaba a juego). Regla nueva: sin emojis, todo en SVG propio.
