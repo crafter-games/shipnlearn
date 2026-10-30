@@ -594,4 +594,350 @@ p {
       url: "https://developer.mozilla.org/es/docs/Web/CSS/Reference/Properties/line-height",
     },
   },
+
+  // -------------------------------------------------------------------------
+  // css-05: the box model
+  // -------------------------------------------------------------------------
+  {
+    id: "css-modelo-caja",
+    worldId: "css-basics",
+    kind: "concept",
+    title: "Modelo de caja",
+    tagline: "Toda caja tiene contenido, padding, border y margin, de dentro hacia fuera.",
+    explain:
+      "Cada elemento es una caja de cuatro capas. En el centro está el contenido (el texto). Alrededor, padding: el relleno interior, que comparte el fondo de la caja. Luego el border. Y por fuera, margin: un espacio transparente que la separa de sus vecinas.",
+    use: [
+      "padding para que el texto no toque el borde: aire por dentro.",
+      "margin para separar una caja de otra: aire por fuera.",
+      "padding: 20px vale para los cuatro lados; margin: 0 0 24px da 0 arriba, 0 a los lados y 24px abajo.",
+    ],
+    avoid: [
+      "Usar margin para apartar el texto del borde: el margin está fuera del borde y no lleva fondo.",
+      "Usar padding para separar dos cajas: la caja crece en vez de alejarse de la otra.",
+    ],
+    example: {
+      html: `<p class="tabla">Se venden sillas</p>
+<p class="tabla">Y mesas a juego</p>
+`,
+      css: `.tabla {
+  padding: 20px;
+  border: 4px solid sienna;
+  margin: 24px 0;
+  background-color: wheat;
+}
+`,
+    },
+    exampleNote:
+      "El fondo wheat cubre contenido y padding; el margin de 24px queda fuera del borde, transparente.",
+    predict: {
+      question: "Si cambias padding a 40px, ¿qué crece?",
+      options: [
+        {
+          label: "El espacio entre el texto y el borde: cada tabla se hace más grande",
+          correct: true,
+          why: "padding está dentro del borde, así que más padding agranda la caja pintada.",
+        },
+        {
+          label: "La distancia entre las dos tablas",
+          correct: false,
+          why: "Eso lo controla margin, que está por fuera del borde.",
+        },
+        {
+          label: "El tamaño de la letra",
+          correct: false,
+          why: "padding es espacio alrededor del contenido; la letra no cambia.",
+        },
+      ],
+    },
+    mdn: {
+      label: "MDN: El modelo de caja",
+      url: "https://developer.mozilla.org/es/docs/Learn_web_development/Core/Styling_basics/Box_model",
+    },
+  },
+  {
+    id: "css-box-sizing",
+    worldId: "css-basics",
+    kind: "property",
+    title: "box-sizing",
+    tagline: "Decide si width incluye el padding y el borde.",
+    explain:
+      "Por defecto (content-box), width mide solo el contenido, y el padding y el borde se suman por fuera: width: 300px con 20px de padding y 4px de borde ocupa 348px. Con box-sizing: border-box, width mide la caja entera, borde incluido, y el contenido se encoge para que todo quepa.",
+    use: [
+      "Cuando una caja debe medir justo lo que dices: botones, tarjetas, columnas.",
+      "Muchos proyectos se lo ponen a todas las cajas desde el principio para no tener que sumar.",
+    ],
+    avoid: [
+      "Sumar de cabeza padding y borde para cuadrar el ancho: con border-box no hace falta.",
+      "Pensar que border-box quita el padding: sigue ahí, solo que dentro del ancho.",
+    ],
+    example: {
+      html: `<div>content-box: mido 248px</div>
+<div class="exacta">border-box: mido 200px</div>
+`,
+      css: `div {
+  width: 200px;
+  padding: 20px;
+  border: 4px solid sienna;
+  margin-bottom: 12px;
+  background-color: wheat;
+}
+
+.exacta {
+  box-sizing: border-box;
+}
+`,
+    },
+    exampleNote:
+      "Las dos dicen width: 200px, pero solo la de box-sizing: border-box mide 200px con borde y todo.",
+    predict: {
+      question: "En la caja .exacta (200px de ancho, 20px de padding, 4px de borde), ¿cuánto ancho le queda al texto?",
+      options: [
+        {
+          label: "152px",
+          correct: true,
+          why: "Con border-box, padding y borde salen de los 200px: 200 menos 40 menos 8 da 152px.",
+        },
+        {
+          label: "200px",
+          correct: false,
+          why: "Eso sería con content-box: el contenido mide 200px y lo demás se suma por fuera.",
+        },
+        {
+          label: "248px",
+          correct: false,
+          why: "248px es lo que ocupa la otra caja entera, la de content-box.",
+        },
+      ],
+    },
+    mdn: {
+      label: "MDN: box-sizing",
+      url: "https://developer.mozilla.org/es/docs/Web/CSS/Reference/Properties/box-sizing",
+    },
+  },
+  {
+    id: "css-fusion-margenes",
+    worldId: "css-basics",
+    kind: "concept",
+    title: "Fusión de márgenes",
+    tagline: "Dos márgenes verticales que se tocan se funden en uno.",
+    explain:
+      "Cuando una caja con margen abajo queda justo encima de otra con margen arriba, los dos márgenes no se suman: se funden y gana el mayor. 24px y 24px dejan 24px de separación, no 48px. Solo pasa en vertical, entre cajas apiladas una encima de otra.",
+    use: [
+      "Para separar cajas apiladas, ponles margen solo por un lado (por ejemplo, abajo): es más fácil de prever.",
+      "Si ves menos espacio del esperado entre dos cajas, sospecha de la fusión.",
+    ],
+    avoid: [
+      "Poner 12px arriba y 12px abajo esperando 24px entre cajas: obtendrás 12px.",
+      "Esperar que pase en horizontal: los márgenes izquierdo y derecho siempre se suman.",
+    ],
+    example: {
+      html: `<p class="nota">Primera nota de pedido</p>
+<p class="nota">Segunda nota de pedido</p>
+`,
+      css: `.nota {
+  margin: 30px 0;
+  padding: 8px;
+  background-color: wheat;
+}
+`,
+    },
+    exampleNote:
+      "Cada nota tiene 30px de margin arriba y abajo, pero entre ellas solo hay 30px: los márgenes se fundieron.",
+    predict: {
+      question: "Si la primera caja tiene margin-bottom: 40px y la segunda margin-top: 10px, ¿cuánto espacio queda entre ellas?",
+      options: [
+        {
+          label: "40px",
+          correct: true,
+          why: "Los márgenes verticales vecinos se funden y gana el mayor.",
+        },
+        {
+          label: "50px",
+          correct: false,
+          why: "Así sería si se sumaran, pero en vertical no se suman.",
+        },
+        {
+          label: "10px",
+          correct: false,
+          why: "Gana el mayor, no el menor.",
+        },
+      ],
+    },
+    mdn: {
+      label: "MDN: Fusión de márgenes",
+      url: "https://developer.mozilla.org/es/docs/Web/CSS/Guides/Box_model/Margin_collapsing",
+    },
+  },
+
+  // -------------------------------------------------------------------------
+  // css-06: cascade and specificity
+  // -------------------------------------------------------------------------
+  {
+    id: "css-cascada",
+    worldId: "css-basics",
+    kind: "concept",
+    title: "Cascada",
+    tagline: "Cuando dos reglas chocan, CSS sigue un orden para decidir cuál gana.",
+    explain:
+      "Si dos reglas dan valores distintos a la misma propiedad del mismo elemento, solo una puede ganar. Primero se compara la especificidad de los selectores (la siguiente ficha); si empatan, gana la que aparece más abajo en el CSS. Las declaraciones que no chocan se combinan sin problema.",
+    use: [
+      "Escribe primero los estilos generales y después los casos especiales.",
+      "Si dos selectores pesan lo mismo, basta con escribir la regla nueva después de la original.",
+    ],
+    avoid: [
+      "Repetir el mismo selector por todo el archivo: cuesta saber cuál manda.",
+      "Creer que la regla de abajo gana siempre: un selector más específico gana aunque esté arriba.",
+    ],
+    example: {
+      html: `<p>Pan recién horneado</p>
+`,
+      css: `p {
+  color: navy;
+  font-weight: bold;
+}
+
+p {
+  color: sienna;
+}
+`,
+    },
+    exampleNote:
+      "Las dos reglas dan color: gana sienna porque va después. font-weight no choca con nada y se mantiene.",
+    predict: {
+      question: "Si intercambias el orden de las dos reglas, ¿cómo queda el texto?",
+      options: [
+        {
+          label: "Navy y en negrita",
+          correct: true,
+          why: "Ahora color: navy va después y gana. La negrita no compite con nada, así que sigue.",
+        },
+        {
+          label: "Sienna y en negrita",
+          correct: false,
+          why: "Con el mismo selector, gana la regla que está más abajo, que ahora es la de navy.",
+        },
+        {
+          label: "Navy y sin negrita",
+          correct: false,
+          why: "Solo se pisan las propiedades repetidas. font-weight solo aparece una vez, así que se aplica.",
+        },
+      ],
+    },
+    mdn: {
+      label: "MDN: Cascada, especificidad y herencia",
+      url: "https://developer.mozilla.org/es/docs/Learn_web_development/Core/Styling_basics/Handling_conflicts",
+    },
+  },
+  {
+    id: "css-especificidad",
+    worldId: "css-basics",
+    kind: "concept",
+    title: "Especificidad",
+    tagline: "Cuanto más concreto es un selector, más pesa.",
+    explain:
+      "Cada selector tiene un peso: una etiqueta (a) pesa poco, una clase (.especial) pesa más y un id (#menu) muchísimo; un solo id vence a cualquier cantidad de clases. Un espacio entre selectores significa «dentro de»: #menu a elige los <a> que están dentro de #menu, y su peso es la suma de un id y una etiqueta.",
+    use: [
+      "Cuando una regla no se aplica, compara el peso de los selectores que chocan.",
+      "Para ganarle a una regla, usa un selector un poco más concreto, no uno enorme.",
+      "Da estilo sobre todo con clases: así es fácil prever quién gana.",
+    ],
+    avoid: [
+      "Llenar el CSS de ids para ganar: después nada puede cambiarlos sin otro id.",
+      "Pensar que cinco clases ganan a un id: el id siempre pesa más.",
+    ],
+    example: {
+      html: `<nav id="menu">
+  <a href="#">Pan</a>
+  <a class="especial" href="#">Tarta</a>
+</nav>
+`,
+      css: `#menu a {
+  color: navy;
+}
+
+/* Pierde: una clase pesa menos que id + etiqueta */
+.especial {
+  color: crimson;
+}
+`,
+    },
+    exampleNote:
+      "Tarta sigue navy: #menu a (un id y una etiqueta) pesa más que .especial (una clase), aunque esta vaya después.",
+    predict: {
+      question: "¿Qué selector pintaría la Tarta de crimson sin tocar la regla #menu a?",
+      options: [
+        {
+          label: "#menu .especial",
+          correct: true,
+          why: "Un id y una clase pesan más que un id y una etiqueta, así que gana.",
+        },
+        {
+          label: "nav .especial",
+          correct: false,
+          why: "Una etiqueta y una clase no tienen id, y cualquier selector con id les gana.",
+        },
+        {
+          label: "a",
+          correct: false,
+          why: "Una sola etiqueta es lo que menos pesa. Además, pintaría todos los enlaces.",
+        },
+      ],
+    },
+    mdn: {
+      label: "MDN: Especificidad",
+      url: "https://developer.mozilla.org/es/docs/Web/CSS/Guides/Cascade/Specificity",
+    },
+  },
+  {
+    id: "css-important",
+    worldId: "css-basics",
+    kind: "concept",
+    title: "!important",
+    tagline: "Obliga a una declaración a ganar siempre. Casi nunca es buena idea.",
+    explain:
+      "Escribir !important al final de una declaración (color: crimson !important;) la hace ganar por encima de la especificidad y del orden. Funciona, pero rompe la cascada: para cambiar ese valor más adelante necesitarás otro !important, y así cada vez.",
+    use: [
+      "En tu propio CSS, casi nunca: primero sube la especificidad del selector o cambia el orden.",
+      "Se reserva para casos raros, como pisar código ajeno que no puedes editar.",
+    ],
+    avoid: [
+      "Usarlo como primer remedio cuando una regla no se aplica: esconde el problema en vez de entenderlo.",
+      "Encadenar !important para ganarle a otro !important.",
+    ],
+    example: {
+      html: `<div id="horno">
+  <p class="aviso">Horno caliente</p>
+</div>
+`,
+      css: `#horno p {
+  color: navy;
+}
+
+.aviso {
+  color: crimson !important;
+}
+`,
+    },
+    exampleNote:
+      ".aviso pesa menos que #horno p, pero !important la hace ganar a la fuerza.",
+    predict: {
+      question: "Mañana quieres el aviso en verde y añades #horno .aviso { color: green; }. ¿Funciona?",
+      options: [
+        {
+          label: "No: sigue crimson, porque !important gana a cualquier regla sin él",
+          correct: true,
+          why: "Ahí está la trampa: ahora tu cambio también necesitaría !important.",
+        },
+        {
+          label: "Sí, porque #horno .aviso es más específico",
+          correct: false,
+          why: "Lo sería sin !important. Con él, la especificidad deja de importar.",
+        },
+      ],
+    },
+    mdn: {
+      label: "MDN: !important (inglés)",
+      url: "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/important",
+    },
+  },
 ];
