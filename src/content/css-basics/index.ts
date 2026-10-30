@@ -3,6 +3,7 @@ import { color } from "./01-color";
 import { clases } from "./02-clases";
 import { cartel } from "./03-cartel";
 import { tipografia } from "./04-tipografia";
+import { caja } from "./05-caja";
 
 export const cssBasics: World = {
   id: "css-basics",
@@ -14,5 +15,6 @@ export const cssBasics: World = {
     clases,
     cartel,
     tipografia,
+    caja,
   ],
 };
