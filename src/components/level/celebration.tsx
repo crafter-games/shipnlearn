@@ -3,6 +3,7 @@
 import { motion, useReducedMotion } from "motion/react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { ArrowRight, Island, Rocket, Star } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
 import { playSfx } from "@/lib/audio";
@@ -70,8 +71,9 @@ function Content({ level, next, data, onImprove }: Props & { data: CelebrationDa
         data-testid="celebration"
       >
         <div className="absolute -top-8 left-1/2 -translate-x-1/2 -rotate-2 rounded-2xl border-[3px] border-ink bg-sand px-6 py-2 shadow-chunky">
-          <h2 id="celebrate-title" className="whitespace-nowrap font-display text-4xl tracking-wide text-foam text-stroke">
-            ¡Lanzado! 🚀
+          <h2 id="celebrate-title" className="flex items-center gap-2 whitespace-nowrap font-display text-4xl tracking-wide text-foam text-stroke">
+            ¡Lanzado!
+            <Rocket className="size-9" />
           </h2>
         </div>
 
@@ -99,8 +101,8 @@ function Content({ level, next, data, onImprove }: Props & { data: CelebrationDa
         {data.stars < 3 && shown >= data.stars && (
           <p className="-mt-3 mb-3 text-sm font-bold text-ink-soft">
             {data.stars === 1
-              ? "Para ⭐⭐: cumple los objetivos de accesibilidad."
-              : "Para ⭐⭐⭐: vuelve a lanzarlo sin pistas."}
+              ? "Para 2 estrellas: cumple los objetivos de accesibilidad."
+              : "Para 3 estrellas: vuelve a lanzarlo sin pistas."}
           </p>
         )}
         <div className="mb-2 inline-block rounded-xl border-[3px] border-ink bg-ink px-3 py-1 font-mono text-base font-bold text-sand">
@@ -132,7 +134,8 @@ function Content({ level, next, data, onImprove }: Props & { data: CelebrationDa
               onClick={() => playSfx("ui-tap")}
               className="inline-flex h-16 items-center justify-center gap-2 rounded-chunk border-[3px] border-ink bg-lime font-display text-2xl tracking-wide text-ink shadow-chunky transition-[transform,box-shadow] duration-75 active:translate-y-1 active:shadow-pressed"
             >
-              Siguiente nivel →
+              Siguiente nivel
+              <ArrowRight className="size-7" />
             </Link>
           ) : (
             <p className="font-display text-xl">¡Has completado todos los niveles!</p>
@@ -142,13 +145,15 @@ function Content({ level, next, data, onImprove }: Props & { data: CelebrationDa
               href="/"
               data-autofocus={next ? undefined : true}
               onClick={() => playSfx("ui-tap")}
-              className="inline-flex h-12 flex-1 items-center justify-center rounded-2xl border-[3px] border-ink bg-foam font-display text-lg text-ink shadow-chunky transition-[transform,box-shadow] duration-75 active:translate-y-1 active:shadow-pressed"
+              className="inline-flex h-12 flex-1 items-center justify-center gap-2 rounded-2xl border-[3px] border-ink bg-foam font-display text-lg text-ink shadow-chunky transition-[transform,box-shadow] duration-75 active:translate-y-1 active:shadow-pressed"
             >
-              🏝️ Mapa
+              <Island className="size-7" />
+              Mapa
             </Link>
             {data.stars < 3 && (
               <Button variant="accent" className="flex-1" onClick={onImprove}>
-                Mejorar ⭐
+                Mejorar
+                <Star className="size-6" />
               </Button>
             )}
           </div>

@@ -2,6 +2,7 @@
 
 import { AnimatePresence, motion, Reorder, useDragControls } from "motion/react";
 import { useMemo } from "react";
+import { Grip } from "@/components/icons";
 import { playSfx } from "@/lib/audio";
 import { makeTiles, moveItem, shuffleTiles, type Tile } from "@/lib/engine/tiles";
 import type { TilesSpec } from "@/lib/levels/types";
@@ -40,7 +41,7 @@ export function TilesBoard({ spec, seed, placed, onChange }: Props) {
     <div className="flex h-full min-h-0 flex-col gap-3 overflow-y-auto p-3">
       <section aria-labelledby="tiles-code" className="space-y-1.5">
         <h3 id="tiles-code" className="font-display text-sm tracking-wide text-sand">
-          Tu código <span className="font-sans text-xs font-bold text-foam/70">· toca para quitar, arrastra ⠿ para ordenar</span>
+          Tu código <span className="font-sans text-xs font-bold text-foam/70">· toca para quitar, arrastra <Grip className="inline size-3.5 align-[-2px]" /> para ordenar</span>
         </h3>
         {spec.before && <FixedCode code={spec.before} />}
         <Reorder.Group
@@ -120,9 +121,9 @@ function PlacedTile({
       <span
         aria-hidden
         onPointerDown={(e) => controls.start(e)}
-        className="flex w-9 shrink-0 cursor-grab touch-none items-center justify-center border-r-[3px] border-ink text-lg text-ink active:cursor-grabbing"
+        className="flex w-9 shrink-0 cursor-grab touch-none items-center justify-center border-r-[3px] border-ink text-ink active:cursor-grabbing"
       >
-        ⠿
+        <Grip className="size-5" />
       </span>
       <button
         type="button"

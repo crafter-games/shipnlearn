@@ -1,5 +1,6 @@
 "use client";
 
+import { Island } from "@/components/icons";
 import { getLevel } from "@/lib/levels/registry";
 import { useIsClient } from "./hooks";
 import { LevelGame } from "./level-game";
@@ -12,16 +13,17 @@ export function LevelScreen({ levelId }: { levelId: string }) {
   const level = getLevel(levelId);
   const isClient = useIsClient();
   if (!level) return null;
-  if (!isClient) return <LevelLoading avatar={level.npc.avatar} />;
+  if (!isClient) return <LevelLoading />;
   const review = new URLSearchParams(window.location.search).get("review") === "1";
   return <LevelGame level={level} review={review} />;
 }
 
-export function LevelLoading({ avatar = "🏝️" }: { avatar?: string }) {
+export function LevelLoading() {
   return (
     <div className="flex min-h-dvh items-center justify-center" aria-busy>
-      <p className="animate-bob font-display text-3xl text-foam text-stroke">
-        <span aria-hidden>{avatar}</span> Cargando…
+      <p className="flex animate-bob items-center gap-2 font-display text-3xl text-foam text-stroke">
+        <Island className="size-10" />
+        Cargando…
       </p>
     </div>
   );

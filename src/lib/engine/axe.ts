@@ -19,7 +19,7 @@ export type AxeReport = {
 
 export const WCAG_TAGS = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"];
 
-/** Only these impacts cost the ⭐⭐. */
+/** Only these impacts cost the second star. */
 const BLOCKING: ImpactValue[] = ["serious", "critical"];
 
 /** Brief, friendly copy for the rules beginners hit most. Falls back to axe's Spanish locale. */
