@@ -35,6 +35,15 @@ export const Ring = (p: IconProps) => (
   </Icon>
 );
 
+/** Six-dot drag handle. */
+export const Grip = (p: IconProps) => (
+  <Icon {...p}>
+    {[8.5, 15.5].flatMap((cx) =>
+      [5.5, 12, 18.5].map((cy) => <circle key={`${cx}-${cy}`} cx={cx} cy={cy} r="2" fill="currentColor" />),
+    )}
+  </Icon>
+);
+
 /* ───────────────────────── Illustrated icons ───────────────────────── */
 
 const STAR_PATH = "M12 2.6l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17l-5.7 3.1 1.2-6.4-4.7-4.4 6.4-.8z";
