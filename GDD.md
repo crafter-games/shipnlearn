@@ -14,7 +14,7 @@
 ## Principios validados (ver `docs/research.md`)
 
 1. Cada nivel es **hacer** (recuperación activa), nunca leer. Feedback inmediato que explica el *porqué*.
-2. Fading: ejemplo → fichas (Parsons) → huecos → desde cero.
+2. Fading: ficha de concepto (ejemplo resuelto) → fichas de código (Parsons) → huecos → desde cero.
 3. Mastery gating: no avanzas sin ⭐ en el nivel previo; reintentos ilimitados sin castigo.
 4. Narrativa del mundo como mecánica principal; XP/estrellas como **información**, no premio.
 5. Repaso espaciado + intercalado (Mareas). Sin rachas punitivas, sin leaderboards.
@@ -22,7 +22,7 @@
 
 ## Core loop
 
-Un habitante pide algo (1–2 líneas) → ves el **objetivo fantasma** → editas código con preview en vivo → el **checklist** se enciende condición por condición → **¡Ship it!** → validadores → celebración, estrellas, XP, la isla cambia → siguiente nivel. 60–180 s por nivel (tune).
+(Si el nivel trae conceptos nuevos) **Ficha de concepto**: qué es, cuándo usarlo, qué evitar, ejemplo con su resultado en vivo y una pregunta de predicción → un habitante pide algo (1–2 líneas) → ves el **objetivo fantasma** → editas código con preview en vivo → el **checklist** se enciende condición por condición → **¡Ship it!** → validadores → celebración, estrellas, XP, la isla cambia → siguiente nivel. 60–180 s por nivel (tune).
 
 ## First 30 seconds
 
@@ -49,6 +49,11 @@ Un habitante pide algo (1–2 líneas) → ves el **objetivo fantasma** → edit
 - Modos: `tiles` (fichas Parsons), `fill` (huecos editables dentro de código fijo), `code` (editor libre, HTML y/o CSS).
 - Preview en `<iframe srcdoc sandbox>`; validación dentro del iframe con DOM, `getComputedStyle`, `getBoundingClientRect`, axe-core. Se mide resultado, no texto → toda solución válida pasa.
 - Checklist en vivo (debounce 300 ms, tune); "Ship it" corre la validación completa.
+
+### Fichas de concepto y Fichero
+- Cada nivel declara `cards`: las fichas que introduce (1–3; los jefes, ninguna). Se muestran antes del nivel la primera vez; botón "Saltar" para quien ya sabe (expertise reversal).
+- Ficha: título, frase corta, explicación, "Cuándo usarlo", "Evita", ejemplo de código con preview en vivo, pregunta de predicción con explicación de cada opción (sin puntuación ni bloqueo), enlace MDN.
+- Fichero: álbum coleccionable con todas las fichas (vistas / bloqueadas), consultable desde el mapa y desde el nivel ("Fichas").
 
 ### Estrellas (1–3)
 - ⭐ todas las checks requeridas pasan.
@@ -137,3 +142,4 @@ M2–M6 se construyen en paralelo por subagentes sobre contratos definidos en M1
 - 2026-10-30: GDD creado tras investigación (gamificación + currículo MDN) y 2 rondas de entrevista.
 - 2026-10-30: M1–M6 entregados en paralelo (motor, mapa, audio, 20 niveles); Mareas jugables como repaso; desplegado en shipnlearn.crafter.games.
 - 2026-10-30: Música procedural sustituida por loops chiptune CC0 con intensidad dinámica en el editor (feedback: no se oía y no sonaba a juego). Regla nueva: sin emojis, todo en SVG propio.
+- 2026-10-30: Fichas de concepto antes de cada nivel y Fichero coleccionable (feedback: faltaba explicar qué es cada elemento y cuándo usarlo antes de jugar).
