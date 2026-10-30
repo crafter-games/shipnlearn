@@ -57,6 +57,8 @@ type ProgressState = {
   settings: Settings;
   /** The first-30-seconds intro was shown (or skipped). */
   seenIntro: boolean;
+  /** Concept cards the player has opened (their Fichero). */
+  seenCards: string[];
   equipped: Equipped;
   /** Records a finished level. Only improvements grant XP. */
   completeLevel: (levelId: string, stars: Stars) => CompleteResult;
@@ -64,6 +66,7 @@ type ProgressState = {
   completeReview: (levelId: string) => void;
   setSettings: (patch: Partial<Settings>) => void;
   markIntroSeen: () => void;
+  markCardsSeen: (ids: string[]) => void;
   /** Ignored when the current rank has not unlocked `patch.flag` yet. */
   equip: (patch: Partial<Equipped>) => void;
   reset: () => void;
@@ -82,12 +85,13 @@ const initial = {
   reviews: [] as Review[],
   settings: defaultSettings,
   seenIntro: false,
+  seenCards: [] as string[],
   equipped: { flag: "coral" } as Equipped,
 };
 
 type Persisted = Pick<
   ProgressState,
-  "levels" | "xp" | "reviews" | "settings" | "seenIntro" | "equipped"
+  "levels" | "xp" | "reviews" | "settings" | "seenIntro" | "equipped" | "seenCards"
 >;
 
 /** Upgrades persisted state from older versions. Exported for tests. */
@@ -101,6 +105,7 @@ export function migrateProgress(persisted: unknown, version: number): Persisted 
     settings: { ...defaultSettings, ...s.settings },
     // v1 players who already beat a level skip the intro.
     seenIntro: version < 2 ? Object.keys(levels).length > 0 : (s.seenIntro ?? false),
+    seenCards: s.seenCards ?? [],
     equipped: { ...initial.equipped, ...s.equipped },
   };
 }
@@ -149,6 +154,11 @@ export const useProgress = create<ProgressState>()(
       setSettings: (patch) =>
         set((s) => ({ settings: { ...s.settings, ...patch } })),
       markIntroSeen: () => set({ seenIntro: true }),
+      markCardsSeen: (ids) =>
+        set((s) => {
+          const fresh = ids.filter((id) => !s.seenCards.includes(id));
+          return fresh.length ? { seenCards: [...s.seenCards, ...fresh] } : s;
+        }),
       equip: (patch) =>
         set((s) => {
           if (patch.flag && FLAG_RANKS[patch.flag] > rankOf(s.xp)) return s;
@@ -158,7 +168,7 @@ export const useProgress = create<ProgressState>()(
     }),
     {
       name: "shipnlearn-progress",
-      version: 2,
+      version: 3,
       migrate: migrateProgress,
       // Deep-merge nested objects so new fields keep their defaults.
       merge: (persisted, current) => {
