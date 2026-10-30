@@ -28,7 +28,7 @@ export const caja: Level = {
   id: "css-05-caja",
   worldId: "css-basics",
   title: "Placas a medida",
-  npc: { name: "Tablas la carpintera", avatar: "🪚" },
+  npc: { name: "Tablas la carpintera", avatar: "tablas" },
   story:
     "Mis placas tienen que medir 300px justos, con borde y todo, para caber en el poste. Dales 20px de relleno y 24px de separación entre ellas. ¡Ni un milímetro más!",
   concept: "Modelo de caja: padding, border, margin y box-sizing",

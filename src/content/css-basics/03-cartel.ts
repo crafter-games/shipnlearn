@@ -28,7 +28,7 @@ export const cartel: Level = {
   id: "css-03-cartel",
   worldId: "css-basics",
   title: "El cartel de la fiesta",
-  npc: { name: "DJ Marea", avatar: "🎧" },
+  npc: { name: "DJ Marea", avatar: "dj-marea" },
   story:
     "Mi cartel parece un aviso de impuestos. Quiero fondo rebeccapurple, un borde dorado (gold) de 4px y esquinas redondeadas. ¡Y que se lea!",
   concept: "Fondos, bordes y esquinas",

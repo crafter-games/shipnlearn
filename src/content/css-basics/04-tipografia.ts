@@ -52,7 +52,7 @@ export const tipografia: Level = {
   id: "css-04-tipografia",
   worldId: "css-basics",
   title: "La leyenda del faro",
-  npc: { name: "Lumi la farera", avatar: "💡" },
+  npc: { name: "Lumi la farera", avatar: "lumi" },
   story:
     "Escribí la leyenda del faro, pero la letra es tan pequeña que hasta las gaviotas usan lupa. ¿Le das una fuente bonita, más tamaño y aire entre líneas?",
   concept: "Tipografía: font-family, rem y line-height",

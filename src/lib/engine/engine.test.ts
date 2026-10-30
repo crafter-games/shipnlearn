@@ -12,7 +12,7 @@ const base: Omit<Level, "mode"> = {
   id: "test-01",
   worldId: "html-basics",
   title: "Test",
-  npc: { name: "Octo", avatar: "🐙" },
+  npc: { name: "Octo", avatar: "octo" },
   story: "",
   concept: "",
   lesson: "",

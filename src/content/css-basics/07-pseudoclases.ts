@@ -40,7 +40,7 @@ export const pseudoclases: Level = {
   id: "css-07-pseudoclases",
   worldId: "css-basics",
   title: "Sabores que responden",
-  npc: { name: "Nieve la heladera", avatar: "🍦" },
+  npc: { name: "Nieve la heladera", avatar: "nieve" },
   story:
     "Mis botones de sabores están congelados: no reaccionan al pasar el ratón y quien usa teclado no sabe dónde está. ¡Descongélalos!",
   concept: "Pseudoclases :hover y :focus-visible",

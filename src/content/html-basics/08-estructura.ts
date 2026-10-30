@@ -32,7 +32,7 @@ export const estructura: Level = {
   id: "html-08-estructura",
   worldId: "html-basics",
   title: "La web del ayuntamiento",
-  npc: { name: "Don Pinzas, el alcalde", avatar: "🦀" },
+  npc: { name: "Don Pinzas, el alcalde", avatar: "pinzas" },
   story:
     "La web del ayuntamiento es una sopa de <div>. Los vecinos con lector de pantalla no encuentran ni el menú. Dale cabecera, navegación, contenido principal y pie.",
   concept: "<header>, <nav>, <main> y <footer>: landmarks",

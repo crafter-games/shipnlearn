@@ -46,7 +46,7 @@ export const display: Level = {
   id: "css-09-display",
   worldId: "css-basics",
   title: "El menú del muelle",
-  npc: { name: "Anzuelo el pescador", avatar: "🎣" },
+  npc: { name: "Anzuelo el pescador", avatar: "anzuelo" },
   story:
     "Mi menú baja como una caña de pescar y los botones no hacen caso del ancho de 120px que les puse. ¡Lo quiero en fila, como barcas amarradas!",
   concept: "display: block, inline e inline-block",

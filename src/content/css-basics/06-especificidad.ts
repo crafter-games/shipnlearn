@@ -37,7 +37,7 @@ export const especificidad: Level = {
   id: "css-06-especificidad",
   worldId: "css-basics",
   title: "El botón que no quería ser rojo",
-  npc: { name: "Migas el panadero", avatar: "🥖" },
+  npc: { name: "Migas el panadero", avatar: "migas" },
   story:
     "Le puse la clase oferta al botón para pintarlo de rojo #B00020 y no hay manera. Y nada de !important: eso es pan para hoy y hambre para mañana.",
   concept: "Cascada y especificidad",

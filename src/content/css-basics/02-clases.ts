@@ -26,7 +26,7 @@ export const clases: Level = {
   id: "css-02-clases",
   worldId: "css-basics",
   title: "Ofertas de la herrería",
-  npc: { name: "Bruno el herrero", avatar: "🔨" },
+  npc: { name: "Bruno el herrero", avatar: "bruno" },
   story:
     "Todo lo que tiene la clase oferta va en verde (green). Y mi espada, la única con id estrella, en negrita. ¡Que brille más que mi yunque!",
   concept: "Selectores de clase (.) e id (#)",

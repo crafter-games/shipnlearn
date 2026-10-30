@@ -32,7 +32,7 @@ export const unidades: Level = {
   id: "css-08-unidades",
   worldId: "css-basics",
   title: "El pergamino infinito",
-  npc: { name: "Búho el bibliotecario", avatar: "🦉" },
+  npc: { name: "Búho el bibliotecario", avatar: "buho" },
   story:
     "Mi pergamino de normas se sale de la pantalla y la dirección del catálogo se escapa por un lado. Que las líneas no sean eternas y que todo quepa, incluso en un móvil.",
   concept: "Unidades relativas (ch, rem) y overflow",

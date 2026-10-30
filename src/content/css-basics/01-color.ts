@@ -21,7 +21,7 @@ export const color: Level = {
   id: "css-01-color",
   worldId: "css-basics",
   title: "Un cartel con color",
-  npc: { name: "Rosa la florista", avatar: "🌸" },
+  npc: { name: "Rosa la florista", avatar: "rosa" },
   story:
     "¡Mi cartel es más soso que un cactus sin flor! Quiero el título en color crimson y centrado.",
   concept: "Reglas CSS: selector { propiedad: valor; }",

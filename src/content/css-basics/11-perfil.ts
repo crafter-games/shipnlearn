@@ -109,7 +109,7 @@ export const perfil: Level = {
   id: "css-11-perfil",
   worldId: "css-basics",
   title: "Jefe: Tarjeta de perfil",
-  npc: { name: "Octo", avatar: "🐙" },
+  npc: { name: "Octo", avatar: "octo" },
   story:
     "¡Ya eres shipper de estilo! Hazme una tarjeta de perfil de 320px justos: foto redonda sin aplastarme, nombre, bio, dos botones en fila… y que quepa en cualquier móvil.",
   concept: "Componente completo: caja, imagen, flexbox, foco y responsive",

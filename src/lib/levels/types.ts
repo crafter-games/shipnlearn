@@ -65,10 +65,31 @@ export type LevelMode = "tiles" | "fill" | "code";
 
 export type MdnLink = { label: string; url: string };
 
+/** Custom SVG portraits (src/components/characters/npc-avatar.tsx). Never emojis. */
+export type AvatarId =
+  | "octo"
+  | "hogaza"
+  | "anselmo"
+  | "faustino"
+  | "brea"
+  | "tinta"
+  | "sello"
+  | "pinzas"
+  | "remedios"
+  | "rosa"
+  | "bruno"
+  | "dj-marea"
+  | "lumi"
+  | "tablas"
+  | "migas"
+  | "nieve"
+  | "buho"
+  | "anzuelo"
+  | "tula";
+
 export type Npc = {
   name: string;
-  /** Single emoji used as the avatar. */
-  avatar: string;
+  avatar: AvatarId;
 };
 
 export type Level = {

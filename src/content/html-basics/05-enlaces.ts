@@ -23,7 +23,7 @@ export const enlaces: Level = {
   id: "html-05-enlaces",
   worldId: "html-basics",
   title: "El tablón del puerto",
-  npc: { name: "Capitana Brea", avatar: "⚓" },
+  npc: { name: "Capitana Brea", avatar: "brea" },
   story:
     "El tablón viejo decía «clic aquí» y medio puerto acabó en la isla equivocada. Quiero un enlace al parte del tiempo (https://www.windy.com) y otro que salte a los horarios de abajo.",
   concept: "<a href>: enlaces externos e internos",

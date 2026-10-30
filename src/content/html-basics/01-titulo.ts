@@ -5,7 +5,7 @@ export const titulo: Level = {
   id: "html-01-titulo",
   worldId: "html-basics",
   title: "Ponle nombre",
-  npc: { name: "Octo", avatar: "🐙" },
+  npc: { name: "Octo", avatar: "octo" },
   story: "Esta isla no tiene ni nombre. ¡Ponle uno! Escríbelo dentro del título.",
   concept: "<h1>: el título principal",
   lesson:

@@ -22,7 +22,7 @@ export const enfasis: Level = {
   id: "html-03-enfasis",
   worldId: "html-basics",
   title: "El aviso del muelle",
-  npc: { name: "Anselmo, el pescador", avatar: "🎣" },
+  npc: { name: "Anselmo, el pescador", avatar: "anselmo" },
   story:
     "Nadie lee mi aviso y el pulpo de la cueva ya está harto. Que la prohibición se note MUCHO y que el «muy» suene como lo digo yo.",
   concept: "<strong> y <em>: importancia y énfasis",

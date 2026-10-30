@@ -15,7 +15,7 @@ export const receta: Level = {
   id: "html-09-receta",
   worldId: "html-basics",
   title: "Jefe: la receta de la abuela",
-  npc: { name: "Abuela Remedios, la cocinera", avatar: "🍲" },
+  npc: { name: "Abuela Remedios, la cocinera", avatar: "remedios" },
   story:
     "Te dicté mi famosa sopa de mar y la escribiste toda seguida, ¡como una carta de amor sin comas! Conviértela en una página de receta de verdad, que la quiero colgar en el puerto.",
   concept: "Una página completa: encabezados, listas, imagen, enlace y landmarks",

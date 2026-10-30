@@ -11,7 +11,7 @@ export const documento: Level = {
   id: "html-07-documento",
   worldId: "html-basics",
   title: "El sobre de la carta",
-  npc: { name: "Sello, el cartero", avatar: "📮" },
+  npc: { name: "Sello, el cartero", avatar: "sello" },
   story:
     "Una carta sin sobre no llega a ningún sitio, y esta página no tiene ni sobre. Envuélvela en un documento completo y que la pestaña diga «Correos de Marcado».",
   concept: "<!doctype>, <html lang>, <head> y <body>",

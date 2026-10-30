@@ -53,7 +53,7 @@ export const flexbox: Level = {
   id: "css-10-flexbox",
   worldId: "css-basics",
   title: "Macetas en fila",
-  npc: { name: "Tula la tortuga jardinera", avatar: "🐢" },
+  npc: { name: "Tula la tortuga jardinera", avatar: "tula" },
   story:
     "Mis tres macetas están apiladas como una torre a punto de caerse. Ponlas en fila, en el centro del jardín, con 16px de aire entre cada una.",
   concept: "Flexbox: display: flex, justify-content y gap",

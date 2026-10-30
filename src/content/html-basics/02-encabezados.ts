@@ -21,7 +21,7 @@ export const encabezados: Level = {
   id: "html-02-encabezados",
   worldId: "html-basics",
   title: "El cartel de la panadería",
-  npc: { name: "Doña Hogaza, la panadera", avatar: "🥖" },
+  npc: { name: "Doña Hogaza, la panadera", avatar: "hogaza" },
   story:
     "¡Mi panadería sale en el cartel de la isla! Arriba el nombre de la isla, debajo el de mi panadería y una frase que abra el apetito.",
   concept: "<h2> y <p>: jerarquía de encabezados",

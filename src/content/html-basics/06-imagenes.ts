@@ -20,7 +20,7 @@ export const imagenes: Level = {
   id: "html-06-imagenes",
   worldId: "html-basics",
   title: "El póster del club de lectura",
-  npc: { name: "Tinta, la bibliotecaria", avatar: "📚" },
+  npc: { name: "Tinta, la bibliotecaria", avatar: "tinta" },
   story:
     "Mi póster tiene una foto preciosa de la biblioteca, pero mi amigo Rober usa lector de pantalla y para él está en blanco. Descríbela, dile su tamaño, y que la ola no le distraiga.",
   concept: "<img>: alt, width y height",

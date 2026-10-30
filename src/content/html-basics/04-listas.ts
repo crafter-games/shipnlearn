@@ -32,7 +32,7 @@ export const listas: Level = {
   id: "html-04-listas",
   worldId: "html-basics",
   title: "La lista del farero",
-  npc: { name: "Faustino, el farero", avatar: "🔦" },
+  npc: { name: "Faustino, el farero", avatar: "faustino" },
   story:
     "Apunté lo que llevo al faro y cómo encender la lámpara, pero me falta un paso: «Limpia el cristal.» va justo en medio. Si me equivoco de orden, ¡los barcos chocan!",
   concept: "<ul>, <ol> y <li>: listas",
