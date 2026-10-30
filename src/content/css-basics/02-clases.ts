@@ -3,7 +3,7 @@ import type { Level, TilesSpec } from "@/lib/levels/types";
 import { textContrast, tilesCss } from "./_helpers";
 
 const html = `<section class="herreria">
-  <h2>Herrería de Bruno 🔨</h2>
+  <h2>Herrería de Bruno</h2>
   <ul>
     <li class="oferta">Martillo — 5 monedas</li>
     <li>Tenazas — 8 monedas</li>

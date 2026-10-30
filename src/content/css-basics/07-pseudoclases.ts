@@ -1,12 +1,13 @@
 import { $$, contrast } from "@/lib/levels/checks";
 import type { CheckContext, Level } from "@/lib/levels/types";
 import { effectiveBackground, focusOutline, hasVisibleFocus, pseudoRuleChanges } from "./_helpers";
+import { COCONUT_SRC, MANGO_SRC, STRAWBERRY_SRC } from "./_images";
 
 const html = `<div class="heladeria">
-  <h2>Heladería Nieve 🍦</h2>
-  <button class="sabor" type="button">Fresa 🍓</button>
-  <button class="sabor" type="button">Mango 🥭</button>
-  <button class="sabor" type="button">Coco 🥥</button>
+  <h2>Heladería Nieve</h2>
+  <button class="sabor" type="button"><img src="${STRAWBERRY_SRC}" alt="" width="32" height="32"> Fresa</button>
+  <button class="sabor" type="button"><img src="${MANGO_SRC}" alt="" width="32" height="32"> Mango</button>
+  <button class="sabor" type="button"><img src="${COCONUT_SRC}" alt="" width="32" height="32"> Coco</button>
 </div>
 `;
 
@@ -20,6 +21,10 @@ const base = `.sabor {
   cursor: pointer;
   /* Alguien quitó el anillo de foco porque «se veía feo» */
   outline: none;
+}
+
+.sabor img {
+  vertical-align: middle;
 }
 `;
 

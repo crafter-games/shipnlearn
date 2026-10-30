@@ -3,7 +3,7 @@ import type { CheckContext, FillSpec, Level } from "@/lib/levels/types";
 import { fillTemplate, px, textContrast, withRootFontSize } from "./_helpers";
 
 const html = `<article class="cuento">
-  <h2>💡 La leyenda del faro</h2>
+  <h2>La leyenda del faro</h2>
   <p>Dicen que el faro de Isla Estilo nunca se apaga. Cada noche, Lumi sube los 200 escalones, limpia el cristal y le cuenta un chiste a la luz para que no se aburra.</p>
   <p>Los barcos que pasan cerca juran que, cuando el chiste es bueno, la luz parpadea dos veces.</p>
 </article>

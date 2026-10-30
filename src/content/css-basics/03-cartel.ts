@@ -3,7 +3,7 @@ import type { FillSpec, Level } from "@/lib/levels/types";
 import { fillTemplate, px, textContrast } from "./_helpers";
 
 const html = `<div class="cartel">
-  <h2>🎧 Fiesta en la playa</h2>
+  <h2>Fiesta en la playa</h2>
   <p>Sábado al atardecer · DJ Marea · Entrada libre</p>
 </div>
 `;
