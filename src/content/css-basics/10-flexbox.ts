@@ -1,10 +1,11 @@
 import { $, $$, rect, sameRow } from "@/lib/levels/checks";
 import type { CheckContext, Level } from "@/lib/levels/types";
+import { CACTUS_SRC, PALM_SRC, SUNFLOWER_SRC } from "./_images";
 
 const html = `<section class="jardin" aria-label="Jardín de Tula">
-  <div class="maceta">🌵</div>
-  <div class="maceta">🌻</div>
-  <div class="maceta">🌴</div>
+  <div class="maceta"><img src="${CACTUS_SRC}" alt="Cactus" width="72" height="72"></div>
+  <div class="maceta"><img src="${SUNFLOWER_SRC}" alt="Girasol" width="72" height="72"></div>
+  <div class="maceta"><img src="${PALM_SRC}" alt="Palmera" width="72" height="72"></div>
 </section>
 `;
 
@@ -17,9 +18,8 @@ const base = `.jardin {
 .maceta {
   width: 96px;
   height: 96px;
-  font-size: 3rem;
-  line-height: 96px;
-  text-align: center;
+  display: grid;
+  place-items: center;
   border: 3px solid #1B1F3B;
   border-radius: 16px;
   background-color: #FFD66B;
@@ -38,9 +38,8 @@ const solutionCss = `.jardin {
 .maceta {
   width: 96px;
   height: 96px;
-  font-size: 3rem;
-  line-height: 96px;
-  text-align: center;
+  display: grid;
+  place-items: center;
   border: 3px solid #1B1F3B;
   border-radius: 16px;
   background-color: #FFD66B;
