@@ -829,4 +829,159 @@ export const htmlCards: ConceptCard[] = [
     },
     mdn: { label: "MDN: <meta>", url: "https://developer.mozilla.org/es/docs/Web/HTML/Reference/Elements/meta" },
   },
+  {
+    id: "html-header-footer",
+    worldId: "html-basics",
+    kind: "element",
+    title: "<header> y <footer>",
+    tagline: "La cabecera y el pie de la página.",
+    explain:
+      "<header> envuelve la parte de arriba: el nombre o el logo del sitio. <footer> envuelve el pie: contacto, autoría, créditos. No cambian cómo se ve nada: dicen qué papel tiene cada parte. Son puntos de referencia («landmarks») a los que los lectores de pantalla pueden saltar directamente, algo que un <div> (una caja sin significado) no permite.",
+    use: [
+      "<header> arriba, con el <h1> del sitio.",
+      "<footer> abajo del todo, con contacto o créditos.",
+      "Los dos fuera de <main>, al mismo nivel que él.",
+    ],
+    avoid: [
+      "Confundir <header> con <head>: <head> guarda datos invisibles; <header> es la cabecera que se ve.",
+      "Usar <div class=\"cabecera\">: se ve igual, pero no le dice a nadie que es la cabecera.",
+    ],
+    example: {
+      html: `<header>
+  <h1>Faro del Norte</h1>
+</header>
+<p>Visitas guiadas los sábados a las 11:00.</p>
+<footer>
+  <p>Escríbenos a la casa del farero, Isla Marcado.</p>
+</footer>
+`,
+    },
+    exampleNote:
+      "En la vista previa no cambia nada: <header> y <footer> no tienen aspecto propio, aportan significado.",
+    predict: {
+      question: "Cambias <div class=\"pie\"> por <footer>. ¿Qué cambia?",
+      options: [
+        {
+          label: "Se ve igual, pero ahora los lectores de pantalla saben que es el pie",
+          correct: true,
+          why: "Los landmarks no dan estilo: dan significado y atajos para moverse por la página.",
+        },
+        {
+          label: "El texto baja solo al final de la ventana",
+          correct: false,
+          why: "<footer> no mueve nada: se queda donde lo escribas. Colocarlo es trabajo de CSS.",
+        },
+        {
+          label: "Nada en absoluto",
+          correct: false,
+          why: "En la pantalla no, pero para quien usa lector de pantalla pasa de ser una caja anónima a ser el pie.",
+        },
+      ],
+    },
+    mdn: { label: "MDN: <header>", url: "https://developer.mozilla.org/es/docs/Web/HTML/Reference/Elements/header" },
+  },
+  {
+    id: "html-nav",
+    worldId: "html-basics",
+    kind: "element",
+    title: "<nav>",
+    tagline: "El bloque de enlaces para moverse por el sitio.",
+    explain:
+      "<nav> (de «navegación») agrupa los enlaces principales: el menú. Los lectores de pantalla lo anuncian como navegación, así que quien los usa puede ir directo al menú o saltárselo. Dentro tiene que haber enlaces <a>.",
+    use: [
+      "El menú principal, normalmente arriba, junto al <header>.",
+      "Un índice con enlaces a las secciones de la misma página (#…).",
+    ],
+    avoid: [
+      "Envolver cualquier enlace suelto: un enlace dentro de un párrafo no es un menú.",
+      "Un <nav> sin enlaces dentro: no hay nada a lo que navegar.",
+    ],
+    example: {
+      html: `<nav>
+  <a href="#horarios">Horarios</a>
+  <a href="#precios">Precios</a>
+  <a href="#contacto">Contacto</a>
+</nav>
+`,
+    },
+    exampleNote: "Tres enlaces dentro de un solo <nav>: eso es el menú de la página.",
+    predict: {
+      question: "¿Cuál de estos va dentro de un <nav>?",
+      options: [
+        {
+          label: "El menú con «Inicio», «Horarios» y «Contacto»",
+          correct: true,
+          why: "Son los enlaces principales para moverse por el sitio: justo para eso está <nav>.",
+        },
+        {
+          label: "Un párrafo con un enlace a Wikipedia",
+          correct: false,
+          why: "Es un enlace dentro de un texto, no el menú del sitio.",
+        },
+        {
+          label: "El nombre de la isla",
+          correct: false,
+          why: "Eso es un título y va en el <header>. <nav> es para enlaces.",
+        },
+      ],
+    },
+    mdn: { label: "MDN: <nav>", url: "https://developer.mozilla.org/es/docs/Web/HTML/Reference/Elements/nav" },
+  },
+  {
+    id: "html-main",
+    worldId: "html-basics",
+    kind: "element",
+    title: "<main>",
+    tagline: "El contenido principal: lo que hace única a esta página.",
+    explain:
+      "<main> envuelve lo propio de esta página, lo que viniste a buscar: los avisos, la receta, el horario. La cabecera, el menú y el pie suelen repetirse en todo el sitio, así que van fuera. Solo hay un <main> por página, y los lectores de pantalla tienen un atajo para saltar directo a él.",
+    use: [
+      "Todo el contenido central: encabezados de sección, párrafos, listas, imágenes.",
+      "Después del <header> y del <nav>, y antes del <footer>, sin meterlo dentro de ellos.",
+      "Uno solo por página.",
+    ],
+    avoid: [
+      "Poner dos <main>: el lector de pantalla no sabría a cuál saltar.",
+      "Meter el <div> dentro de <main> en vez de cambiarlo por <main>: sobra una capa.",
+      "Meter el <header> o el <footer> de la página dentro de <main>.",
+    ],
+    example: {
+      html: `<header>
+  <h1>Panadería La Miga</h1>
+</header>
+<main>
+  <h2>Pan del día</h2>
+  <ul>
+    <li>Hogaza de centeno</li>
+    <li>Bollos de leche</li>
+  </ul>
+</main>
+<footer>
+  <p>Calle del Muelle, Isla Marcado</p>
+</footer>
+`,
+    },
+    exampleNote: "Lo que cambia de una página a otra (el pan del día) va en <main>; cabecera y pie quedan fuera.",
+    predict: {
+      question: "La web de la panadería tiene una página «Pan del día» y otra «Pasteles». ¿Qué cambia entre las dos?",
+      options: [
+        {
+          label: "Lo que hay dentro de <main>",
+          correct: true,
+          why: "El contenido principal es lo que hace única a cada página.",
+        },
+        {
+          label: "El <header>",
+          correct: false,
+          why: "La cabecera con el nombre de la panadería suele ser igual en todo el sitio.",
+        },
+        {
+          label: "El <footer>",
+          correct: false,
+          why: "El pie con la dirección se repite en todas las páginas.",
+        },
+      ],
+    },
+    mdn: { label: "MDN: <main>", url: "https://developer.mozilla.org/es/docs/Web/HTML/Reference/Elements/main" },
+  },
 ];
