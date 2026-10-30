@@ -320,3 +320,59 @@ export function Trophy(props: IconProps) {
     </Icon>
   );
 }
+
+/* ───────────────────────── Concept cards ───────────────────────── */
+
+/** Collectible concept card ("ficha"): a tilted card with a star window. */
+export function Card(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <g transform="rotate(-8 12 12)">
+        <rect x="5" y="2.8" width="14" height="18.4" rx="2.6" fill="var(--color-ocean-light)" stroke={INK} strokeWidth={OUTLINE} />
+        <rect x="7.6" y="5.4" width="8.8" height="7.4" rx="1.4" fill="var(--color-sand)" stroke={INK} strokeWidth="1.8" />
+        <path d="M12 7l.9 1.8 1.9.2-1.4 1.3.4 1.9-1.8-1-1.8 1 .4-1.9-1.4-1.3 1.9-.2z" fill="var(--color-foam)" stroke={INK} strokeWidth="1" />
+        <path d="M8 15.6h8M8 18.2h5" stroke={INK} strokeWidth="1.8" />
+      </g>
+    </Icon>
+  );
+}
+
+/** Fanned stack of cards: the Fichero (card album). */
+export function Cards(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <rect x="3.2" y="4.6" width="11" height="15" rx="2.2" fill="var(--color-coral)" stroke={INK} strokeWidth="2" transform="rotate(-14 8.7 12.1)" />
+      <g transform="rotate(10 14 12)">
+        <rect x="8.6" y="3.4" width="11.6" height="16.4" rx="2.4" fill="var(--color-ocean-light)" stroke={INK} strokeWidth={OUTLINE} />
+        <rect x="10.8" y="5.6" width="7.2" height="6.2" rx="1.2" fill="var(--color-sand)" stroke={INK} strokeWidth="1.7" />
+        <path d="M11 14.6h6.8M11 17h4.2" stroke={INK} strokeWidth="1.7" />
+      </g>
+    </Icon>
+  );
+}
+
+/** Kind glyphs (currentColor), drawn on the card's kind badge. */
+export const KindElement = (p: IconProps) => <Glyph {...p} d="M8 6.5L3 12l5 5.5M16 6.5l5 5.5-5 5.5M13.6 5l-3.2 14" />;
+export const KindAttribute = (p: IconProps) => (
+  <Icon {...p}>
+    <path d="M3.5 12l5-6.5H20v13H8.5z" fill="none" stroke="currentColor" strokeWidth={GLYPH} />
+    <circle cx="9.6" cy="12" r="1.7" fill="currentColor" />
+  </Icon>
+);
+export const KindProperty = (p: IconProps) => (
+  <Icon {...p}>
+    <path d="M4 7h16M4 17h16" fill="none" stroke="currentColor" strokeWidth={GLYPH} />
+    <circle cx="9" cy="7" r="2.6" fill="var(--color-ink)" stroke="currentColor" strokeWidth="2.6" />
+    <circle cx="15.5" cy="17" r="2.6" fill="var(--color-ink)" stroke="currentColor" strokeWidth="2.6" />
+  </Icon>
+);
+export const KindSelector = (p: IconProps) => (
+  <Icon {...p}>
+    <circle cx="12" cy="12" r="6.6" fill="none" stroke="currentColor" strokeWidth={GLYPH} />
+    <path d="M12 2.5v4M12 17.5v4M2.5 12h4M17.5 12h4" fill="none" stroke="currentColor" strokeWidth={GLYPH} />
+    <circle cx="12" cy="12" r="1.8" fill="currentColor" />
+  </Icon>
+);
+export const KindConcept = (p: IconProps) => (
+  <Glyph {...p} d="M12 6.5C9.8 4.8 6.8 4.4 3.5 5v13.5c3.3-.6 6.3-.2 8.5 1.5 2.2-1.7 5.2-2.1 8.5-1.5V5c-3.3-.6-6.3-.2-8.5 1.5zM12 6.5V20" />
+);
