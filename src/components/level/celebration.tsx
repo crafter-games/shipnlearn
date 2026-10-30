@@ -77,7 +77,7 @@ function Content({ level, next, data, onImprove }: Props & { data: CelebrationDa
 
         <div aria-hidden className="pointer-events-none absolute inset-x-0 top-2 flex justify-center overflow-hidden">
           <motion.div
-            className="size-64 rounded-full opacity-60 [background:repeating-conic-gradient(var(--color-sand)_0deg_12deg,transparent_12deg_30deg)] [mask-image:radial-gradient(circle,black_30%,transparent_70%)]"
+            className="size-64 rounded-full opacity-35 [background:repeating-conic-gradient(var(--color-sand)_0deg_12deg,transparent_12deg_30deg)] [mask-image:radial-gradient(circle,black_30%,transparent_70%)]"
             animate={reduce ? undefined : { rotate: 360 }}
             transition={{ duration: 18, repeat: Infinity, ease: "linear" }}
           />
@@ -96,6 +96,13 @@ function Content({ level, next, data, onImprove }: Props & { data: CelebrationDa
           {STAR_LABEL[Math.min(shown, data.stars)]}
         </p>
 
+        {data.stars < 3 && shown >= data.stars && (
+          <p className="-mt-3 mb-3 text-sm font-bold text-ink-soft">
+            {data.stars === 1
+              ? "Para ⭐⭐: cumple los objetivos de accesibilidad."
+              : "Para ⭐⭐⭐: vuelve a lanzarlo sin pistas."}
+          </p>
+        )}
         <div className="mb-2 inline-block rounded-xl border-[3px] border-ink bg-ink px-3 py-1 font-mono text-base font-bold text-sand">
           {level.concept}
         </div>

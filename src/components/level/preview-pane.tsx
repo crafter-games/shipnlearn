@@ -34,9 +34,9 @@ export function PreviewPane({ iframeRef, ghostSrcdoc, passed, total, className =
           <span className="size-2.5 rounded-full bg-sand" />
           <span className="size-2.5 rounded-full bg-lime" />
         </span>
-        <span className="font-display text-sm tracking-wide text-foam">Tu web</span>
+        <span className="whitespace-nowrap font-display text-sm tracking-wide text-foam">Tu web</span>
         <span
-          className={`ml-1 rounded-full border-2 border-ink px-2 py-px text-xs font-extrabold ${done ? "bg-lime text-ink" : "bg-foam text-ink"}`}
+          className={`ml-1 whitespace-nowrap rounded-full border-2 border-ink px-2 py-px text-xs font-extrabold ${done ? "bg-lime text-ink" : "bg-foam text-ink"}`}
           aria-label={`${passed} de ${total} objetivos cumplidos`}
           data-testid="progress-pill"
         >
@@ -55,7 +55,7 @@ export function PreviewPane({ iframeRef, ghostSrcdoc, passed, total, className =
                 max={80}
                 value={opacity}
                 onChange={(e) => setOpacity(Number(e.target.value))}
-                className="h-6 w-16 accent-sand sm:w-24"
+                className="h-6 w-14 accent-sand sm:w-20"
               />
             </>
           )}
@@ -66,9 +66,9 @@ export function PreviewPane({ iframeRef, ghostSrcdoc, passed, total, className =
               playSfx("ui-tap");
               setGhost((g) => !g);
             }}
-            className={`h-8 rounded-full border-2 border-ink px-2.5 text-xs font-extrabold shadow-chunky-sm transition-transform active:translate-y-0.5 active:shadow-pressed ${ghost ? "bg-grape text-foam" : "bg-foam text-ink"}`}
+            className={`h-8 whitespace-nowrap rounded-full border-2 border-ink px-2.5 text-xs font-extrabold shadow-chunky-sm transition-transform active:translate-y-0.5 active:shadow-pressed ${ghost ? "bg-grape text-foam" : "bg-foam text-ink"}`}
           >
-            👻 <span className="max-sm:sr-only">Ver objetivo</span>
+            👻 <span className="sr-only xl:not-sr-only">Ver objetivo</span>
           </button>
         </div>
       </div>
