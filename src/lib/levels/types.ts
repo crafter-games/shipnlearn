@@ -24,9 +24,9 @@ export type CheckContext = {
 };
 
 export type CheckKind =
-  /** Must pass for ⭐. */
+  /** Must pass for 1 star. */
   | "required"
-  /** Semantics / accessibility. Must pass (with axe) for ⭐⭐. */
+  /** Semantics / accessibility. Must pass (with axe) for 2 stars. */
   | "a11y";
 
 export type Check = {
