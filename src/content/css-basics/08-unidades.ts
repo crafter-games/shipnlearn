@@ -3,7 +3,7 @@ import type { CheckContext, Level } from "@/lib/levels/types";
 import { chWidth, contentWidth, noHorizontalScroll, withRootFontSize } from "./_helpers";
 
 const html = `<article class="pergamino">
-  <h2>📜 Normas de la biblioteca</h2>
+  <h2>Normas de la biblioteca</h2>
   <p>Habla bajito, devuelve los libros a tiempo y no uses los pergaminos como servilleta. Los búhos bibliotecarios lo ven todo, incluso de noche y con las gafas puestas al revés.</p>
   <p class="enlace">Catálogo: biblioteca.islaestilo.example/mapasDeMareasYFarosDelArchipielagoEdicionCompletaConIlustracionesOriginales1823</p>
 </article>
