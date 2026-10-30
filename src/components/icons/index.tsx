@@ -182,10 +182,11 @@ export function Pencil(props: IconProps) {
   return (
     <Icon {...props}>
       <g transform="rotate(45 12 12)">
-        <path d="M9.6 16.4L12 21.4l2.4-5z" fill="var(--color-foam)" stroke={INK} strokeWidth="2" />
-        <path d="M11.2 19.8l.8 1.6.8-1.6z" fill={INK} stroke={INK} strokeWidth="1" />
-        <rect x="9.6" y="5.6" width="4.8" height="10.8" fill="var(--color-sand)" stroke={INK} strokeWidth={OUTLINE} />
-        <path d="M9.6 5.6V4.2a1.6 1.6 0 0 1 1.6-1.6h1.6a1.6 1.6 0 0 1 1.6 1.6v1.4z" fill="var(--color-coral)" stroke={INK} strokeWidth={OUTLINE} />
+        <path d="M9 16.2l3 5.4 3-5.4z" fill="var(--color-foam)" stroke={INK} strokeWidth="2" />
+        <path d="M11 19.8l1 1.8 1-1.8z" fill={INK} stroke={INK} strokeWidth="1.2" />
+        <rect x="9" y="6" width="6" height="10.2" fill="var(--color-sand)" stroke={INK} strokeWidth={OUTLINE} />
+        <path d="M12 7.6v7" stroke="var(--color-sand-deep)" strokeWidth="1.4" />
+        <path d="M9 6V4.4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2V6z" fill="var(--color-coral)" stroke={INK} strokeWidth={OUTLINE} />
       </g>
     </Icon>
   );
