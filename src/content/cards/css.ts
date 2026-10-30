@@ -1,4 +1,20 @@
+import { svgDataUri } from "@/content/css-basics/_helpers";
 import type { ConceptCard } from "@/lib/levels/types";
+
+/**
+ * A 2:1 lighthouse at dusk, for the object-fit card: squeezing it into a
+ * square without object-fit visibly deforms the tower. preserveAspectRatio="none"
+ * makes the SVG stretch like a photo would, instead of letterboxing itself.
+ */
+const LIGHTHOUSE_SRC = svgDataUri(`<svg xmlns="http://www.w3.org/2000/svg" width="200" height="100" viewBox="0 0 200 100" preserveAspectRatio="none">
+  <rect width="200" height="100" fill="#FFB23F"/>
+  <rect y="72" width="200" height="28" fill="#1E90FF"/>
+  <circle cx="160" cy="28" r="12" fill="#FFF4D6"/>
+  <path d="M88 72 L92 32 H108 L112 72 Z" fill="#FFFFFF" stroke="#1B1F3B" stroke-width="3"/>
+  <path d="M90 56 H110 M91 44 H109" stroke="#FF5D73" stroke-width="5"/>
+  <rect x="90" y="20" width="20" height="12" fill="#FFD66B" stroke="#1B1F3B" stroke-width="3"/>
+  <path d="M86 20 L100 9 L114 20 Z" fill="#FF5D73" stroke="#1B1F3B" stroke-width="3"/>
+</svg>`);
 
 /** Concept cards for Isla Estilo (CSS fundamental), in teaching order. */
 export const cssCards: ConceptCard[] = [
@@ -1229,6 +1245,370 @@ p {
     mdn: {
       label: "MDN: overflow-wrap (inglés)",
       url: "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/overflow-wrap",
+    },
+  },
+
+  // -------------------------------------------------------------------------
+  // css-09: display and sizing
+  // -------------------------------------------------------------------------
+  {
+    id: "css-display",
+    worldId: "css-basics",
+    kind: "property",
+    title: "display: block e inline",
+    tagline: "Decide si una caja ocupa toda la fila o fluye con el texto.",
+    explain:
+      "Cada elemento trae un display de serie. Los block (<p>, <h1>, <li>, <div>) ocupan todo el ancho y empujan al siguiente hacia abajo. Los inline (<a>, <strong>, <span>) se colocan dentro de la línea, uno tras otro, pero ignoran width y height. La propiedad display cambia ese comportamiento.",
+    use: [
+      "display: block para que un enlace ocupe su propia fila entera.",
+      "display: inline para poner en la misma línea elementos que son block, como <li>, si no necesitas darles tamaño.",
+    ],
+    avoid: [
+      "Darle width a un <a> o un <span> y esperar que cambie: siendo inline, lo ignora.",
+      "Colocar cajas con <br> o espacios: display, y luego flexbox, lo hacen mejor.",
+    ],
+    example: {
+      html: `<p>Soy un párrafo: block.</p>
+<p>Otro párrafo, debajo.</p>
+<a href="#">Barcos</a>
+<a href="#">Cebos</a>
+<a href="#">Mareas</a>
+`,
+      css: `p {
+  background-color: lightblue;
+}
+
+a {
+  width: 200px;
+  background-color: wheat;
+}
+`,
+    },
+    exampleNote:
+      "Los <p> se estiran a todo el ancho y se apilan; los <a> van en fila e ignoran width: 200px.",
+    predict: {
+      question: "Si añades display: block a la regla de a, ¿qué pasa con los enlaces?",
+      options: [
+        {
+          label: "Cada uno pasa a su propia fila y mide 200px",
+          correct: true,
+          why: "Como block, empiezan línea nueva y ya respetan width.",
+        },
+        {
+          label: "Siguen en fila, pero ahora de 200px",
+          correct: false,
+          why: "Eso lo hace inline-block, la siguiente ficha. block siempre empieza una fila nueva.",
+        },
+        {
+          label: "Nada cambia",
+          correct: false,
+          why: "display cambia cómo se comporta la caja: es justo lo que lo arregla.",
+        },
+      ],
+    },
+    mdn: {
+      label: "MDN: display",
+      url: "https://developer.mozilla.org/es/docs/Web/CSS/Reference/Properties/display",
+    },
+  },
+  {
+    id: "css-inline-block",
+    worldId: "css-basics",
+    kind: "property",
+    title: "display: inline-block",
+    tagline: "En fila como el texto, pero respetando width y height.",
+    explain:
+      "inline-block mezcla lo mejor de los dos: la caja se coloca en la línea junto a sus vecinas, como inline, pero acepta width, height y padding como una block. Es la forma clásica de hacer botones en fila.",
+    use: [
+      "Botones o etiquetas que van en fila y necesitan un ancho fijo.",
+      "Elementos de lista (<li>) que quieres poner uno al lado del otro.",
+    ],
+    avoid: [
+      "Ponérselo solo al hijo cuando el padre es block: si cada <a> está en su <li>, los <li> también lo necesitan.",
+      "Esperar que se centren o repartan solos: para eso, flexbox es más cómodo (próximo nivel).",
+    ],
+    example: {
+      html: `<a class="boton" href="#">Barcos</a>
+<a class="boton" href="#">Cebos</a>
+`,
+      css: `.boton {
+  display: inline-block;
+  width: 140px;
+  padding: 10px 0;
+  border-radius: 8px;
+  background-color: teal;
+  color: white;
+  text-align: center;
+}
+`,
+    },
+    exampleNote: "display: inline-block deja los enlaces en fila y hace que respeten width: 140px.",
+    predict: {
+      question: "Cada enlace está dentro de su propio <li>. Si solo les das inline-block a los <a>, ¿quedan en fila?",
+      options: [
+        {
+          label: "No: cada <li> sigue siendo block y ocupa su fila",
+          correct: true,
+          why: "El padre manda en la fila: los <li> también necesitan inline-block (o flexbox en la lista).",
+        },
+        {
+          label: "Sí, porque los enlaces ya van en fila",
+          correct: false,
+          why: "Van en fila dentro de su línea, pero cada uno vive en un <li> distinto, apilado.",
+        },
+      ],
+    },
+    mdn: {
+      label: "MDN: display",
+      url: "https://developer.mozilla.org/es/docs/Web/CSS/Reference/Properties/display",
+    },
+  },
+  {
+    id: "css-object-fit",
+    worldId: "css-basics",
+    kind: "property",
+    title: "object-fit",
+    tagline: "Decide cómo encaja una imagen en una caja de otra forma.",
+    explain:
+      "Si le das a una imagen un width y un height con otra proporción (una foto apaisada en un cuadrado), el navegador la estira y la deforma. object-fit: cover la agranda sin deformarla hasta cubrir la caja y recorta lo que sobra. object-fit: contain la mete entera y deja huecos.",
+    use: [
+      "Fotos de perfil cuadradas o redondas a partir de fotos apaisadas.",
+      "Galerías donde todas las miniaturas miden lo mismo.",
+    ],
+    avoid: [
+      "Forzar width y height con otra proporción sin object-fit: la imagen sale aplastada.",
+      "Usar cover cuando no se puede recortar nada importante, como un mapa: ahí mejor contain.",
+    ],
+    example: {
+      html: `<img src="${LIGHTHOUSE_SRC}" alt="Un faro, aplastado a la fuerza">
+<img class="encaja" src="${LIGHTHOUSE_SRC}" alt="Un faro, recortado sin deformar">
+`,
+      css: `img {
+  width: 120px;
+  height: 120px;
+  border: 3px solid #1B1F3B;
+}
+
+.encaja {
+  object-fit: cover;
+}
+`,
+    },
+    exampleNote:
+      "Las dos imágenes son apaisadas y miden 120 por 120px; solo la de object-fit: cover no sale aplastada.",
+    predict: {
+      question: "Con object-fit: cover, una foto apaisada dentro de un cuadrado pierde…",
+      options: [
+        {
+          label: "Un trozo de los lados izquierdo y derecho",
+          correct: true,
+          why: "La foto crece hasta cubrir el alto; como es más ancha que alta, lo que sobra está a los lados.",
+        },
+        {
+          label: "Un trozo de arriba y de abajo",
+          correct: false,
+          why: "Eso le pasaría a una foto vertical. La apaisada sobra por los lados.",
+        },
+        {
+          label: "Nada: se estrecha para caber",
+          correct: false,
+          why: "Estrecharla es deformarla, que es justo lo que cover evita.",
+        },
+      ],
+    },
+    mdn: {
+      label: "MDN: object-fit",
+      url: "https://developer.mozilla.org/es/docs/Web/CSS/Reference/Properties/object-fit",
+    },
+  },
+
+  // -------------------------------------------------------------------------
+  // css-10: flexbox
+  // -------------------------------------------------------------------------
+  {
+    id: "css-flex",
+    worldId: "css-basics",
+    kind: "property",
+    title: "display: flex",
+    tagline: "Convierte una caja en un contenedor que pone a sus hijos en fila.",
+    explain:
+      "display: flex se escribe en el padre, no en los hijos. Desde ese momento, sus hijos directos se colocan uno al lado del otro, aunque sean block. Después, con otras propiedades del contenedor, decides cómo se reparten y alinean.",
+    use: [
+      "Menús, barras de botones, filas de tarjetas o de iconos.",
+      "Cualquier grupo que deba ir en fila y alinearse.",
+    ],
+    avoid: [
+      "Ponérselo a los hijos esperando que se pongan en fila: va en el contenedor.",
+      "Cambiar el orden visual con row-reverse u order: el teclado y los lectores de pantalla siguen el orden del HTML.",
+    ],
+    example: {
+      html: `<div class="jardin">
+  <div class="maceta">Cactus</div>
+  <div class="maceta">Girasol</div>
+  <div class="maceta">Palmera</div>
+</div>
+`,
+      css: `.jardin {
+  display: flex;
+  padding: 12px;
+  background-color: honeydew;
+}
+
+.maceta {
+  padding: 12px;
+  border: 3px solid darkgreen;
+  background-color: gold;
+}
+`,
+    },
+    exampleNote: "display: flex en .jardin pone las tres macetas en fila, aunque cada una es un <div>.",
+    predict: {
+      question: "Si quitas display: flex de .jardin, ¿cómo quedan las macetas?",
+      options: [
+        {
+          label: "Apiladas, una debajo de otra",
+          correct: true,
+          why: "Sin flex vuelven a ser <div> block normales: cada uno ocupa su fila.",
+        },
+        {
+          label: "En fila igual",
+          correct: false,
+          why: "Lo que las ponía en fila era el contenedor flex. Sin él, mandan sus display de serie.",
+        },
+      ],
+    },
+    mdn: {
+      label: "MDN: Flexbox",
+      url: "https://developer.mozilla.org/es/docs/Learn_web_development/Core/CSS_layout/Flexbox",
+    },
+  },
+  {
+    id: "css-justify-content",
+    worldId: "css-basics",
+    kind: "property",
+    title: "justify-content y align-items",
+    tagline: "Reparten y alinean a los hijos de un contenedor flex.",
+    explain:
+      "En un contenedor flex, justify-content decide dónde van los hijos a lo largo de la fila: al inicio (flex-start), al centro (center), al final (flex-end) o repartidos (space-between). align-items los alinea en vertical: arriba (flex-start), centrados (center) o abajo (flex-end). Las dos se escriben en el contenedor.",
+    use: [
+      "justify-content: center para agrupar elementos en el medio.",
+      "space-between para llevar los extremos a los lados, como un logo a la izquierda y un menú a la derecha.",
+      "align-items: center para centrar en vertical elementos de distinta altura.",
+    ],
+    avoid: [
+      "Usarlas sin display: flex en el contenedor: no hacen nada.",
+      "Centrar a ojo con márgenes: justify-content lo calcula exacto.",
+    ],
+    example: {
+      html: `<div class="jardin">
+  <div class="maceta">Cactus</div>
+  <div class="maceta alta">Girasol</div>
+  <div class="maceta">Palmera</div>
+</div>
+`,
+      css: `.jardin {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 140px;
+  background-color: honeydew;
+}
+
+.maceta {
+  padding: 12px;
+  border: 3px solid darkgreen;
+  background-color: gold;
+}
+
+.alta {
+  padding: 36px 12px;
+}
+`,
+    },
+    exampleNote:
+      "justify-content: center las agrupa en el medio de la fila; align-items: center las centra en vertical.",
+    predict: {
+      question: "Cambias justify-content: center por space-between. ¿Dónde quedan las macetas?",
+      options: [
+        {
+          label: "Una en cada extremo y la del medio en el centro",
+          correct: true,
+          why: "space-between pega la primera y la última a los bordes y reparte el espacio sobrante entre ellas.",
+        },
+        {
+          label: "Todas juntas a la izquierda",
+          correct: false,
+          why: "Eso hace flex-start, el valor por defecto.",
+        },
+        {
+          label: "Igual, pero arriba del todo",
+          correct: false,
+          why: "La posición vertical la decide align-items, que no has cambiado.",
+        },
+      ],
+    },
+    mdn: {
+      label: "MDN: justify-content",
+      url: "https://developer.mozilla.org/es/docs/Web/CSS/Reference/Properties/justify-content",
+    },
+  },
+  {
+    id: "css-gap",
+    worldId: "css-basics",
+    kind: "property",
+    title: "gap",
+    tagline: "Pone el mismo espacio entre los hijos de un contenedor flex.",
+    explain:
+      "gap fija la separación entre cada hijo y el siguiente, por ejemplo gap: 16px. Solo añade espacio entre ellos, nunca antes del primero ni después del último. Se escribe en el contenedor, junto a display: flex.",
+    use: [
+      "Separar botones, tarjetas o iconos en fila con una distancia exacta.",
+      "Cambiar toda la separación de una vez tocando un solo valor.",
+    ],
+    avoid: [
+      "Separar con margin en cada hijo: sobra espacio en los extremos y hay que compensarlo.",
+      "Ponérselo a los hijos: gap va en el contenedor.",
+    ],
+    example: {
+      html: `<div class="jardin">
+  <div class="maceta">Cactus</div>
+  <div class="maceta">Girasol</div>
+  <div class="maceta">Palmera</div>
+</div>
+`,
+      css: `.jardin {
+  display: flex;
+  gap: 24px;
+  padding: 12px;
+  background-color: honeydew;
+}
+
+.maceta {
+  padding: 12px;
+  border: 3px solid darkgreen;
+  background-color: gold;
+}
+`,
+    },
+    exampleNote:
+      "gap: 24px separa cada maceta de la siguiente; la primera sigue pegada al relleno del jardín.",
+    predict: {
+      question: "Con tres macetas y gap: 24px, ¿cuántos huecos de 24px hay?",
+      options: [
+        {
+          label: "Dos: uno entre cada par de macetas",
+          correct: true,
+          why: "gap solo pone espacio entre hijos vecinos, no en los extremos.",
+        },
+        {
+          label: "Cuatro: también antes de la primera y después de la última",
+          correct: false,
+          why: "Eso pasaría con margin en cada maceta. gap no toca los extremos.",
+        },
+      ],
+    },
+    mdn: {
+      label: "MDN: gap",
+      url: "https://developer.mozilla.org/es/docs/Web/CSS/Reference/Properties/gap",
     },
   },
 ];
