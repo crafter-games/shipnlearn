@@ -2,7 +2,7 @@ import { $$, rect, style } from "@/lib/levels/checks";
 import type { CheckContext, FillSpec, Level } from "@/lib/levels/types";
 import { fillTemplate, px, textContrast } from "./_helpers";
 
-const html = `<div class="placa">🪚 Carpintería Tablas</div>
+const html = `<div class="placa">Carpintería Tablas</div>
 <div class="placa">Abierto de 9 a 18 h · Martes cerrado por siesta</div>
 `;
 
