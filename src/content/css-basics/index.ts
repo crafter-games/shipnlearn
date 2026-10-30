@@ -7,6 +7,7 @@ import { caja } from "./05-caja";
 import { especificidad } from "./06-especificidad";
 import { pseudoclases } from "./07-pseudoclases";
 import { unidades } from "./08-unidades";
+import { display } from "./09-display";
 
 export const cssBasics: World = {
   id: "css-basics",
@@ -22,5 +23,6 @@ export const cssBasics: World = {
     especificidad,
     pseudoclases,
     unidades,
+    display,
   ],
 };
