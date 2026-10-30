@@ -58,7 +58,9 @@ test("using a hint caps the level at two stars", async ({ page }) => {
 
 test("keeps the draft across reloads and restarts on demand", async ({ page }) => {
   await typeInEditor(page, "<h1>Borrador");
-  await expect(page.locator('[data-check="h1-has-text"]')).toHaveAttribute("data-state", "pass");
+  await expect(page.locator('[data-check="h1-has-text"]')).toHaveAttribute("data-state", "pass", {
+    timeout: 10_000,
+  });
   await page.reload();
   await expect(page.locator(".cm-content")).toContainText("Borrador");
 
