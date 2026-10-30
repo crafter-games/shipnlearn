@@ -9,6 +9,7 @@ import { pseudoclases } from "./07-pseudoclases";
 import { unidades } from "./08-unidades";
 import { display } from "./09-display";
 import { flexbox } from "./10-flexbox";
+import { perfil } from "./11-perfil";
 
 export const cssBasics: World = {
   id: "css-basics",
@@ -26,5 +27,6 @@ export const cssBasics: World = {
     unidades,
     display,
     flexbox,
+    perfil,
   ],
 };
