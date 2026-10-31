@@ -85,7 +85,13 @@
 - Mundo 1 **Isla Marcado** (HTML fundamental): 8 niveles + jefe *Página de receta*.
 - Mundo 2 **Isla Estilo** (CSS fundamental): 10 niveles + jefe *Tarjeta de perfil*.
 - Dentro de cada mundo: modo `tiles` → `fill` → `code`. Cada mundo abre con un reto trampa "se ve bien pero no es accesible".
-- Futuro: HTML intermedio/avanzado, CSS intermedio/avanzado (curriculum en `docs/curriculum.md`), JS, TS.
+- Mundo 3 **Isla Mercado** (HTML intermedio): formularios, tipos de input, validación nativa, fieldset/legend, tablas accesibles, multimedia con subtítulos, imágenes responsive. Jefe *Pedido a domicilio*.
+- Mundo 4 **Isla Taller** (CSS intermedio): flexbox a fondo, grid y áreas, position y sticky, media queries mobile first, custom properties, transiciones y animaciones con reduced motion. Jefe *La web del taller*.
+- Mundo 5 **Isla Faro** (HTML avanzado): details/summary, popover, dialog declarativo, ARIA mínimo, live regions, metadatos, lazy loading, inert. Jefe *Estación del faro*.
+- Mundo 6 **Isla Volcán** (CSS avanzado): nesting, :has(), @layer, container queries, subgrid, oklch/color-mix/light-dark, clamp(), anchor positioning. Jefe *Observatorio de lava*.
+- Orden de juego: HTML y CSS se alternan por nivel de dificultad (intercalado). En intermedio, 2 niveles de huecos y el resto código; en avanzado, todo código (expertise reversal).
+- "Saltar a esta isla": quien ya sabe puede abrir el primer nivel de cualquier isla sin terminar la anterior (autonomía); lo saltado sigue jugable.
+- Futuro: JS, TS.
 
 ## Game feel
 
@@ -139,7 +145,7 @@ M2–M6 se construyen en paralelo por subagentes sobre contratos definidos en M1
 
 - Cuentas, sincronización, backend (v2: Clerk + Postgres en VPS).
 - Leaderboards y social.
-- JS, TypeScript, mundos intermedio/avanzado.
+- JS, TypeScript.
 - i18n a inglés; sandbox libre.
 
 ## Changelog
@@ -149,3 +155,4 @@ M2–M6 se construyen en paralelo por subagentes sobre contratos definidos en M1
 - 2026-10-30: Música procedural sustituida por loops chiptune CC0 con intensidad dinámica en el editor (feedback: no se oía y no sonaba a juego). Regla nueva: sin emojis, todo en SVG propio.
 - 2026-10-30: Fichas de concepto antes de cada nivel y Fichero coleccionable (feedback: faltaba explicar qué es cada elemento y cuándo usarlo antes de jugar).
 - 2026-10-31: Menos texto (presupuesto por test), fichas en pasos, tutorial de primer uso y más animaciones y transiciones (feedback: demasiado texto y fricción al empezar).
+- 2026-10-31: Cuatro islas nuevas (HTML/CSS intermedio y avanzado), 8 habitantes nuevos y "Saltar a esta isla".
