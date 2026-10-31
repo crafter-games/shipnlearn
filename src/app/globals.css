@@ -68,6 +68,52 @@
 }
 
 @layer components {
+  /*
+   * Level screen entry: panels rise in, staggered by --i (0, 1, 2…). CSS
+   * animations replay whenever a kept-alive page is shown again, which is
+   * exactly when the player enters it.
+   */
+  .enter-rise {
+    animation: enter-rise 340ms cubic-bezier(0.22, 1.25, 0.36, 1) calc(var(--i, 0) * 55ms + 80ms) backwards;
+  }
+  @keyframes enter-rise {
+    from { opacity: 0; translate: 0 22px; scale: 0.96; }
+  }
+  /* The islander's request pops out of their avatar (text is readable at once). */
+  .bubble-pop {
+    transform-origin: 0 1.25rem;
+    animation: bubble-pop 300ms cubic-bezier(0.34, 1.56, 0.64, 1) 200ms backwards;
+  }
+  @keyframes bubble-pop {
+    from { scale: 0.6; opacity: 0; }
+  }
+  /* Editor tabs slide in from their side (--tab-dir: -1 left, 1 right). */
+  .tab-in {
+    animation: tab-in 200ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  @keyframes tab-in {
+    from { opacity: 0; translate: calc(var(--tab-dir, 1) * 28px) 0; }
+  }
+  .fade-in {
+    animation: fade-in 200ms ease-out;
+  }
+  @keyframes fade-in {
+    from { opacity: 0; }
+  }
+  /* Ship it! breathes once every required goal passes. A ring, not a scale, so the button never moves. */
+  .ship-ready::after {
+    content: "";
+    position: absolute;
+    inset: -3px;
+    border-radius: inherit;
+    pointer-events: none;
+    animation: ship-breathe 1.6s ease-in-out infinite;
+  }
+  @keyframes ship-breathe {
+    0% { box-shadow: 0 0 0 0 color-mix(in oklab, var(--color-sand) 95%, transparent); }
+    70%, 100% { box-shadow: 0 0 0 16px color-mix(in oklab, var(--color-sand) 0%, transparent); }
+  }
+
   /* Light sweeping across a bar while it fills (HUD XP). */
   .hud-shimmer {
     background: linear-gradient(100deg, transparent 20%, color-mix(in oklab, var(--color-foam) 75%, transparent) 50%, transparent 80%);

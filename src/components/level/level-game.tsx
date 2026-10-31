@@ -248,7 +248,8 @@ export function LevelGame({ level, review = false }: { level: Level; review?: bo
   const editorPanel = (
     <section
       aria-label="Editor"
-      className="flex min-h-[46dvh] flex-col overflow-hidden rounded-chunk border-[3px] border-ink bg-ink shadow-chunky md:min-h-[60dvh] lg:min-h-0 lg:flex-1"
+      style={{ "--i": 2 } as React.CSSProperties}
+      className="enter-rise flex min-h-[46dvh] flex-col overflow-hidden rounded-chunk border-[3px] border-ink bg-ink shadow-chunky md:min-h-[60dvh] lg:min-h-0 lg:flex-1"
     >
       <div className="flex items-center gap-1 border-b-[3px] border-ink bg-ink-soft px-2 pt-2" role={level.mode === "code" && editable.length > 1 ? "tablist" : undefined}>
         {level.mode === "code" ? (
@@ -281,7 +282,12 @@ export function LevelGame({ level, review = false }: { level: Level; review?: bo
       <div className="relative min-h-0 flex-1">
         {level.mode === "code" &&
           editable.map((f) => (
-            <div key={f} className={`absolute inset-0 ${activeFile === f ? "" : "hidden"}`}>
+            <div
+              key={f}
+              // Re-shown tabs slide in from their side (CSS animations restart on display).
+              style={{ "--tab-dir": f === "html" ? -1 : 1 } as React.CSSProperties}
+              className={`absolute inset-0 ${activeFile === f ? "tab-in" : "hidden"}`}
+            >
               <CodeEditor
                 ref={(h) => {
                   editorRefs.current[f] = h;
@@ -366,14 +372,14 @@ export function LevelGame({ level, review = false }: { level: Level; review?: bo
         <main
           className="flex flex-1 flex-col gap-3 px-3 pt-2 pb-[calc(6rem+env(safe-area-inset-bottom))] sm:px-4 md:grid md:grid-cols-2 md:gap-4 md:pb-4 md:[grid-template-areas:'npc_editor'_'preview_editor'_'checks_editor'] md:[grid-template-rows:auto_auto_1fr] lg:min-h-0 lg:grid-cols-[minmax(17rem,0.75fr)_minmax(0,1.2fr)_minmax(0,1.05fr)] lg:[grid-template-areas:'npc_editor_preview'_'checks_editor_preview'] lg:[grid-template-rows:auto_minmax(0,1fr)]"
         >
-          <NpcBubble npc={level.npc} story={level.story} className="md:[grid-area:npc]" />
+          <NpcBubble npc={level.npc} story={level.story} className="enter-rise md:[grid-area:npc]" />
 
           <PreviewPane
             iframeRef={iframeRef}
             ghostSrcdoc={ghostSrcdoc}
             passed={passedRequired}
             total={required.length}
-            className="h-[42dvh] md:h-[38dvh] md:[grid-area:preview] lg:h-auto"
+            className="enter-rise h-[42dvh] [--i:1] md:h-[38dvh] md:[grid-area:preview] lg:h-auto"
           />
 
           <div className="flex flex-col gap-3 md:[grid-area:editor] lg:min-h-0">
@@ -383,7 +389,7 @@ export function LevelGame({ level, review = false }: { level: Level; review?: bo
             >
               <Button
                 size="lg"
-                className="w-full"
+                className={`relative w-full ${required.length > 0 && passedRequired === required.length ? "ship-ready" : ""}`}
                 onClick={() => {
                   playSfx("ui-tap");
                   void ship();
@@ -402,7 +408,7 @@ export function LevelGame({ level, review = false }: { level: Level; review?: bo
             </div>
           </div>
 
-          <div className="md:[grid-area:checks] lg:min-h-0 lg:overflow-y-auto lg:pb-2">
+          <div className="enter-rise [--i:3] md:[grid-area:checks] lg:min-h-0 lg:overflow-y-auto lg:pb-2">
             <Checklist
               ref={checklistRef}
               results={results}

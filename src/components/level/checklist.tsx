@@ -132,19 +132,40 @@ function Line({
     <li
       data-check={id}
       data-state={state}
-      className={`flex items-start gap-2 rounded-xl px-1.5 py-1 ${state === "fail" ? "bg-coral/15" : ""}`}
+      className={`relative flex items-start gap-2 rounded-xl px-1.5 py-1 ${state === "fail" ? "bg-coral/15" : ""}`}
     >
+      {pop ? (
+        // A goal just passed: the row flashes and a ring bursts from its tick.
+        <>
+          <motion.span
+            key={`flash-${pop}`}
+            aria-hidden
+            className="pointer-events-none absolute inset-0 rounded-xl bg-lime/60"
+            initial={{ opacity: 1, scaleX: 0.9 }}
+            animate={{ opacity: 0, scaleX: 1 }}
+            transition={{ duration: 0.7, ease: "easeOut" }}
+          />
+          <motion.span
+            key={`ring-${pop}`}
+            aria-hidden
+            className="pointer-events-none absolute top-1.5 left-1.5 size-6 rounded-full border-[3px] border-lime-deep"
+            initial={{ opacity: 1, scale: 0.8 }}
+            animate={{ opacity: 0, scale: 2.4 }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+          />
+        </>
+      ) : null}
       <motion.span
         key={pop}
         initial={pop ? { scale: 0.6 } : false}
         animate={{ scale: [0.6, 1.25, 1] }}
         transition={{ duration: 0.32, ease: [0.34, 1.56, 0.64, 1] }}
         aria-hidden
-        className={`mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full border-[3px] border-ink text-sm font-black leading-none ${icon.cls}`}
+        className={`relative mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full border-[3px] border-ink text-sm font-black leading-none ${icon.cls}`}
       >
         {icon.glyph}
       </motion.span>
-      <div className="min-w-0">
+      <div className="relative min-w-0">
         <p className="text-[15px] font-bold leading-snug text-ink">
           <span className="sr-only">{icon.sr}: </span>
           {label}
