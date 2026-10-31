@@ -85,7 +85,19 @@ export type AvatarId =
   | "nieve"
   | "buho"
   | "anzuelo"
-  | "tula";
+  | "tula"
+  // Isla Mercado (HTML intermedio)
+  | "marisol"
+  | "cifras"
+  // Isla Taller (CSS intermedio)
+  | "escuadra"
+  | "pixel"
+  // Isla Faro (HTML avanzado)
+  | "eco"
+  | "llave"
+  // Isla Volcán (CSS avanzado)
+  | "magma"
+  | "prisma";
 
 export type Npc = {
   name: string;
@@ -160,7 +172,13 @@ export type ConceptCard = {
   mdn: MdnLink;
 };
 
-export type WorldId = "html-basics" | "css-basics";
+export type WorldId =
+  | "html-basics"
+  | "css-basics"
+  | "html-intermediate"
+  | "css-intermediate"
+  | "html-advanced"
+  | "css-advanced";
 
 export type World = {
   id: WorldId;

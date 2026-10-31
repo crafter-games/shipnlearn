@@ -1,9 +1,23 @@
+import { cssAdvanced } from "@/content/css-advanced";
 import { cssBasics } from "@/content/css-basics";
+import { cssIntermediate } from "@/content/css-intermediate";
+import { htmlAdvanced } from "@/content/html-advanced";
 import { htmlBasics } from "@/content/html-basics";
+import { htmlIntermediate } from "@/content/html-intermediate";
 import type { Level, World, WorldId } from "./types";
 
-/** Worlds in play order. Add new worlds here. */
-export const worlds: World[] = [htmlBasics, cssBasics];
+/**
+ * Worlds in play order: HTML and CSS alternate at each tier (basics →
+ * intermediate → advanced), so practice keeps mixing both languages.
+ */
+export const worlds: World[] = [
+  htmlBasics,
+  cssBasics,
+  htmlIntermediate,
+  cssIntermediate,
+  htmlAdvanced,
+  cssAdvanced,
+];
 
 export const allLevels: Level[] = worlds.flatMap((w) => w.levels);
 
