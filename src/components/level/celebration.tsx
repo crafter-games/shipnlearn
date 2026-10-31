@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "motion/react";
+import { animate, motion, useAnimate } from "motion/react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ArrowRight, Island, Rocket, Star } from "@/components/icons";
@@ -32,6 +32,13 @@ const STAR_DELAY = 420; // ms between stars (tune to the beat: 110 BPM ≈ 545 m
 
 const STAR_LABEL = ["", "Lo has lanzado", "Y además es accesible", "Y sin pistas"];
 
+/** Seconds until the last star has landed: the XP pill appears then. */
+const xpDelay = (stars: number) => 0.35 + stars * (STAR_DELAY / 1000);
+
+/** Spark directions (deg) around a landing star. */
+const SPARKS = [0, 45, 90, 135, 180, 225, 270, 315];
+const SPARK_COLORS = ["bg-sand", "bg-lime", "bg-coral", "bg-ocean-light"];
+
 /** Success overlay: stars pop in one by one, confetti, the lesson and what's next. */
 export function Celebration({ level, next, data, onImprove }: Props) {
   return (
@@ -44,7 +51,22 @@ export function Celebration({ level, next, data, onImprove }: Props) {
 function Content({ level, next, data, onImprove }: Props & { data: CelebrationData }) {
   const reduce = useReducedMotion();
   const [shown, setShown] = useState(0);
+  const [xpShown, setXpShown] = useState(reduce ? data.xpGained : 0);
   const xp = useProgress((s) => s.xp);
+  // The card takes a small hit as each star lands.
+  const [card, animateCard] = useAnimate<HTMLDivElement>();
+
+  // XP counts up once the stars are in.
+  useEffect(() => {
+    if (reduce || data.xpGained === 0) return;
+    const c = animate(0, data.xpGained, {
+      delay: xpDelay(data.stars) + 0.1,
+      duration: 0.6,
+      ease: "easeOut",
+      onUpdate: (v) => setXpShown(Math.round(v)),
+    });
+    return () => c.stop();
+  }, [data, reduce]);
 
   useEffect(() => {
     const timers: number[] = [];
@@ -54,6 +76,9 @@ function Content({ level, next, data, onImprove }: Props & { data: CelebrationDa
           () => {
             setShown(i);
             playSfx("star", { step: i - 1 });
+            if (!reduce && card.current) {
+              void animateCard(card.current, { y: [0, 3 + i * 2, 0], rotate: [0, i % 2 ? -0.8 : 0.8, 0] }, { delay: 0.12, duration: 0.22 });
+            }
             if (i === data.stars && data.rankUp) playSfx("levelup");
           },
           reduce ? 0 : 350 + (i - 1) * STAR_DELAY,
@@ -61,11 +86,12 @@ function Content({ level, next, data, onImprove }: Props & { data: CelebrationDa
       );
     }
     return () => timers.forEach((t) => window.clearTimeout(t));
-  }, [data, reduce]);
+  }, [data, reduce, animateCard, card]);
 
   return (
     <>
       <Confetti />
+      <div ref={card}>
       <motion.div
         initial={reduce ? { opacity: 0 } : { scale: 0.7, y: 40, opacity: 0 }}
         animate={{ scale: 1, y: 0, opacity: 1 }}
@@ -73,12 +99,17 @@ function Content({ level, next, data, onImprove }: Props & { data: CelebrationDa
         className="relative mt-8 rounded-chunk border-[3px] border-ink bg-foam px-5 pt-12 pb-5 text-center shadow-chunky"
         data-testid="celebration"
       >
-        <div className="absolute -top-8 left-1/2 -translate-x-1/2 -rotate-2 rounded-2xl border-[3px] border-ink bg-sand px-6 py-2 shadow-chunky">
+        <motion.div
+          className="absolute -top-8 left-1/2 -translate-x-1/2 rounded-2xl border-[3px] border-ink bg-sand px-6 py-2 shadow-chunky"
+          initial={reduce ? { rotate: -2 } : { y: -50, scale: 1.4, rotate: -14, opacity: 0 }}
+          animate={{ y: 0, scale: 1, rotate: -2, opacity: 1 }}
+          transition={{ type: "spring", stiffness: 520, damping: 15, delay: reduce ? 0 : 0.12 }}
+        >
           <h2 id="celebrate-title" className="flex items-center gap-2 whitespace-nowrap font-display text-4xl tracking-wide text-foam text-stroke">
             ¡Lanzado!
             <Rocket className="size-9" />
           </h2>
-        </div>
+        </motion.div>
 
         <div aria-hidden className="pointer-events-none absolute inset-x-0 top-2 flex justify-center overflow-hidden">
           <motion.div
@@ -117,19 +148,32 @@ function Content({ level, next, data, onImprove }: Props & { data: CelebrationDa
           <motion.span
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
-            transition={{ delay: reduce ? 0 : 0.35 + data.stars * (STAR_DELAY / 1000), type: "spring", stiffness: 500, damping: 18 }}
-            className="rounded-full border-[3px] border-ink bg-lime px-3 py-1 font-display text-lg shadow-chunky-sm"
+            transition={{ delay: reduce ? 0 : xpDelay(data.stars), type: "spring", stiffness: 500, damping: 14 }}
+            className="rounded-full border-[3px] border-ink bg-lime px-3 py-1 font-display text-lg tabular-nums shadow-chunky-sm"
           >
-            {data.xpGained > 0 ? `+${data.xpGained} XP` : "Récord igualado"}
+            {/* Screen readers get the final value; the count-up is visual. */}
+            <span aria-hidden>{data.xpGained > 0 ? `+${xpShown} XP` : "Récord igualado"}</span>
+            <span className="sr-only">{data.xpGained > 0 ? `+${data.xpGained} XP` : "Récord igualado"}</span>
           </motion.span>
           {data.rankUp && (
-            <span className="rounded-full border-[3px] border-ink bg-grape px-3 py-1 font-display text-lg text-foam shadow-chunky-sm">
+            <motion.span
+              initial={reduce ? { opacity: 0 } : { scale: 0, rotate: -20 }}
+              animate={{ scale: [null, 1.25, 1], rotate: 0, opacity: 1 }}
+              transition={{ delay: reduce ? 0 : xpDelay(data.stars) + 0.7, duration: 0.45, ease: "easeOut" }}
+              className="rounded-full border-[3px] border-ink bg-grape px-3 py-1 font-display text-lg text-foam shadow-chunky-sm"
+            >
               ¡Rango {rankOf(xp)}!
-            </span>
+            </motion.span>
           )}
         </div>
 
-        <div className="flex flex-col gap-2">
+        {/* Actions slide up early: the player never waits for the show to end. */}
+        <motion.div
+          className="flex flex-col gap-2"
+          initial={reduce ? { opacity: 0 } : { y: 28, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ type: "spring", stiffness: 420, damping: 26, delay: reduce ? 0 : 0.25 }}
+        >
           {next ? (
             <Link
               href={`/play/${next.id}`}
@@ -165,8 +209,9 @@ function Content({ level, next, data, onImprove }: Props & { data: CelebrationDa
               </Button>
             )}
           </div>
-        </div>
+        </motion.div>
       </motion.div>
+      </div>
     </>
   );
 }
@@ -177,15 +222,40 @@ function StarSlot({ index, filled, big, reduce }: { index: number; filled: boole
     <div className={`relative ${big ? "-translate-y-2" : ""}`} style={{ width: size, height: size }}>
       <StarSvg className="absolute inset-0 text-ink/15" />
       {filled && (
+        // Falls in stretched, squashes on landing, settles. Then sparks fly out.
         <motion.div
-          className="absolute inset-0 text-sand"
-          initial={reduce ? { opacity: 0 } : { scale: 0, rotate: index === 1 ? -40 : index === 3 ? 40 : 0 }}
-          animate={reduce ? { opacity: 1 } : { scale: [0, 1.35, 1], rotate: 0 }}
-          transition={{ duration: 0.45, ease: [0.34, 1.56, 0.64, 1] }}
+          className="absolute inset-0 origin-bottom text-sand"
+          initial={reduce ? { opacity: 0 } : { y: -70, scaleX: 0.5, scaleY: 0.5, rotate: index === 1 ? -40 : index === 3 ? 40 : 0, opacity: 0 }}
+          animate={
+            reduce
+              ? { opacity: 1 }
+              : { y: [-70, 0, 0, 0, 0], scaleX: [0.5, 0.8, 1.3, 0.94, 1], scaleY: [0.5, 1.3, 0.72, 1.06, 1], rotate: 0, opacity: 1 }
+          }
+          transition={
+            reduce
+              ? { duration: 0.15 }
+              : { duration: 0.5, times: [0, 0.35, 0.55, 0.78, 1], ease: "easeOut", rotate: { duration: 0.35 }, opacity: { duration: 0.1 } }
+          }
           data-testid="star-filled"
         >
           <StarSvg />
         </motion.div>
+      )}
+      {filled && !reduce && (
+        <div aria-hidden className="pointer-events-none absolute inset-0">
+          {SPARKS.map((deg, k) => {
+            const r = (big ? 62 : 50) * (k % 2 ? 0.8 : 1);
+            return (
+              <motion.span
+                key={deg}
+                className={`absolute top-1/2 left-1/2 -mt-1.5 -ml-1.5 size-3 rounded-full border-2 border-ink ${SPARK_COLORS[k % SPARK_COLORS.length]}`}
+                initial={{ x: 0, y: 0, scale: 0, opacity: 1 }}
+                animate={{ x: Math.cos((deg * Math.PI) / 180) * r, y: Math.sin((deg * Math.PI) / 180) * r, scale: [0, 1.2, 0.4], opacity: [1, 1, 0] }}
+                transition={{ delay: 0.17, duration: 0.5, ease: "easeOut" }}
+              />
+            );
+          })}
+        </div>
       )}
     </div>
   );
