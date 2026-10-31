@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useSyncExternalStore } from "react";
+import { useEffect, useLayoutEffect, useState, useSyncExternalStore } from "react";
 import { Octo } from "@/components/characters/octo";
 import { Hud } from "@/components/hud/hud";
 import { Intro } from "@/components/intro/intro";
@@ -15,6 +15,8 @@ import { WorldSection } from "./world-section";
 let openedAt = 0;
 const mountTime = () => (openedAt ||= Date.now());
 const noop = () => () => {};
+/** Wait for the page transition before Octo hops to the next level. */
+const HOP_DELAY = 450; // ms (tune)
 
 function MapSkeleton() {
   return (
@@ -39,6 +41,9 @@ export function WorldMap() {
   const flag = useProgress((s) => (FLAG_RANKS[s.equipped.flag] <= rankOf(s.xp) ? s.equipped.flag : "coral"));
   const [openId, setOpenId] = useState<string | null>(null);
   const now = useSyncExternalStore(noop, mountTime, () => 0);
+  // The map stays mounted (hidden) while a level is played: close the node
+  // popover on the way out so the player comes back to a clear map.
+  useLayoutEffect(() => () => setOpenId(null), []);
 
   const showIntro = hydrated && !seenIntro && Object.keys(levels).length === 0;
   const currentId = allLevels.find((l) => !levels[l.id]?.stars && isUnlocked(l.id, levels))?.id;
@@ -59,6 +64,27 @@ export function WorldMap() {
 
   // Bring the next level into view once progress is loaded.
   const ready = hydrated && !showIntro;
+
+  // Octo waits where he was until the player is back on the map, then hops to
+  // the new next level. The map stays mounted (hidden) while a level is played,
+  // and its effects re-run when it shows again.
+  const [octo, setOcto] = useState<{ id: string | undefined; settled: boolean; hop: boolean }>({
+    id: currentId,
+    settled: false,
+    hop: false,
+  });
+  if (ready && !octo.settled) setOcto({ id: currentId, settled: true, hop: false });
+  const octoId = octo.settled ? octo.id : currentId;
+  useEffect(() => {
+    if (!octo.settled || octo.id === currentId) return;
+    const node = document.querySelector<HTMLElement>('[data-current="true"]');
+    const r = node?.getBoundingClientRect();
+    if (node && r && (r.top < 80 || r.bottom > window.innerHeight - 40)) {
+      node.scrollIntoView({ block: "center", behavior: "smooth" });
+    }
+    const t = window.setTimeout(() => setOcto({ id: currentId, settled: true, hop: true }), HOP_DELAY);
+    return () => window.clearTimeout(t);
+  }, [octo, currentId]);
   useEffect(() => {
     if (!ready) return;
     const el = document.querySelector<HTMLElement>('[data-current="true"]');
@@ -89,6 +115,8 @@ export function WorldMap() {
                     index={i}
                     levels={levels}
                     currentId={currentId}
+                    octoId={octoId}
+                    octoHop={octo.hop}
                     openId={openId}
                     setOpenId={setOpenId}
                     rank={rank}

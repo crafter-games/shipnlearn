@@ -35,6 +35,13 @@ const fills: Record<NodeState, string> = {
 
 const plural = (n: number) => `${n} ${n === 1 ? "estrella" : "estrellas"}`;
 
+/** Nodes pop in down the path; re-keyed on state, so a node that changes (unlocked, beaten) pops again. */
+const popIn = (number: number) => ({
+  initial: { scale: 0 },
+  animate: { scale: 1 },
+  transition: { type: "spring" as const, stiffness: 520, damping: 17, delay: 0.12 + number * 0.045 },
+});
+
 /** One chunky circular level node on the map path, with its popover. */
 export function LevelNode({ level, number, state, stars, s, top, open, onToggle, onClose }: Props) {
   const reduced = useReducedMotion();
@@ -80,7 +87,8 @@ export function LevelNode({ level, number, state, stars, s, top, open, onToggle,
       data-current={state === "current" ? "true" : undefined}
       data-first={number === 1 ? "true" : undefined}
     >
-      <div className={`-translate-x-1/2 -translate-y-1/2 ${state === "current" && !reduced ? "animate-bob" : ""}`}>
+      <motion.div key={state} {...popIn(number)} className="-translate-x-1/2 -translate-y-1/2">
+      <div className={state === "current" && !reduced ? "animate-bob" : ""}>
         {state === "current" && (
           <div className="pointer-events-none absolute -top-11 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-xl border-[3px] border-ink bg-foam px-3 py-0.5 font-display text-base tracking-wide text-ink shadow-chunky-sm">
             {number === 1 && stars === 0 ? "¡Empieza!" : "¡Juega!"}
@@ -116,11 +124,21 @@ export function LevelNode({ level, number, state, stars, s, top, open, onToggle,
         {state === "done" && (
           <div aria-hidden className="absolute -bottom-7 left-1/2 flex -translate-x-1/2 items-end">
             {[1, 2, 3].map((n) => (
-              <Star key={n} filled={stars >= n} className={n === 2 ? "size-7 -translate-y-1" : "size-6"} />
+              // Earned stars drop onto the node one after another.
+              <motion.span
+                key={`${n}-${stars >= n}`}
+                className={n === 2 ? "-translate-y-1" : ""}
+                initial={stars >= n ? { y: -28, scale: 0.4, opacity: 0 } : false}
+                animate={{ y: 0, scale: 1, opacity: 1 }}
+                transition={{ type: "spring", stiffness: 600, damping: 14, delay: 0.3 + number * 0.045 + n * 0.12 }}
+              >
+                <Star filled={stars >= n} className={n === 2 ? "size-7" : "size-6"} />
+              </motion.span>
             ))}
           </div>
         )}
       </div>
+      </motion.div>
     </div>
 
       <AnimatePresence>

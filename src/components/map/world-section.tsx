@@ -1,5 +1,6 @@
 "use client";
 
+import { motion } from "motion/react";
 import { Octo } from "@/components/characters/octo";
 import { worldProgress } from "@/components/island/features";
 import { Island } from "@/components/island/island";
@@ -16,6 +17,9 @@ type Props = {
   index: number;
   levels: Record<string, LevelProgress>;
   currentId: string | undefined;
+  /** Where Octo stands: lags behind `currentId` until he hops there. */
+  octoId: string | undefined;
+  octoHop: boolean;
   openId: string | null;
   setOpenId: (id: string | null) => void;
   rank: number;
@@ -24,7 +28,7 @@ type Props = {
 };
 
 /** A world: its evolving island (header) and its winding path of level nodes. */
-export function WorldSection({ world, index, levels, currentId, openId, setOpenId, rank, flag, dueLevelIds }: Props) {
+export function WorldSection({ world, index, levels, octoId, octoHop, openId, setOpenId, rank, flag, dueLevelIds }: Props) {
   const progress = worldProgress(world, levels, rank);
   const n = world.levels.length;
   const reached = n > 0 && isUnlocked(world.levels[0].id, levels);
@@ -96,7 +100,7 @@ export function WorldSection({ world, index, levels, currentId, openId, setOpenI
                 const s = swing(i);
                 return (
                   <li key={level.id}>
-                    {level.id !== currentId && (
+                    {level.id !== octoId && (
                       <div
                         aria-hidden
                         className="pointer-events-none absolute -translate-x-1/2 -translate-y-1/2"
@@ -105,18 +109,25 @@ export function WorldSection({ world, index, levels, currentId, openId, setOpenI
                         <Scenery i={i + index} />
                       </div>
                     )}
-                    {level.id === currentId && (
-                      <div
+                    {level.id === octoId && (
+                      // Shared layoutId: when Octo moves to another node he travels there.
+                      <motion.div
+                        layoutId="octo-guide"
                         aria-hidden
                         className="pointer-events-none absolute z-20"
-                        style={{
-                          left: leftAt(s),
-                          top: nodeTop(i) - 46,
-                          transform: `translateX(${s > 0 ? "calc(-100% - 3.4rem)" : "3.4rem"})`,
-                        }}
+                        style={{ left: leftAt(s), top: nodeTop(i) - 46 }}
+                        transition={{ layout: { type: "spring", stiffness: 170, damping: 19 } }}
                       >
-                        <Octo mood="pointing" flip={s < 0} className="size-20" />
-                      </div>
+                        <div style={{ transform: `translateX(${s > 0 ? "calc(-100% - 3.4rem)" : "3.4rem"})` }}>
+                          <motion.div
+                            animate={octoHop ? { y: [0, -54, 0, 0], scaleY: [1, 1.12, 0.84, 1] } : undefined}
+                            transition={{ duration: 0.6, times: [0, 0.45, 0.8, 1], ease: "easeOut" }}
+                            className="origin-bottom"
+                          >
+                            <Octo mood="pointing" flip={s < 0} className="size-20" />
+                          </motion.div>
+                        </div>
+                      </motion.div>
                     )}
                     <LevelNode
                       level={level}
