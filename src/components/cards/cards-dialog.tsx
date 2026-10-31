@@ -125,6 +125,24 @@ function Viewer({
     if (Math.abs(dx) > SWIPE && Math.abs(dx) > Math.abs(e.clientY - s.y) * 1.5) nudge(dx < 0 ? 1 : -1);
   };
 
+  // Arrow keys step through the card. Listened on the window, not the dialog:
+  // while a step slides out, focus can briefly leave the dialog and a quick
+  // second press would otherwise be lost.
+  const nudgeRef = useRef(nudge);
+  useEffect(() => {
+    nudgeRef.current = nudge;
+  });
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+      if (e.altKey || e.ctrlKey || e.metaKey) return;
+      e.preventDefault();
+      nudgeRef.current(e.key === "ArrowRight" ? 1 : -1);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+
   const primary = (() => {
     if (step < LAST_STEP - 1) return { label: "Siguiente", testId: "card-next" };
     if (step === LAST_STEP - 1) return { label: "Ponte a prueba", testId: "to-predict" };
@@ -139,12 +157,6 @@ function Viewer({
       className="flex h-[calc(100dvh-1rem)] flex-col gap-2 sm:h-[min(calc(100dvh-1rem),42rem)]"
       data-testid="cards-dialog"
       data-mode={mode}
-      onKeyDown={(e) => {
-        if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
-          e.preventDefault();
-          nudge(e.key === "ArrowRight" ? 1 : -1);
-        }
-      }}
     >
       {/* Top bar, floating over the backdrop. */}
       <div className="flex items-center gap-2">
