@@ -8,7 +8,7 @@ import type { CheckContext } from "@/lib/levels/types";
  * They never use `instanceof`: elements belong to the iframe's realm.
  */
 
-export { fillTemplate, isUsefulAlt, svgUri } from "@/content/html-basics/_helpers";
+export { fillTemplate, isUsefulAlt } from "@/content/html-basics/_helpers";
 
 type Field = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
 
