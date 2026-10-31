@@ -1,28 +1,33 @@
 import { $, rect, text } from "@/lib/levels/checks";
 import type { CheckContext, Level } from "@/lib/levels/types";
 import { MARKET_CSS } from "./_helpers";
-import { MANGO_POSTER } from "./_images";
+import { MANGO_CAPTIONS, MANGO_POSTER, MANGO_VIDEO, STALL_SONG } from "./_images";
 
 const CAPTION = "«Fruta fresca», grabada por DJ Marea en la plaza.";
 
 const starter = `<h2>La radio del mercado</h2>
 <p>El anuncio de los mangos, con la voz de Marisol:</p>
-<video src="anuncio-mangos.mp4" poster="${MANGO_POSTER}" width="320" height="180"></video>
+<video src="${MANGO_VIDEO}"
+  poster="${MANGO_POSTER}"
+  width="320" height="180"></video>
 
 <p>Y la canción del puesto:</p>
-<audio src="cancion-del-puesto.mp3"></audio>
+<audio src="${STALL_SONG}"></audio>
 <p>${CAPTION}</p>
 `;
 
 const solution = `<h2>La radio del mercado</h2>
 <p>El anuncio de los mangos, con la voz de Marisol:</p>
-<video controls src="anuncio-mangos.mp4" poster="${MANGO_POSTER}" width="320" height="180">
-  <track kind="captions" src="anuncio-mangos.vtt" srclang="es" label="Español">
+<video controls src="${MANGO_VIDEO}"
+  poster="${MANGO_POSTER}"
+  width="320" height="180">
+  <track kind="captions" src="${MANGO_CAPTIONS}"
+    srclang="es" label="Español">
 </video>
 
 <p>Y la canción del puesto:</p>
 <figure>
-  <audio controls src="cancion-del-puesto.mp3"></audio>
+  <audio controls src="${STALL_SONG}"></audio>
   <figcaption>${CAPTION}</figcaption>
 </figure>
 `;
@@ -62,7 +67,7 @@ export const media: Level = {
       kind: "required",
       label: "El vídeo trae subtítulos con <track>",
       explain:
-        "Mete en el <video> un <track kind=\"captions\" src=\"anuncio-mangos.vtt\">: son los subtítulos.",
+        "Mete en el <video> un <track kind=\"captions\" src=\"…/subtitulos.vtt\">: son los subtítulos.",
       test: (ctx) => captions(ctx) !== null,
     },
     {
@@ -101,7 +106,7 @@ export const media: Level = {
   ],
   hints: [
     "controls va en <video> y en <audio>. El <track> va dentro del vídeo. Audio y pie, dentro de <figure>.",
-    '<video controls …>\n  <track kind="captions" src="anuncio-mangos.vtt" srclang="es" label="Español">\n</video>',
+    '<video controls …>\n  <track kind="captions" src="/levels/mercado/subtitulos.vtt" srclang="es" label="Español">\n</video>',
     "Mira «Contenido de vídeo y audio» en MDN.",
   ],
   mdn: [

@@ -3,21 +3,25 @@ import type { CheckContext, Level } from "@/lib/levels/types";
 import { isUsefulAlt, MARKET_CSS, settle, srcsetCandidates } from "./_helpers";
 import { BANNER_480, BANNER_960, BANNER_SQUARE } from "./_images";
 
-const ALT = "Puesto de fruta de Marisol con toldo de rayas, mangos, limas y fresas";
+const ALT = "Puesto de fruta con toldo de rayas y tres frutas";
 
 const starter = `<h2>Cartel del mercado</h2>
-<!-- Tres versiones del mismo cartel: 480 px, 960 px y un recorte cuadrado.
-     Ahora se descargan y se ven las tres. -->
-<img src="${BANNER_480}" alt="${ALT}">
-<img src="${BANNER_960}" alt="${ALT}">
-<img src="${BANNER_SQUARE}" alt="${ALT}">
+<!-- Salen las tres versiones. -->
+<img src="${BANNER_480}"
+  alt="${ALT}">
+<img src="${BANNER_960}"
+  alt="${ALT}">
+<img src="${BANNER_SQUARE}"
+  alt="${ALT}">
 `;
 
 const solution = `<h2>Cartel del mercado</h2>
 <picture>
-  <source media="(max-width: 500px)" srcset="${BANNER_SQUARE}">
+  <source media="(max-width: 500px)"
+    srcset="${BANNER_SQUARE}">
   <img src="${BANNER_960}"
-    srcset="${BANNER_480} 480w, ${BANNER_960} 960w"
+    srcset="${BANNER_480} 480w,
+            ${BANNER_960} 960w"
     sizes="(max-width: 700px) 100vw, 700px"
     alt="${ALT}">
 </picture>
@@ -67,8 +71,8 @@ export const responsive: Level = {
         "Cada versión va con su ancho real: srcset=\"…480… 480w, …960… 960w\". La w es de width.",
       test: (ctx) => {
         const list = srcsetCandidates(banner(ctx)?.getAttribute("srcset") ?? null);
-        const has = (id: string, w: string) => list.some((c) => c.url.includes(id) && c.descriptor === w);
-        return has("cartel-480", "480w") && has("cartel-960", "960w");
+        const has = (file: string, w: string) => list.some((c) => c.url.endsWith(file) && c.descriptor === w);
+        return has("banner-480.svg", "480w") && has("banner-960.svg", "960w");
       },
     },
     {
@@ -84,12 +88,12 @@ export const responsive: Level = {
       kind: "required",
       label: "En pantallas estrechas se ve el recorte cuadrado",
       explain:
-        "Envuelve el <img> en <picture> y ponle delante <source media=\"(max-width: 500px)\" srcset=\"…cuadrado…\">.",
+        "Mete el <img> en <picture> y ponle delante <source media=\"(max-width: 500px)\" srcset=\"…cuadrado.svg\">.",
       test: async (ctx) => {
         if (!banner(ctx)?.closest("picture")) return false;
         const narrow = await chosenAt(ctx, 360);
         const wide = await chosenAt(ctx, 1000);
-        return narrow.includes("cartel-cuadrado") && /cartel-(480|960)/.test(wide);
+        return narrow.endsWith("/banner-cuadrado.svg") && /\/banner-(480|960)\.svg$/.test(wide);
       },
     },
     {

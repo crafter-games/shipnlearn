@@ -1,4 +1,12 @@
-import { BANNER_480, BANNER_960, BANNER_SQUARE, MANGO_POSTER } from "@/content/html-intermediate/_images";
+import {
+  BANNER_480,
+  BANNER_960,
+  BANNER_SQUARE,
+  MANGO_CAPTIONS,
+  MANGO_POSTER,
+  MANGO_VIDEO,
+  STALL_SONG,
+} from "@/content/html-intermediate/_images";
 import type { ConceptCard } from "@/lib/levels/types";
 
 const MDN = "https://developer.mozilla.org/es/docs";
@@ -597,8 +605,8 @@ export const htmlIntermediateCards: ConceptCard[] = [
     ],
     avoid: ["Un vídeo con voz sin subtítulos: deja fuera a quien no oye."],
     example: {
-      html: `<video controls width="240" height="135" poster="${MANGO_POSTER}">
-  <track kind="captions" src="anuncio.vtt" srclang="es" label="Español">
+      html: `<video controls src="${MANGO_VIDEO}" poster="${MANGO_POSTER}" width="240" height="135">
+  <track kind="captions" src="${MANGO_CAPTIONS}" srclang="es" label="Español">
 </video>
 `,
     },
@@ -623,8 +631,8 @@ export const htmlIntermediateCards: ConceptCard[] = [
     use: ["Para canciones, avisos o pódcast.", "Siempre con controls, para pausar y bajar el volumen."],
     avoid: ["Que suene solo al entrar: molesta y tapa al lector de pantalla."],
     example: {
-      html: `<audio controls src="pregon.mp3"></audio>
-<audio src="pregon.mp3"></audio>
+      html: `<audio controls src="${STALL_SONG}"></audio>
+<audio src="${STALL_SONG}"></audio>
 `,
     },
     exampleNote: "Dos audios, pero solo uno se ve: el que tiene controls.",
