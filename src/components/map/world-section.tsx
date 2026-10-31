@@ -1,21 +1,31 @@
 "use client";
 
 import { motion } from "motion/react";
+import { useState } from "react";
 import { Octo } from "@/components/characters/octo";
 import { worldProgress } from "@/components/island/features";
 import { Island } from "@/components/island/island";
-import { Star } from "@/components/icons";
+import { JumpArc, KindElement, Lock, Palette, Star, TierBars } from "@/components/icons";
+import { Button } from "@/components/ui/button";
+import { playSfx, unlockAudio } from "@/lib/audio";
 import type { World } from "@/lib/levels/types";
 import { type FlagColor, type LevelProgress, isUnlocked } from "@/lib/progress/store";
+import { JumpDialog } from "./jump-dialog";
 import { ROW, leftAt, nodeTop, pathHeight, swing } from "./layout";
 import { LevelNode, type NodeState } from "./level-node";
 import { Scenery } from "./scenery";
 import { TideBottles } from "./tide-bottles";
+import { TIER_BG, sectionId, worldMeta } from "./world-meta";
 
 type Props = {
   world: World;
   index: number;
   levels: Record<string, LevelProgress>;
+  unlockedWorlds: readonly string[];
+  /** Level to spotlight right after a jump. */
+  highlightId: string | null;
+  /** Player confirmed "Saltar a esta isla". */
+  onJump: (world: World) => void;
   currentId: string | undefined;
   /** Where Octo stands: lags behind `currentId` until he hops there. */
   octoId: string | undefined;
@@ -28,36 +38,84 @@ type Props = {
 };
 
 /** A world: its evolving island (header) and its winding path of level nodes. */
-export function WorldSection({ world, index, levels, octoId, octoHop, openId, setOpenId, rank, flag, dueLevelIds }: Props) {
+export function WorldSection({
+  world,
+  index,
+  levels,
+  unlockedWorlds,
+  currentId,
+  octoId,
+  octoHop,
+  openId,
+  setOpenId,
+  rank,
+  flag,
+  dueLevelIds,
+  highlightId,
+  onJump,
+}: Props) {
   const progress = worldProgress(world, levels, rank);
   const n = world.levels.length;
-  const reached = n > 0 && isUnlocked(world.levels[0].id, levels);
+  const reached = n > 0 && isUnlocked(world.levels[0].id, levels, unlockedWorlds);
   const headingId = `world-${world.id}`;
+  const meta = worldMeta(world.id);
+  const [asking, setAsking] = useState(false);
 
   return (
-    <section aria-labelledby={headingId} className="grid scroll-mt-24 gap-6 md:grid-cols-[minmax(0,24rem)_minmax(0,34rem)] md:items-start md:justify-center md:gap-12">
-      {/* Island header: sticky beside the path on desktop. */}
-      <div className="md:sticky md:top-24">
+    <section
+      id={sectionId(world.id)}
+      data-world-section={world.id}
+      aria-labelledby={headingId}
+      className="grid scroll-mt-[calc(8rem+env(safe-area-inset-top))] gap-6 md:grid-cols-[minmax(0,24rem)_minmax(0,34rem)] md:items-start md:justify-center md:gap-12"
+    >
+      {/* Island header: sticky beside the path on desktop (below the HUD and the navigator). */}
+      <div className="md:sticky md:top-[calc(8.5rem+env(safe-area-inset-top))]">
         <div className="relative">
           <Island
             name={world.title}
             accent={world.accent}
             progress={progress}
             flag={flag}
-            className="mx-auto w-full max-w-[24rem]"
-            label={`${world.title}: ${progress.completed} de ${n} niveles completados`}
+            className={`mx-auto w-full max-w-[24rem] ${n === 0 ? "opacity-80 saturate-50" : ""}`}
+            label={n === 0 ? `${world.title}: próximamente` : `${world.title}: ${progress.completed} de ${n} niveles completados`}
           />
+          {!reached && (
+            <span aria-hidden className="absolute top-[38%] left-1/2 grid size-14 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full border-[3px] border-ink bg-foam shadow-chunky">
+              <Lock className="size-8" />
+            </span>
+          )}
           <div className="absolute bottom-0 left-2">
             <TideBottles levelIds={dueLevelIds} />
           </div>
         </div>
-        <div className="mt-3 text-center">
-          <p className="inline-block rounded-full border-2 border-ink bg-ocean-deep px-3 py-0.5 font-display text-sm uppercase tracking-[0.18em] text-foam">
-            Mundo {index + 1} · {world.subtitle}
-          </p>
-          <h2 id={headingId} className="font-display text-4xl tracking-wide text-foam text-stroke md:text-5xl">
+        <div className="mt-3 flex flex-col items-center text-center">
+          <div className="flex flex-wrap items-center justify-center gap-2">
+            <p className="rounded-full border-2 border-ink bg-ocean-deep px-3 py-0.5 font-display text-sm uppercase tracking-[0.18em] text-foam">
+              Mundo {index + 1}
+            </p>
+            <p
+              data-testid="tier-badge"
+              className={`inline-flex items-center gap-1 rounded-full border-[3px] border-ink px-2.5 py-0.5 font-display text-sm uppercase tracking-wider text-ink shadow-chunky-sm ${TIER_BG[meta.tier]}`}
+            >
+              <TierBars tier={meta.tier} className="size-4" />
+              {meta.label}
+            </p>
+            <p
+              data-testid="language-badge"
+              className="inline-flex items-center gap-1 rounded-full border-[3px] border-ink bg-foam px-2.5 py-0.5 font-display text-sm uppercase tracking-wider text-ink shadow-chunky-sm"
+            >
+              {meta.language === "HTML" ? <KindElement className="size-4 text-ocean-deep" /> : <Palette className="size-4" />}
+              {meta.language}
+            </p>
+          </div>
+          <h3
+            id={headingId}
+            tabIndex={-1}
+            data-world-title
+            className="mt-1 font-display text-4xl tracking-wide text-foam text-stroke outline-none md:text-5xl"
+          >
             {world.title}
-          </h2>
+          </h3>
           {n > 0 && (
             <p className="mt-2 inline-flex items-center gap-1.5 rounded-full border-[3px] border-ink bg-foam px-3 py-0.5 font-display text-lg shadow-chunky-sm">
               <Star className="size-5" />
@@ -66,6 +124,27 @@ export function WorldSection({ world, index, levels, octoId, octoHop, openId, se
               </span>
               <span className="sr-only">estrellas en este mundo</span>
             </p>
+          )}
+          {n > 0 && !reached && (
+            <>
+              <Button variant="accent" className="mt-4" onClick={() => {
+                void unlockAudio();
+                playSfx("ui-tap");
+                setAsking(true);
+              }}>
+                <JumpArc className="size-6" />
+                Saltar a esta isla
+              </Button>
+              <JumpDialog
+                world={world}
+                open={asking}
+                onClose={() => setAsking(false)}
+                onConfirm={() => {
+                  setAsking(false);
+                  onJump(world);
+                }}
+              />
+            </>
           )}
         </div>
       </div>
@@ -95,8 +174,16 @@ export function WorldSection({ world, index, levels, octoId, octoHop, openId, se
             <ol aria-label={`Niveles de ${world.title}`}>
               {world.levels.map((level, i) => {
                 const stars = levels[level.id]?.stars ?? 0;
+                // Only one node is "the next level"; other playable gaps (a skipped
+                // world after a jump) are open but quiet.
                 const state: NodeState =
-                  stars > 0 ? "done" : isUnlocked(level.id, levels) ? "current" : "locked";
+                  stars > 0
+                    ? "done"
+                    : level.id === currentId
+                      ? "current"
+                      : isUnlocked(level.id, levels, unlockedWorlds)
+                        ? "open"
+                        : "locked";
                 const s = swing(i);
                 return (
                   <li key={level.id}>
@@ -137,6 +224,8 @@ export function WorldSection({ world, index, levels, octoId, octoHop, openId, se
                       s={s}
                       top={nodeTop(i)}
                       open={openId === level.id}
+                      highlight={highlightId === level.id}
+                      lockedHint={i === 0 ? "Completa la isla anterior o salta a esta isla" : undefined}
                       onToggle={() => setOpenId(openId === level.id ? null : level.id)}
                       onClose={() => setOpenId(null)}
                     />
