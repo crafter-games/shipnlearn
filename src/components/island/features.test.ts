@@ -14,6 +14,7 @@ describe("islandFeatures", () => {
       flag: false,
       flowers: false,
       lanterns: false,
+      landmark: 0,
     });
   });
 
@@ -27,6 +28,12 @@ describe("islandFeatures", () => {
   it("grows with completed levels and docks a boat when done", () => {
     const f = islandFeatures({ ...base, completed: 9, stars: 27, bossDone: true });
     expect(f).toMatchObject({ palms: 3, houses: 3, lighthouse: true, boat: true });
+  });
+
+  it("builds the landmark in stages", () => {
+    const stage = (completed: number, bossDone = false) =>
+      islandFeatures({ ...base, completed, stars: completed * 3, bossDone }).landmark;
+    expect([stage(0), stage(1), stage(5), stage(9, true)]).toEqual([0, 1, 2, 3]);
   });
 
   it("unlocks cosmetics by rank", () => {
