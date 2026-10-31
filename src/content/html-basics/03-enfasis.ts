@@ -24,10 +24,10 @@ export const enfasis: Level = {
   title: "El aviso del muelle",
   npc: { name: "Anselmo, el pescador", avatar: "anselmo" },
   story:
-    "Nadie lee mi aviso y el pulpo de la cueva ya está harto. Que la prohibición se note MUCHO y que el «muy» suene como lo digo yo.",
+    "Nadie lee mi aviso y el pulpo ya está harto. Que la prohibición se note MUCHO y el «muy» suene como lo digo.",
   concept: "<strong> y <em>: importancia y énfasis",
   lesson:
-    "<strong> dice «esto es importante» y <em> dice «esto se pronuncia con énfasis». <b> e <i> se ven igual, pero no transmiten ese significado a lectores de pantalla ni buscadores: el estilo no es el mensaje.",
+    "<strong> dice «importante» y <em> marca el énfasis. <b> e <i> se ven igual, pero no le dicen nada al lector de pantalla.",
   mode: "tiles",
   tiles,
   starter: { html: tilesSource(tiles, []) },
@@ -39,7 +39,7 @@ export const enfasis: Level = {
       kind: "required",
       label: "La prohibición se ve en negrita",
       explain:
-        "La frase «Prohibido pescar en la cueva» aún no destaca. Colócala en el aviso marcada como importante, para que se vea en negrita.",
+        "La prohibición aún no destaca. Ponla en el aviso marcada como importante, para que salga en negrita.",
       test: (ctx) => {
         const el = deepestWithText(ctx, WARNING);
         return !!el && Number(style(ctx, el, "font-weight")) >= 600;
@@ -59,9 +59,9 @@ export const enfasis: Level = {
     {
       id: "warning-strong",
       kind: "a11y",
-      label: "La prohibición usa <strong> (importancia), no solo negrita",
+      label: "La prohibición usa <strong>, no solo negrita",
       explain:
-        "¡Trampa! <b> se ve igual, pero solo pone negrita: un lector de pantalla no sabrá que es importante. <strong> sí lo comunica.",
+        "¡Trampa! <b> se ve igual, pero el lector de pantalla no sabrá que es importante. Usa <strong>.",
       test: (ctx) =>
         $$(ctx, "strong").some((el) => text(el).includes(WARNING)),
     },
@@ -70,7 +70,7 @@ export const enfasis: Level = {
       kind: "a11y",
       label: "El «muy» usa <em> (énfasis), no solo cursiva",
       explain:
-        "<i> solo inclina las letras. <em> le dice al lector de pantalla que cambie la entonación, como hace Anselmo al hablar.",
+        "<i> solo inclina las letras. <em> le dice al lector que cambie el tono, como Anselmo al hablar.",
       test: (ctx) => $$(ctx, "em").some((el) => text(el) === "muy"),
     },
     {
@@ -78,7 +78,7 @@ export const enfasis: Level = {
       kind: "a11y",
       label: "Sin <b> ni <i> en el aviso",
       explain:
-        "Aquí la negrita y la cursiva tienen significado, así que <b> e <i> sobran. Si solo quieres un estilo visual, eso es trabajo de CSS.",
+        "Aquí la negrita y la cursiva significan algo: usa <strong> y <em>. El estilo solo es cosa de CSS.",
       test: (ctx) => !usesTag(ctx, "b") && !usesTag(ctx, "i"),
     },
   ],

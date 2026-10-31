@@ -9,7 +9,7 @@ export const titulo: Level = {
   story: "Esta isla no tiene ni nombre. ¡Ponle uno! Escríbelo dentro del título.",
   concept: "<h1>: el título principal",
   lesson:
-    "Acabas de escribir tu primer elemento HTML. <h1> marca el título más importante de la página: abre con <h1>, escribe el texto y cierra con </h1>.",
+    "Escribiste tu primer elemento HTML. <h1> es el título principal: se abre con <h1> y se cierra con </h1>.",
   mode: "code",
   starter: { html: "<h1></h1>\n" },
   editable: ["html"],

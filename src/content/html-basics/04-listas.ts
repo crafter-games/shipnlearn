@@ -34,10 +34,10 @@ export const listas: Level = {
   title: "La lista del farero",
   npc: { name: "Faustino, el farero", avatar: "faustino" },
   story:
-    "Apunté lo que llevo al faro y cómo encender la lámpara, pero me falta un paso: «Limpia el cristal.» va justo en medio. Si me equivoco de orden, ¡los barcos chocan!",
+    "A mis notas les falta un paso: «Limpia el cristal.» va justo en medio. ¡Si fallo el orden, los barcos chocan!",
   concept: "<ul>, <ol> y <li>: listas",
   lesson:
-    "<ul> es una lista sin orden (da igual qué metas primero en la mochila) y <ol> una lista ordenada (los pasos se numeran solos). Cada elemento va en su propio <li>.",
+    "<ul> es una lista sin orden, como la mochila. <ol> es una lista ordenada y numera los pasos sola. Cada cosa va en su <li>.",
   mode: "fill",
   fill,
   starter: { html: fillTemplate(fill.template) },
@@ -49,7 +49,7 @@ export const listas: Level = {
       kind: "required",
       label: "La mochila y los pasos son dos listas",
       explain:
-        "Los <li> necesitan una lista que los contenga. Escribe ul u ol en los huecos de apertura y en los de cierre, con el mismo nombre.",
+        "Los <li> necesitan una lista. Escribe ul u ol al abrir y al cerrar, con el mismo nombre.",
       test: (ctx) => lists(ctx).length === 2 && items(lists(ctx)[0]).length === 3,
     },
     {
@@ -57,7 +57,7 @@ export const listas: Level = {
       kind: "required",
       label: "«Limpia el cristal.» es el segundo paso",
       explain:
-        "El paso nuevo debe ser un <li> más de la lista de pasos, entre «Sube los 99 escalones» y «Enciende la mecha». Ábrelo con <li> y ciérralo con </li>.",
+        "El paso nuevo es un <li> más, entre «Sube los 99 escalones» y «Enciende la mecha».",
       test: (ctx) => {
         const steps = items(lists(ctx)[1]);
         return steps.length === 3 && /cristal/i.test(text(steps[1]));
@@ -76,7 +76,7 @@ export const listas: Level = {
       kind: "a11y",
       label: "Los pasos usan una lista ordenada <ol>",
       explain:
-        "En los pasos el orden importa: <ol> los numera y avisa al lector de pantalla de que hay una secuencia. Cambia la segunda lista a ol.",
+        "En los pasos el orden importa: <ol> los numera y avisa de la secuencia. Cambia la segunda lista a ol.",
       test: (ctx) => lists(ctx)[1]?.tagName === "OL",
     },
     {
@@ -84,7 +84,7 @@ export const listas: Level = {
       kind: "a11y",
       label: "La mochila usa una lista sin orden <ul>",
       explain:
-        "Da igual si la linterna va antes que las cerillas, así que no hacen falta números: <ul> es lo correcto para la mochila.",
+        "En la mochila el orden da igual, así que no hacen falta números: usa <ul>.",
       test: (ctx) => lists(ctx)[0]?.tagName === "UL",
     },
     {
@@ -92,7 +92,7 @@ export const listas: Level = {
       kind: "a11y",
       label: "Dentro de las listas solo hay <li>",
       explain:
-        "Una lista solo puede tener hijos <li>. Cualquier otro elemento rompe la cuenta de ítems que anuncian los lectores de pantalla.",
+        "Una lista solo admite hijos <li>. Otro elemento rompe la cuenta que anuncia el lector de pantalla.",
       test: (ctx) => lists(ctx).length > 0 && lists(ctx).every(onlyListItems),
     },
   ],

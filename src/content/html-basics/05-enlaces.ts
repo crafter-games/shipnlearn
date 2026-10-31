@@ -25,10 +25,10 @@ export const enlaces: Level = {
   title: "El tablón del puerto",
   npc: { name: "Capitana Brea", avatar: "brea" },
   story:
-    "El tablón viejo decía «clic aquí» y medio puerto acabó en la isla equivocada. Quiero un enlace al parte del tiempo (https://www.windy.com) y otro que salte a los horarios de abajo.",
+    "El tablón viejo decía «clic aquí». Enlaza el parte del tiempo (https://www.windy.com) y los horarios de abajo.",
   concept: "<a href>: enlaces externos e internos",
   lesson:
-    "<a href> convierte texto en un enlace. Una dirección completa (https://…) lleva a otra web; #algo salta al elemento con id=\"algo\" de la misma página. El texto del enlace debe decir adónde lleva.",
+    "<a href> crea enlaces: https://… lleva a otra web y #algo salta al id=\"algo\" de esta página. El texto dice adónde va.",
   mode: "fill",
   fill,
   starter: { html: fillTemplate(fill.template) },
@@ -40,9 +40,9 @@ export const enlaces: Level = {
     {
       id: "external-link",
       kind: "required",
-      label: "Hay un enlace a otra web con su dirección completa (https://…)",
+      label: "Hay un enlace a otra web con https://",
       explain:
-        "Para salir a otra web, href necesita la dirección completa con https:// delante. Sin eso, el navegador la busca dentro de esta página.",
+        "Para ir a otra web, href necesita la dirección completa con https://. Si no, se busca en esta página.",
       test: (ctx) => links(ctx).some((a) => isAbsoluteUrl(a.getAttribute("href"))),
     },
     {
@@ -50,7 +50,7 @@ export const enlaces: Level = {
       kind: "required",
       label: "Hay un enlace que salta a los horarios (#…)",
       explain:
-        "Un enlace interno es # seguido del id del destino. Busca el id del encabezado «Horarios del ferri» y escribe #horarios.",
+        "Un enlace interno es # más el id del destino. El encabezado de horarios tiene id=\"horarios\".",
       test: (ctx) => links(ctx).some((a) => internalTargetExists(ctx, a)),
     },
     {
@@ -67,9 +67,9 @@ export const enlaces: Level = {
     {
       id: "descriptive-text",
       kind: "a11y",
-      label: "El texto de cada enlace dice adónde lleva (nada de «clic aquí»)",
+      label: "Cada enlace dice adónde lleva (nada de «clic aquí»)",
       explain:
-        "Los lectores de pantalla pueden leer solo la lista de enlaces: diez «clic aquí» no dicen nada. Escribe el destino, por ejemplo «parte del tiempo».",
+        "Hay lectores que leen solo los enlaces, y «clic aquí» no dice nada. Escribe el destino.",
       test: (ctx) => {
         const all = links(ctx);
         return all.length > 0 && all.every((a) => isDescriptiveLinkText(text(a)));
@@ -77,7 +77,7 @@ export const enlaces: Level = {
     },
   ],
   hints: [
-    "href es la dirección del enlace: completa para otra web, # + id para un punto de esta página. El texto va entre las etiquetas.",
+    "href es el destino: https://… para otra web, # + id para esta página. El texto va entre las etiquetas.",
     "<a href=\"https://www.windy.com\">parte del tiempo</a> · <a href=\"#horarios\">…</a>",
     "Mira «Crear hipervínculos» en MDN: URL absolutas y fragmentos.",
   ],

@@ -34,10 +34,10 @@ export const estructura: Level = {
   title: "La web del ayuntamiento",
   npc: { name: "Don Pinzas, el alcalde", avatar: "pinzas" },
   story:
-    "La web del ayuntamiento es una sopa de <div>. Los vecinos con lector de pantalla no encuentran ni el menú. Dale cabecera, navegación, contenido principal y pie.",
+    "Mi web es una sopa de <div>: el lector de pantalla no halla ni el menú. Dale cabecera, menú, contenido y pie.",
   concept: "<header>, <nav>, <main> y <footer>: landmarks",
   lesson:
-    "Un <div> no significa nada; <header>, <nav>, <main> y <footer> sí. Son «puntos de referencia» (landmarks): los lectores de pantalla saltan directo a ellos, como a las secciones de un mapa.",
+    "Un <div> no significa nada; <header>, <nav>, <main> y <footer> sí. Son landmarks: el lector de pantalla salta directo a ellos.",
   mode: "code",
   starter: {
     html: page(
@@ -58,7 +58,7 @@ export const estructura: Level = {
       kind: "required",
       label: "El nombre del ayuntamiento está en un <header>",
       explain:
-        "La cabecera de la página (logo, título) va en <header>. Cambia el <div class=\"cabecera\"> por <header> y su cierre por </header>.",
+        "La cabecera va en <header>. Cambia <div class=\"cabecera\"> por <header> y su cierre por </header>.",
       test: (ctx) => $(ctx, "header h1") !== null,
     },
     {
@@ -66,7 +66,7 @@ export const estructura: Level = {
       kind: "required",
       label: "Los enlaces del menú están en un <nav>",
       explain:
-        "<nav> marca el bloque de navegación principal, y tiene sentido solo si dentro hay enlaces. Envuelve los enlaces del menú con él.",
+        "<nav> marca el menú y necesita enlaces dentro. Envuelve con él los enlaces del menú.",
       test: (ctx) => $$(ctx, "nav a[href]").length >= 2,
     },
     {
@@ -96,9 +96,9 @@ export const estructura: Level = {
     {
       id: "top-level",
       kind: "a11y",
-      label: "<header>, <main> y <footer> no están metidos unos dentro de otros",
+      label: "<header>, <main> y <footer> van uno tras otro",
       explain:
-        "Si el <footer> queda dentro de <main> deja de ser el pie de la página. Cierra cada landmark antes de abrir el siguiente.",
+        "Un <footer> dentro de <main> deja de ser el pie. Cierra cada landmark antes de abrir el siguiente.",
       test: (ctx) =>
         ["header", "main", "footer"].every((tag) => {
           const el = $(ctx, tag);
@@ -110,7 +110,7 @@ export const estructura: Level = {
       kind: "a11y",
       label: "Sin <div> haciendo de landmark",
       explain:
-        "Si dejas el <div> y metes el landmark dentro, funciona, pero sobra una capa. Cambia la etiqueta en vez de añadir otra.",
+        "Si metes el landmark dentro del <div>, sobra una capa. Cambia la etiqueta en vez de añadir otra.",
       test: (ctx) => $$(ctx, "div.cabecera, div.menu, div.contenido, div.pie").length === 0,
     },
     {
@@ -123,7 +123,7 @@ export const estructura: Level = {
     },
   ],
   hints: [
-    "Cambia cada <div class=\"…\"> por la etiqueta que dice lo que es: cabecera, navegación, contenido principal o pie.",
+    "Cambia cada <div class=\"…\"> por la etiqueta que dice qué es: cabecera, menú, contenido o pie.",
     "<header>…</header>\n<nav>…</nav>\n<main>…</main>\n<footer>…</footer>",
     "Mira «Estructura del documento y del sitio web» en MDN.",
   ],
