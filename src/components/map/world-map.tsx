@@ -5,6 +5,7 @@ import { useEffect, useState, useSyncExternalStore } from "react";
 import { Octo } from "@/components/characters/octo";
 import { Hud } from "@/components/hud/hud";
 import { Intro } from "@/components/intro/intro";
+import { CoachMarks, MAP_TOUR } from "@/components/tutorial";
 import { useReducedMotion } from "@/components/ui/use-reduced-motion";
 import { setScene, unlockAudio } from "@/lib/audio";
 import { allLevels, worlds } from "@/lib/levels/registry";
@@ -108,6 +109,8 @@ export function WorldMap() {
               </div>
             )}
           </main>
+          {/* First map visit after a win: how to read and use the map. */}
+          <CoachMarks tipId="map" steps={MAP_TOUR} active={ready && Object.keys(levels).length > 0} delay={700} />
         </>
       )}
     </MotionConfig>

@@ -93,6 +93,7 @@ export function Hud() {
         <div
           className={`flex min-w-0 flex-1 items-center transition-opacity ${hydrated ? "" : "opacity-0"}`}
           aria-hidden={!hydrated}
+          data-tour="progress"
         >
           <RankBadge rank={rank} />
           <div className="-ml-3 min-w-0 max-w-64 flex-1">
@@ -121,6 +122,7 @@ export function Hud() {
           className={`flex h-11 items-center gap-1 rounded-xl border-[3px] border-ink bg-foam px-2 shadow-chunky-sm transition-opacity ${hydrated ? "" : "opacity-0"}`}
           aria-label={`${stars} de ${maxStars} estrellas`}
           role="status"
+          data-tour="progress"
         >
           <Star className="size-6" />
           <span className="font-display text-lg tabular-nums" aria-hidden>
