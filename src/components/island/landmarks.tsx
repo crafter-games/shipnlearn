@@ -4,7 +4,7 @@ import { motion } from "motion/react";
 import { type ComponentType, useId } from "react";
 import type { WorldId } from "@/lib/levels/types";
 import type { LandmarkStage } from "./features";
-import { GREY, INK, Pop } from "./parts";
+import { GREY, INK, Pop, shade } from "./parts";
 
 /*
  * Signature buildings that tell the islands apart on the map. Each one sits
@@ -273,9 +273,124 @@ function Lighthouse({ stage, reduced, paint }: LandmarkProps) {
   );
 }
 
+/* -------------------------------------------------------------- Volcán */
+
+const ROCK = shade("var(--color-sand-deep)", 58);
+
+function Smoke({ reduced }: { reduced: boolean }) {
+  const puffs = [
+    { x: 154, r: 6, delay: 0 },
+    { x: 166, r: 8, delay: 1 },
+    { x: 158, r: 7, delay: 2 },
+  ];
+  const fill = "color-mix(in oklab, var(--color-foam) 78%, var(--color-ink-soft))";
+  if (reduced) {
+    return (
+      <g stroke={INK} strokeWidth="2.5">
+        <circle cx="156" cy="48" r="6" fill={fill} />
+        <circle cx="166" cy="38" r="8" fill={fill} />
+        <circle cx="157" cy="26" r="9" fill={fill} />
+      </g>
+    );
+  }
+  return (
+    <g>
+      {puffs.map((p) => (
+        <motion.circle
+          key={p.x + p.r}
+          cx={p.x}
+          cy={54}
+          r={p.r}
+          fill={fill}
+          stroke={INK}
+          strokeWidth="2.5"
+          initial={{ y: 0, opacity: 0, scale: 0.5 }}
+          animate={{ y: [0, -14, -34], opacity: [0, 1, 0], scale: [0.5, 1, 1.35] }}
+          transition={{ duration: 3, delay: p.delay, repeat: Number.POSITIVE_INFINITY, ease: "easeOut" }}
+          style={{ transformBox: "fill-box", transformOrigin: "center" }}
+        />
+      ))}
+    </g>
+  );
+}
+
+function LavaFlow({ d }: { d: string }) {
+  return (
+    <g fill="none" strokeLinecap="round" strokeLinejoin="round">
+      <path d={d} stroke={INK} strokeWidth="10" />
+      <path d={d} stroke="var(--color-coral)" strokeWidth="5.5" />
+      <path d={d} stroke="var(--color-sand)" strokeWidth="1.6" strokeDasharray="4 7" />
+    </g>
+  );
+}
+
+function Volcano({ stage, reduced, paint }: LandmarkProps) {
+  const awake = stage >= 1;
+  return (
+    <g>
+      {/* glow behind the crater */}
+      {awake && (
+        <motion.ellipse
+          cx="160"
+          cy="60"
+          rx="26"
+          ry="13"
+          fill="var(--color-coral)"
+          opacity={0.35}
+          animate={reduced ? undefined : { opacity: [0.2, 0.5, 0.2] }}
+          transition={loop(2.2)}
+        />
+      )}
+      {/* cone */}
+      <path
+        d="M96 124 C114 106 134 84 142 62 Q160 55 178 62 C186 84 206 106 224 124 Z"
+        style={{ fill: paint(ROCK) }}
+        stroke={INK}
+        strokeWidth="4"
+        strokeLinejoin="round"
+      />
+      <path d="M140 72 C134 90 122 104 110 116" fill="none" stroke="var(--color-foam)" strokeWidth="3" strokeLinecap="round" opacity="0.18" />
+      <path d="M186 98 l8 -2 M196 110 l9 -1 M128 104 l-6 2" stroke={INK} strokeWidth="2" strokeLinecap="round" opacity="0.4" />
+      {/* crater */}
+      <ellipse cx="160" cy="62" rx="17" ry="5" style={{ fill: awake ? "var(--color-coral)" : paint(shade(ROCK, 30)) }} stroke={INK} strokeWidth="3" />
+      {awake && <ellipse cx="157" cy="61" rx="8" ry="1.8" fill="var(--color-sand)" />}
+      {stage >= 2 && (
+        <Pop r={reduced} x={160} y={64}>
+          <LavaFlow d="M150 64 C148 74 140 78 138 88 C136 96 130 100 128 106" />
+          <LavaFlow d="M171 64 C172 72 180 76 181 86 C182 92 188 96 189 100" />
+        </Pop>
+      )}
+      {stage >= 3 && (
+        <Pop r={reduced} x={160} y={64} delay={0.1}>
+          <LavaFlow d="M160 66 C161 76 156 84 158 96" />
+          {[
+            [146, 46],
+            [176, 44],
+            [162, 38],
+          ].map(([x, y], i) => (
+            <motion.circle
+              key={x}
+              cx={x}
+              cy={y}
+              r="2.6"
+              fill="var(--color-sand)"
+              stroke={INK}
+              strokeWidth="1.5"
+              animate={reduced ? undefined : { y: [6, -4, 6], opacity: [0, 1, 0] }}
+              transition={loop(1.4, i * 0.4)}
+            />
+          ))}
+        </Pop>
+      )}
+      {awake && <Smoke reduced={reduced} />}
+    </g>
+  );
+}
+
 /** Landmark per world. Worlds without an entry keep the plain island. */
 export const LANDMARKS: Partial<Record<WorldId, Landmark>> = {
   "html-intermediate": { Art: Market, scale: 1.5, flagAt: { x: 200, y: 84 } },
   "css-intermediate": { Art: Workshop, scale: 1.3, flagAt: { x: 126, y: 77 } },
   "html-advanced": { Art: Lighthouse, scale: 1.15, flagAt: { x: 174, y: 45 }, hidesLighthouse: true },
+  "css-advanced": { Art: Volcano, scale: 1.25, flagAt: { x: 196, y: 100 }, hidesHill: true },
 };
