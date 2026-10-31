@@ -5,6 +5,7 @@ import { Bruno, DjMarea, Nieve, Rosa, Tablas, Tula } from "./npcs/crafts";
 import { Anselmo, Anzuelo } from "./npcs/fishers";
 import { Faustino, Lumi } from "./npcs/keepers";
 import { Buho, Tinta } from "./npcs/library";
+import { Cifras, Marisol } from "./npcs/market";
 import { OctoPortrait } from "./npcs/octo-portrait";
 import type { PortraitProps } from "./npcs/parts";
 import { Brea, Pinzas, Remedios, Sello } from "./npcs/town";
@@ -47,9 +48,9 @@ const PORTRAITS: Record<AvatarId, ComponentType<PortraitProps>> = {
   tablas: Tablas,
   nieve: Nieve,
   tula: Tula,
+  marisol: Marisol,
+  cifras: Cifras,
   // Placeholders until the new islanders are drawn.
-  marisol: Placeholder("M", "var(--color-lime)"),
-  cifras: Placeholder("C", "var(--color-lime)"),
   escuadra: Placeholder("E", "var(--color-grape)"),
   pixel: Placeholder("P", "var(--color-grape)"),
   eco: Placeholder("E", "var(--color-ocean-light)"),
