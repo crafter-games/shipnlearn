@@ -91,8 +91,11 @@ function toggleMute() {
   playSfx("ui-tap");
 }
 
-/** Fixed top HUD: shipper rank + XP bar, total stars, Fichero, mute and settings. */
-export function Hud() {
+/**
+ * Fixed top HUD: shipper rank + XP bar, total stars, Fichero, mute and settings.
+ * `children` render as a second row inside the bar (the map's island navigator).
+ */
+export function Hud({ children }: { children?: React.ReactNode }) {
   const hydrated = useHydrated();
   const xp = useProgress((s) => s.xp);
   const levels = useProgress((s) => s.levels);
@@ -210,6 +213,7 @@ export function Hud() {
           <Gear />
         </IconButton>
       </div>
+      {children}
       <SettingsDialog open={open} onClose={() => setOpen(false)} />
     </header>
   );
