@@ -80,6 +80,23 @@ test("a fresh map points at level 1 with a locked concept", async ({ page }) => 
   await expect(page).toHaveURL(new RegExp(`/play/${FIRST}`));
 });
 
+test("after a jump the map opens on the jumped island's first level", async ({ page }) => {
+  await seed(page, {
+    levels: { [FIRST]: { stars: 2, completedAt: 1 } },
+    xp: 20,
+    reviews: [],
+    settings,
+    seenIntro: true,
+    unlockedWorlds: ["css-basics"],
+  });
+  await page.goto("/");
+  const next = page.getByRole("button", { name: /siguiente nivel/ });
+  await expect(next).toHaveCount(1);
+  await expect(page.getByRole("region", { name: "Isla Estilo" }).getByRole("button", { name: /^Nivel 1: .*siguiente nivel$/ })).toBeInViewport();
+  // The skipped island's gap stays playable.
+  await expect(page.getByRole("button", { name: /^Nivel 2: .*disponible$/ })).toHaveCount(1);
+});
+
 test("due tides wash up as bottles that open a review", async ({ page }) => {
   await seed(page, {
     levels: { [FIRST]: { stars: 3, completedAt: 1 } },
