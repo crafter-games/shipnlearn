@@ -16,39 +16,39 @@ export const htmlCards: ConceptCard[] = [
     worldId: "html-basics",
     kind: "concept",
     title: "Una página web",
-    tagline: "Un archivo de texto que el navegador convierte en lo que ves.",
+    tagline: "Un texto que el navegador convierte en lo que ves.",
     explain:
-      "Toda página web empieza siendo texto escrito por una persona: el código. Cuando abres una web, tu navegador (Chrome, Safari, Firefox…) descarga ese texto, lo lee y lo dibuja en pantalla con sus títulos, párrafos, imágenes y colores. En este juego tú escribes el código y ves al momento lo que dibuja el navegador.",
+      "Toda web empieza como texto: el código. El navegador, como Chrome o Safari, lo lee y lo dibuja. Aquí tú escribes el código y ves el resultado.",
     use: [
-      "Escribe el código en el editor: es el texto que leerá el navegador.",
-      "Mira la vista «Tu web»: es lo que dibuja el navegador con tu código.",
-      "Si algo no se ve como esperas, el problema está en el código: cámbialo y vuelve a mirar.",
+      "Escribe el código en el editor: es lo que lee el navegador.",
+      "Mira «Tu web»: es lo que dibuja el navegador con tu código.",
+      "¿Algo no se ve como esperabas? Cambia el código y vuelve a mirar.",
     ],
     avoid: [
-      "Pensar que la página se dibuja a mano: el navegador la construye leyendo el código, letra a letra.",
+      "Creer que la web se dibuja a mano: el navegador la construye con el código.",
     ],
     example: {
       html: "<h1>Panadería de la isla</h1>\n<p>Pan recién hecho cada mañana.</p>\n",
     },
     exampleNote:
-      "A la izquierda, el código tal y como lo escribe una persona; a la derecha, la página que dibuja el navegador al leerlo.",
+      "A la izquierda, el código; a la derecha, la página que dibuja el navegador.",
     predict: {
-      question: "Cuando abres una web en el móvil, ¿quién convierte el código en la página que ves?",
+      question: "Al abrir una web en el móvil, ¿quién convierte el código en la página?",
       options: [
         {
           label: "El navegador",
           correct: true,
-          why: "Exacto: el navegador lee el código y dibuja la página. Por eso la misma web se ve en cualquier móvil u ordenador.",
+          why: "Exacto: el navegador lee el código y dibuja la página, en cualquier móvil u ordenador.",
         },
         {
           label: "La persona que hizo la web, a mano, cada vez",
           correct: false,
-          why: "Esa persona solo escribe el código una vez; el navegador de cada visitante lo convierte en página.",
+          why: "Esa persona escribe el código una vez; el navegador de cada visitante lo dibuja.",
         },
         {
           label: "Nadie: el código ya es la imagen que ves",
           correct: false,
-          why: "El código es texto. Necesita que el navegador lo lea para convertirse en títulos, párrafos e imágenes.",
+          why: "El código es texto: el navegador lo lee y lo convierte en títulos e imágenes.",
         },
       ],
     },
@@ -62,30 +62,30 @@ export const htmlCards: ConceptCard[] = [
     worldId: "html-basics",
     kind: "concept",
     title: "HTML",
-    tagline: "El idioma que le dice al navegador qué es cada parte de la página.",
+    tagline: "El idioma que dice qué es cada parte de la página.",
     explain:
-      "HTML es el primer idioma de toda web. No hace cuentas ni toma decisiones: marca el texto para decir qué es cada trozo. Es como subrayar un folleto con rotuladores: esto es el título, esto un párrafo, esto una lista. Esas marcas se llaman etiquetas y van entre los signos < y >.",
+      "HTML marca el texto para decir qué es cada trozo: un título, un párrafo, una lista. Esas marcas se llaman etiquetas y van entre < y >.",
     use: [
-      "Úsalo para dar estructura a todo el contenido: títulos, textos, listas, enlaces, imágenes.",
-      "Elige cada etiqueta por lo que el contenido es, no por cómo quieres que se vea.",
-      "Más adelante, CSS se encargará de los colores y el diseño.",
+      "Para dar estructura: títulos, textos, listas, enlaces, imágenes.",
+      "Elige la etiqueta por lo que el contenido es, no por cómo se ve.",
+      "Los colores y el diseño vendrán después, con CSS.",
     ],
     avoid: [
-      "Escribir texto sin etiquetas y esperar que el navegador adivine qué es un título.",
-      "Confundir HTML con diseño: el aspecto se cambia con CSS, en la siguiente isla.",
+      "Escribir texto sin etiquetas y esperar que el navegador adivine.",
+      "Usar HTML para el aspecto: eso es CSS, en la siguiente isla.",
     ],
     example: {
       html: "Panadería\n<h1>Panadería</h1>\n<p>Abrimos a las 7.</p>\n",
     },
     exampleNote:
-      "La primera «Panadería» no lleva etiquetas y queda como texto suelto; la segunda va dentro de <h1> y el navegador la trata como título.",
+      "La primera «Panadería» es texto suelto; la segunda, dentro de <h1>, es un título.",
     predict: {
-      question: "Si escribes solo «Panadería», sin etiquetas, ¿sabe el navegador que es el título de la página?",
+      question: "Si escribes «Panadería» sin etiquetas, ¿sabe el navegador que es el título?",
       options: [
         {
           label: "No: hay que marcarlo, por ejemplo con <h1>",
           correct: true,
-          why: "Sin etiquetas, para el navegador es texto suelto. La etiqueta es lo que le dice «esto es un título».",
+          why: "Sin etiquetas es texto suelto. La etiqueta le dice «esto es un título».",
         },
         {
           label: "Sí, porque es la primera palabra",
@@ -104,14 +104,14 @@ export const htmlCards: ConceptCard[] = [
     worldId: "html-basics",
     kind: "concept",
     title: "Elemento HTML",
-    tagline: "Una etiqueta que abre, un contenido y una etiqueta que cierra.",
+    tagline: "Etiqueta que abre, contenido y etiqueta que cierra.",
     explain:
-      "HTML describe qué es cada parte de una página. Cada parte es un elemento: se abre con <nombre>, lleva su contenido y se cierra con </nombre> (la barra / indica el cierre). El navegador lee esas etiquetas y decide cómo mostrar y entender el contenido.",
+      "Cada parte de la página es un elemento. Se abre con <nombre>, lleva su contenido y se cierra con </nombre>: la barra / marca el cierre.",
     use: [
-      "Envuelve cada trozo de contenido en el elemento que dice qué es.",
-      "Cierra siempre lo que abres, en orden inverso: <p><strong>…</strong></p>.",
+      "Envuelve cada trozo en el elemento que dice qué es.",
+      "Cierra lo que abres, en orden inverso: <p><strong>…</strong></p>.",
     ],
-    avoid: ["Olvidar la barra del cierre: <h1>Hola<h1> abre un segundo título en vez de cerrar el primero."],
+    avoid: ["Olvidar la barra: <h1>Hola<h1> abre otro título en vez de cerrar."],
     example: { html: "<h1>Isla Tuya</h1>\n" },
     exampleNote: "<h1> abre el elemento, «Isla Tuya» es su contenido y </h1> lo cierra.",
     predict: {
@@ -134,20 +134,20 @@ export const htmlCards: ConceptCard[] = [
     title: "<h1>",
     tagline: "El título principal de la página: dice de qué trata.",
     explain:
-      "<h1> marca el título más importante, como la portada de un libro. El navegador lo muestra grande y en negrita, y los lectores de pantalla (programas que leen la página en voz alta a quien no puede verla) lo anuncian como el tema de la página. Cada página tiene un solo <h1>.",
+      "<h1> es el título principal, como la portada de un libro. Hay uno por página, y el lector de pantalla, que lee la web en voz alta, lo anuncia primero.",
     use: [
-      "Para el nombre de la página o del sitio: «Isla Marcado», «Panadería La Miga».",
-      "Una sola vez por página, normalmente arriba del todo.",
+      "Para el nombre de la página: «Isla Marcado», «Panadería La Miga».",
+      "Una sola vez, normalmente arriba del todo.",
     ],
     avoid: [
-      "Poner dos <h1>: la página tendría dos portadas y nadie sabría cuál manda.",
-      "Usar <h1> solo para que un texto se vea grande: el tamaño se cambia con CSS, el idioma de los estilos que verás en la próxima isla.",
+      "Poner dos <h1>: serían dos portadas y nadie sabría cuál manda.",
+      "Usarlo solo para que un texto se vea grande: eso se hace con CSS.",
     ],
     example: { html: "<h1>Faro del Norte</h1>\n" },
     exampleNote: "Un único <h1> con el nombre de aquello de lo que trata toda la página.",
     predict: {
       question:
-        "Tu página habla de la isla y tiene dos textos: «Isla Marcado» y «Bienvenida, viajera». ¿Cuál va en el <h1>?",
+        "Tu página tiene «Isla Marcado» y «Bienvenida, viajera». ¿Cuál va en el <h1>?",
       options: [
         {
           label: "«Isla Marcado»",
@@ -178,16 +178,15 @@ export const htmlCards: ConceptCard[] = [
     title: "<h2> … <h6>",
     tagline: "Subtítulos que ordenan la página como un índice.",
     explain:
-      "Debajo del <h1> vienen los subtítulos: <h2> para cada sección, <h3> para una parte dentro de esa sección, y así hasta <h6>. El número es el rango, no el tamaño. Juntos forman un índice que los lectores de pantalla usan para saltar de sección en sección.",
+      "Bajo el <h1> van los subtítulos: <h2> para cada sección, <h3> para una parte de ella, hasta <h6>. El número es el rango, no el tamaño.",
     use: [
       "<h2> para cada sección grande de la página: «Panadería», «Puerto».",
       "<h3> solo dentro de una sección <h2>, para una parte más pequeña.",
-      "Bajar de uno en uno: después de <h1> viene <h2>, no <h4>.",
+      "Baja de uno en uno: tras <h1> viene <h2>, no <h4>.",
     ],
     avoid: [
-      "Elegir <h4> porque «se ve más pequeño»: el número dice el rango; el tamaño lo decide CSS.",
-      "Saltarse niveles (de <h1> a <h4>): el índice queda con huecos.",
-      "Usar un encabezado para un texto que no es título de nada.",
+      "Elegir <h4> porque se ve más pequeño: el tamaño lo decide CSS.",
+      "Saltarse niveles, de <h1> a <h4>: el índice que usa el lector queda con huecos.",
     ],
     example: {
       html: `<h1>Isla Marcado</h1>
@@ -209,7 +208,7 @@ export const htmlCards: ConceptCard[] = [
         {
           label: "<h4>Puerto</h4>, que se ve más discreto",
           correct: false,
-          why: "Saltaría del 1 al 4 y dejaría huecos en el índice. Si lo quieres más pequeño, eso se hace con CSS.",
+          why: "Saltaría del 1 al 4 y dejaría huecos. Si lo quieres más pequeño, usa CSS.",
         },
         {
           label: "<h1>Puerto</h1>",
@@ -230,14 +229,14 @@ export const htmlCards: ConceptCard[] = [
     title: "<p>",
     tagline: "Un párrafo: el texto normal de la página.",
     explain:
-      "<p> envuelve un bloque de texto, como un párrafo de una carta. Cada <p> empieza en una línea nueva y deja un pequeño espacio arriba y abajo. Pulsar Enter en el código no crea párrafos: el navegador junta los saltos de línea en un espacio, así que cada párrafo necesita su propio <p>.",
+      "<p> envuelve un párrafo y empieza en una línea nueva. Pulsar Enter en el código no crea párrafos: cada uno necesita su propio <p>.",
     use: [
       "Para frases que explican algo: descripciones, avisos, horarios.",
       "Un <p> por cada idea o bloque de texto.",
       "Justo debajo del encabezado al que pertenece.",
     ],
     avoid: [
-      "Escribir texto suelto, sin <p>: se ve, pero el navegador no sabe que es un párrafo.",
+      "Texto suelto, sin <p>: se ve, pero el navegador no sabe que es un párrafo.",
       "Usar <p> para el nombre de una sección: si es un título, es un encabezado.",
     ],
     example: {
@@ -249,12 +248,12 @@ export const htmlCards: ConceptCard[] = [
     exampleNote: "Dos <p> son dos párrafos: cada uno empieza en su propia línea.",
     predict: {
       question:
-        "Dentro de un solo <p> escribes «Pan caliente.», pulsas Enter dos veces y escribes «Con vista al mar.». ¿Cómo se ve?",
+        "En un <p> pones «Pan caliente.», dos Enter y «Con vista al mar.». ¿Cómo se ve?",
       options: [
         {
           label: "En una sola línea: «Pan caliente. Con vista al mar.»",
           correct: true,
-          why: "El navegador convierte los saltos de línea del código en un espacio. Para separarlos, abre un segundo <p>.",
+          why: "Los saltos de línea del código se vuelven un espacio. Para separar, abre otro <p>.",
         },
         {
           label: "Como dos párrafos separados",
@@ -264,7 +263,7 @@ export const htmlCards: ConceptCard[] = [
         {
           label: "Con una línea en blanco en medio, igual que en el código",
           correct: false,
-          why: "Los espacios y saltos de línea de más se ignoran. Lo que separa es la etiqueta, no el Enter.",
+          why: "Los espacios y saltos de más se ignoran. Lo que separa es la etiqueta.",
         },
       ],
     },
@@ -277,27 +276,26 @@ export const htmlCards: ConceptCard[] = [
     title: "<strong>",
     tagline: "Marca algo importante, serio o urgente.",
     explain:
-      "<strong> le dice al navegador «esto es importante». Se ve en negrita y, además, los lectores de pantalla y los buscadores entienden que ese texto pesa más. Va dentro de un párrafo, rodeando solo la parte importante.",
+      "<strong> dice «esto es importante». Se ve en negrita, y los lectores de pantalla y los buscadores le dan más peso.",
     use: [
       "Advertencias y prohibiciones: «Prohibido pescar en la cueva».",
-      "El dato que nadie debe pasar por alto: una hora, un peligro, una fecha límite.",
+      "El dato que nadie debe perderse: una hora, un peligro, una fecha.",
     ],
     avoid: [
-      "Usar <b>: también pone negrita, pero no dice que sea importante.",
+      "Usar <b>: pone negrita, pero no dice que sea importante.",
       "Marcar párrafos enteros: si todo es importante, nada lo es.",
-      "Usarlo solo porque quieres negrita: el aspecto se cambia con CSS.",
     ],
     example: {
       html: "<p><strong>El ferri sale a las 9:00 en punto.</strong> No espera a nadie, ni al alcalde.</p>\n",
     },
     exampleNote: "Solo la frase importante va dentro de <strong>; el resto del párrafo queda normal.",
     predict: {
-      question: "<b> y <strong> se ven igual de negritas. ¿Qué gana con <strong> alguien que usa lector de pantalla?",
+      question: "<b> y <strong> se ven igual. ¿Qué gana con <strong> quien usa lector de pantalla?",
       options: [
         {
           label: "Sabe que esa frase es importante",
           correct: true,
-          why: "<strong> lleva significado: dice «importante». <b> solo cambia el aspecto, y eso no se oye.",
+          why: "<strong> dice «importante». <b> solo cambia el aspecto, y eso no se oye.",
         },
         {
           label: "Nada, son idénticos",
@@ -320,14 +318,14 @@ export const htmlCards: ConceptCard[] = [
     title: "<em>",
     tagline: "Marca la palabra que dirías con énfasis.",
     explain:
-      "<em> (de «emphasis», énfasis) señala la palabra que pronunciarías con otro tono de voz. Se ve en cursiva y un lector de pantalla puede cambiar la entonación. Si mueves el <em> a otra palabra, cambia el sentido de la frase.",
+      "<em> marca la palabra que dirías con otro tono de voz, y se ve en cursiva. Si lo mueves a otra palabra, cambia el sentido.",
     use: [
-      "La palabra que remarcarías al decirla en voz alta: «es <em>muy</em> gruñón».",
-      "Para aclarar qué quieres decir: «yo <em>no</em> me comí el último bollo».",
+      "La palabra que remarcarías en voz alta: «es <em>muy</em> gruñón».",
+      "Para aclarar el sentido: «yo <em>no</em> me comí el bollo».",
     ],
     avoid: [
-      "Usar <i>: también pone cursiva, pero no indica énfasis.",
-      "Confundirlo con <strong>: <em> cambia cómo suena una palabra; <strong> marca que algo es importante.",
+      "Usar <i>: pone cursiva, pero no indica énfasis.",
+      "Confundirlo con <strong>: <em> cambia el tono; <strong> marca importancia.",
     ],
     example: {
       html: `<p>El pulpo de la cueva es <em>muy</em> gruñón.</p>
@@ -364,16 +362,15 @@ export const htmlCards: ConceptCard[] = [
     title: "<ul> y <li>",
     tagline: "Una lista de cosas en la que el orden da igual.",
     explain:
-      "<ul> (de «unordered list», lista sin orden) agrupa varias cosas, y cada una va en su propio <li> («list item», elemento de la lista). El navegador pone un punto delante de cada <li>. Dentro de un <ul> solo puede haber <li>.",
+      "<ul> es una lista sin orden, y cada cosa va en su propio <li>, con un punto delante. Dentro de un <ul> solo puede haber <li>.",
     use: [
-      "Cosas que se pueden leer en cualquier orden: lo que llevas en la mochila, los ingredientes.",
+      "Cosas sin orden: lo que llevas en la mochila, los ingredientes.",
       "Grupos de opciones o de enlaces.",
       "Un <li> por cada cosa.",
     ],
     avoid: [
-      "Separar las cosas con <br> (un simple salto de línea): se ve parecido, pero no es una lista y nadie puede contar sus elementos.",
-      "Meter texto o un <p> directamente en el <ul>, fuera de un <li>.",
-      "Cerrar con otro nombre: lo que abre <ul> lo cierra </ul>.",
+      "Separar con <br>, un salto de línea: se parece, pero no es una lista.",
+      "Meter texto o un <p> en el <ul>, fuera de un <li>.",
     ],
     example: {
       html: `<h2>Cesta del mercado</h2>
@@ -414,16 +411,15 @@ export const htmlCards: ConceptCard[] = [
     title: "<ol>",
     tagline: "Una lista de pasos en la que el orden importa.",
     explain:
-      "<ol> (de «ordered list», lista ordenada) funciona como <ul>, con un <li> por elemento, pero los numera sola: 1, 2, 3. Si añades un paso en medio, los números se recalculan. Los lectores de pantalla anuncian cuántos pasos hay y en cuál estás.",
+      "<ol> es una lista ordenada: como <ul>, con un <li> por paso, pero los numera sola. Si añades un paso, los números se recalculan.",
     use: [
       "Instrucciones y recetas: pasos que hay que seguir en orden.",
       "Clasificaciones: el primero, el segundo, el tercero.",
       "Cualquier lista en la que cambiar el orden cambiaría el resultado.",
     ],
     avoid: [
-      "Escribir los números a mano (1., 2.) en párrafos: al añadir un paso tendrías que renumerarlo todo.",
+      "Escribir los números a mano: al añadir un paso tendrías que renumerar.",
       "Usar <ol> para cosas sin orden, como lo que llevas en la mochila.",
-      "Separar los pasos con <br>: cada paso es un <li>.",
     ],
     example: {
       html: `<h2>Cómo hacer pan</h2>
@@ -437,7 +433,7 @@ export const htmlCards: ConceptCard[] = [
     exampleNote: "No hay ningún número escrito en el código: <ol> los pone en el orden de los <li>.",
     predict: {
       question:
-        "Añades <li>Amasa 10 minutos.</li> entre el primer y el segundo paso. ¿Qué número tendrá «Hornea 40 minutos.»?",
+        "Añades un paso entre el primero y el segundo. ¿Qué número tendrá «Hornea 40 minutos.»?",
       options: [
         {
           label: "El 4",
@@ -465,9 +461,9 @@ export const htmlCards: ConceptCard[] = [
     title: "Atributos",
     tagline: "Datos extra que se escriben dentro de la etiqueta que abre.",
     explain:
-      "A veces un elemento necesita más información que su contenido. Esa información va en atributos, con la forma nombre=\"valor\", dentro de la etiqueta que abre y separados del nombre por un espacio. Los atributos no se ven en la página: configuran el elemento.",
+      "Un atributo da información extra a un elemento. Va en la etiqueta que abre, con la forma nombre=\"valor\", y no se ve en la página.",
     use: [
-      "Para darle a un elemento un dato que necesita: adónde lleva un enlace, qué imagen mostrar, cómo se llama.",
+      "Para datos que el elemento necesita: adónde lleva, qué imagen muestra.",
       "Escribe siempre el valor entre comillas dobles.",
       "Si hay varios, sepáralos con espacios: <img src=\"…\" alt=\"…\">.",
     ],
@@ -480,7 +476,7 @@ export const htmlCards: ConceptCard[] = [
 <p>Abre los sábados a las 11:00.</p>
 `,
     },
-    exampleNote: "En id=\"horarios\", id es el nombre del atributo y horarios su valor. En la página solo se ve el texto.",
+    exampleNote: "En id=\"horarios\", id es el nombre y horarios el valor. Solo se ve el texto.",
     predict: {
       question: "¿Qué se ve en la página con <h2 id=\"horarios\">Horarios del faro</h2>?",
       options: [
@@ -510,26 +506,24 @@ export const htmlCards: ConceptCard[] = [
     title: "<a href>",
     tagline: "Un enlace: texto que te lleva a otro sitio al pulsarlo.",
     explain:
-      "<a> (de «anchor», ancla) convierte su contenido en un enlace. El atributo href dice adónde lleva: para ir a otra web, la dirección completa, empezando por https://. Lo que escribes entre <a …> y </a> es el texto que se ve y se pulsa.",
+      "<a> crea un enlace. Su atributo href dice adónde lleva; el texto entre <a …> y </a> es lo que se ve y se pulsa.",
     use: [
       "Para llevar a otra web o a otra página.",
-      "Con un texto que diga el destino: «el artículo sobre faros en Wikipedia».",
+      "Con un texto que diga el destino: «artículo sobre faros en Wikipedia».",
       "Dentro de un párrafo o en un menú.",
     ],
     avoid: [
-      "«Clic aquí» o «ver más» como texto: fuera de la frase no dicen adónde llevan.",
-      "Olvidar el https:// de otra web: href=\"www.ejemplo.com\" se busca dentro de tu propia página y falla.",
-      "Un <a> sin texto: nadie puede verlo ni pulsarlo.",
+      "«Clic aquí» o «ver más»: fuera de la frase no dicen adónde llevan.",
+      "Olvidar el https:// de otra web: href=\"www.ejemplo.com\" falla.",
     ],
     example: {
       html: `<p>¿Cómo funciona un faro? Lee <a href="https://es.wikipedia.org/wiki/Faro">el artículo sobre faros en Wikipedia</a>.</p>
 `,
     },
-    exampleNote:
-      "href guarda la dirección; el texto «el artículo sobre faros en Wikipedia» es lo que se ve y dice adónde vas.",
+    exampleNote: "href guarda la dirección; el texto dice adónde vas y es lo que se pulsa.",
     predict: {
       question:
-        "Algunos lectores de pantalla pueden leer solo la lista de enlaces de la página. ¿Qué texto de enlace sirve más?",
+        "Hay lectores de pantalla que leen solo la lista de enlaces. ¿Qué texto sirve más?",
       options: [
         {
           label: "«horarios del ferri»",
@@ -560,16 +554,15 @@ export const htmlCards: ConceptCard[] = [
     title: "id y href=\"#…\"",
     tagline: "Ponle nombre a un punto de la página y enlaza directo a él.",
     explain:
-      "El atributo id le da a un elemento un nombre único dentro de la página, como el número de una casa. Un enlace con href=\"#nombre\" (almohadilla más ese id) no sale de la página: salta hasta ese elemento.",
+      "id le da a un elemento un nombre único, como el número de una casa. Un enlace con href=\"#nombre\" salta hasta él sin salir de la página.",
     use: [
       "Menús que llevan a cada sección de una página larga.",
       "Enlaces como «ir a los horarios» o «volver arriba».",
       "Un id distinto para cada elemento: nunca se repiten.",
     ],
     avoid: [
-      "Escribir la almohadilla en el id: id=\"#visitas\". La # solo va en el href.",
+      "Escribir la # en el id: id=\"#visitas\". La # solo va en el href.",
       "Usar espacios en el id: mejor una palabra, o varias unidas con guiones.",
-      "Repetir el mismo id en dos elementos: el enlace no sabría a cuál saltar.",
     ],
     example: {
       html: `<p><a href="#visitas">Ir a las visitas guiadas</a></p>
@@ -579,7 +572,7 @@ export const htmlCards: ConceptCard[] = [
 <p>Sábados a las 11:00. Son 99 escalones.</p>
 `,
     },
-    exampleNote: "href=\"#visitas\" apunta al elemento con id=\"visitas\": la # significa «en esta misma página».",
+    exampleNote: "href=\"#visitas\" lleva al elemento con id=\"visitas\". La # significa «en esta página».",
     predict: {
       question: "Cambias el encabezado a <h2 id=\"visitas-faro\">. ¿Qué pasa con el enlace href=\"#visitas\"?",
       options: [
@@ -612,14 +605,14 @@ export const htmlCards: ConceptCard[] = [
     title: "<img src>",
     tagline: "Muestra una imagen en la página.",
     explain:
-      "<img> coloca una imagen, y su atributo src (de «source», origen) dice dónde está el archivo. Es un elemento vacío: no tiene contenido ni etiqueta de cierre, porque todo lo que necesita va en sus atributos.",
+      "<img> muestra una imagen, y su atributo src dice dónde está el archivo. No tiene contenido ni cierre: todo va en sus atributos.",
     use: [
       "Fotos, dibujos y gráficos que forman parte del contenido.",
       "Siempre con src y con alt, el texto que la describe.",
       "Escribe <img …> y listo: no hace falta </img>.",
     ],
     avoid: [
-      "Escribir la descripción entre <img> y </img>: no se muestra. La descripción va en el atributo alt.",
+      "Escribir la descripción entre <img> y </img>: va en el atributo alt.",
       "Borrar o cambiar el src sin querer: sin él no hay imagen que mostrar.",
     ],
     example: {
@@ -627,8 +620,7 @@ export const htmlCards: ConceptCard[] = [
 <img src="${LIGHTHOUSE_SRC}" alt="Faro rojo con la luz encendida junto al mar">
 `,
     },
-    exampleNote:
-      "El <img> no tiene cierre. El src es largo porque aquí el dibujo va escrito dentro de la propia dirección; normalmente sería algo como src=\"faro.png\".",
+    exampleNote: "Este src es largo porque lleva el dibujo dentro; lo normal es src=\"faro.png\".",
     predict: {
       question: "¿Dónde va la dirección del archivo de la imagen?",
       options: [
@@ -658,16 +650,15 @@ export const htmlCards: ConceptCard[] = [
     title: "alt",
     tagline: "El texto que sustituye a la imagen cuando no se puede ver.",
     explain:
-      "alt (de «alternative», alternativo) describe con palabras lo que aporta la imagen. El lector de pantalla lo lee en voz alta, y el navegador lo muestra en su lugar si la imagen no carga. Si la imagen solo decora, se escribe alt=\"\" (vacío) para que el lector la salte.",
+      "alt describe con palabras lo que aporta la imagen. El lector de pantalla lo lee en voz alta, y se muestra si la imagen no carga.",
     use: [
-      "Describe lo que se ve y lo que importa: «Faro rojo con la luz encendida junto al mar».",
-      "alt=\"\" en imágenes que solo decoran: adornos, olas, líneas.",
+      "Di lo que se ve y lo que importa: «Faro rojo junto al mar».",
+      "alt=\"\" vacío si solo decora, para que el lector la salte.",
       "Cada <img> lleva su alt, aunque sea vacío.",
     ],
     avoid: [
-      "Escribir «imagen» o «foto»: el lector ya avisa de que es una imagen. Di qué aparece.",
-      "Quitar el alt a una imagen decorativa: sin él, el lector puede leer en voz alta la dirección entera del archivo.",
-      "Descripciones larguísimas: una o dos frases bastan.",
+      "Escribir «imagen» o «foto»: el lector ya lo avisa. Di qué aparece.",
+      "Quitar el alt a un adorno: el lector puede leer la dirección del archivo.",
     ],
     example: {
       html: `<h2>Faro del Norte</h2>
@@ -675,8 +666,7 @@ export const htmlCards: ConceptCard[] = [
 <p>Esta imagen no existe, así que el navegador muestra su alt en su lugar.</p>
 `,
     },
-    exampleNote:
-      "La imagen no carga y aparece el texto del alt: eso mismo es lo que oye quien usa lector de pantalla.",
+    exampleNote: "La imagen no carga y se ve su alt: es lo que oye quien usa lector de pantalla.",
     predict: {
       question: "Una ola de adorno separa dos partes del póster. ¿Qué alt le pones?",
       options: [
@@ -709,14 +699,14 @@ export const htmlCards: ConceptCard[] = [
     title: "width y height",
     tagline: "El tamaño de la imagen, para guardarle su hueco.",
     explain:
-      "width (ancho) y height (alto) dicen cuánto mide la imagen en píxeles, los puntitos que forman la pantalla. Se escribe solo el número, sin unidades. Con ellos el navegador reserva el hueco antes de que la imagen llegue, y el texto de abajo no da un salto al cargar.",
+      "width (ancho) y height (alto) miden la imagen en píxeles. Así el navegador le guarda el hueco y el texto no salta al cargar.",
     use: [
-      "En cada <img>, con las medidas reales del archivo: width=\"320\" height=\"200\".",
+      "En cada <img>, con las medidas reales: width=\"320\" height=\"200\".",
       "También en las imágenes decorativas: también ocupan sitio.",
     ],
     avoid: [
       "Escribir unidades: width=\"320px\" no es válido. Solo el número.",
-      "Inventar medidas que no respetan la forma de la imagen: saldría estirada o aplastada.",
+      "Medidas que no respetan su forma: la imagen sale estirada o aplastada.",
     ],
     example: {
       html: `<img src="${LIGHTHOUSE_SRC}" alt="Faro rojo con la luz encendida junto al mar" width="160" height="100">
@@ -725,7 +715,7 @@ export const htmlCards: ConceptCard[] = [
     },
     exampleNote: "width=\"160\" height=\"100\" reservan un hueco de 160 por 100 píxeles desde el primer momento.",
     predict: {
-      question: "Con internet lento, una imagen sin width ni height tarda en llegar. ¿Qué nota quien está leyendo?",
+      question: "Con internet lento, una imagen sin width ni height tarda. ¿Qué nota quien lee?",
       options: [
         {
           label: "El texto salta hacia abajo cuando aparece la imagen",
@@ -751,17 +741,17 @@ export const htmlCards: ConceptCard[] = [
     worldId: "html-basics",
     kind: "concept",
     title: "<!doctype html> y <html lang>",
-    tagline: "La primera línea de la página y la caja que lo envuelve todo.",
+    tagline: "La primera línea y la caja que lo envuelve todo.",
     explain:
-      "Una página completa empieza con <!doctype html>, que le dice al navegador «esto es HTML moderno». Después, el elemento <html> envuelve todo lo demás, y su atributo lang dice en qué idioma está escrita: lang=\"es\" para español. Gracias a lang, el lector de pantalla pronuncia con el acento correcto.",
+      "<!doctype html> abre la página y dice «esto es HTML moderno». Luego <html> envuelve todo, y su atributo lang dice el idioma: lang=\"es\".",
     use: [
       "<!doctype html> siempre en la primera línea, antes que nada.",
       "<html lang=\"es\"> justo debajo, y </html> al final del todo.",
-      "Otro idioma, otro valor: lang=\"en\" para inglés, lang=\"pt\" para portugués.",
+      "Otro idioma, otro valor: lang=\"en\" inglés, lang=\"pt\" portugués.",
     ],
     avoid: [
-      "Olvidar el doctype: el navegador entra en «modo antiguo» y dibuja algunas cosas como hace 30 años.",
-      "Dejar <html> sin lang: el lector de pantalla puede leer tu español con acento inglés.",
+      "Olvidar el doctype: el navegador dibuja algunas cosas a la antigua.",
+      "Dejar <html> sin lang: el lector puede leer tu español con acento inglés.",
     ],
     example: {
       html: `<!doctype html>
@@ -776,15 +766,14 @@ export const htmlCards: ConceptCard[] = [
 </html>
 `,
     },
-    exampleNote:
-      "Fíjate en las dos primeras líneas: el doctype va antes que todo, y <html lang=\"es\"> abre la caja que se cierra en la última línea.",
+    exampleNote: "El doctype va primero; <html lang=\"es\"> abre la caja que cierra la última línea.",
     predict: {
       question: "Tu página está escrita en inglés, pero dice <html lang=\"es\">. ¿Qué pasa?",
       options: [
         {
           label: "El lector de pantalla lee el inglés con pronunciación española",
           correct: true,
-          why: "lang le dice qué voz y qué reglas usar. Si no coincide con el texto, suena raro o no se entiende.",
+          why: "lang le dice qué voz usar. Si no coincide con el texto, suena raro.",
         },
         {
           label: "El navegador traduce la página al español",
@@ -810,7 +799,7 @@ export const htmlCards: ConceptCard[] = [
     title: "<head> y <body>",
     tagline: "Lo que el navegador necesita saber y lo que la gente ve.",
     explain:
-      "Dentro de <html> hay dos partes, una detrás de otra. <head> (cabeza) guarda datos sobre la página que no aparecen en ella, como el nombre de la pestaña. <body> (cuerpo) contiene todo lo visible: encabezados, párrafos, listas, imágenes y enlaces.",
+      "<head> guarda datos que no se ven, como el nombre de la pestaña. <body> tiene todo lo visible: títulos, párrafos, imágenes.",
     use: [
       "En <head>: datos para el navegador, como <title> y <meta>.",
       "En <body>: todo lo que quieras que se vea.",
@@ -833,8 +822,7 @@ export const htmlCards: ConceptCard[] = [
 </html>
 `,
     },
-    exampleNote:
-      "Todo lo que ves en la vista previa sale de <body>. El <title> de <head> no aparece en la página: va a la pestaña.",
+    exampleNote: "Lo que ves sale de <body>. El <title> del <head> va a la pestaña.",
     predict: {
       question: "¿Dónde va un <h2> con el nombre de una sección?",
       options: [
@@ -865,18 +853,17 @@ export const htmlCards: ConceptCard[] = [
     worldId: "html-basics",
     kind: "element",
     title: "<meta> y <title>",
-    tagline: "Los datos del <head>: letras, móviles y nombre de la pestaña.",
+    tagline: "Los datos del <head>: letras, móvil y pestaña.",
     explain:
-      "<meta charset=\"utf-8\"> hace que las tildes y las eñes se vean bien. <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"> ajusta la página al ancho del móvil en vez de mostrarla diminuta. <title> es el texto de la pestaña y de los resultados de búsqueda. <meta> es un elemento vacío, como <img>: no se cierra.",
+      "<title> es el nombre de la pestaña. Cada <meta> ajusta algo sin verse, y no se cierra, como <img>.",
     use: [
-      "<meta charset=\"utf-8\"> lo primero dentro de <head>.",
-      "El meta viewport en todas las páginas, para que se lean bien en el móvil.",
-      "Un <title> corto que diga qué es la página: «Panadería La Miga».",
+      "<meta charset=\"utf-8\"> lo primero: las tildes y eñes se ven bien.",
+      "<meta name=\"viewport\" …>: la página se ajusta al ancho del móvil.",
+      "Un <title> corto que diga qué es: «Panadería La Miga».",
     ],
     avoid: [
-      "Añadir user-scalable=no o maximum-scale=1 al viewport: impiden hacer zoom, y mucha gente lo necesita para leer.",
-      "Dejar el <title> vacío o repetido en todas las páginas: nadie sabría qué pestaña es cuál.",
-      "Poner <meta> o <title> dentro de <body>.",
+      "Poner user-scalable=no o maximum-scale=1: bloquean el zoom que muchos necesitan.",
+      "Dejar el <title> vacío o repetido: nadie sabría qué pestaña es cuál.",
     ],
     example: {
       html: `<!doctype html>
@@ -893,10 +880,9 @@ export const htmlCards: ConceptCard[] = [
 </html>
 `,
     },
-    exampleNote:
-      "Nada del <head> aparece en la vista previa: el <title> va a la pestaña y los <meta> trabajan sin verse, pero gracias al charset la ñ de «Año» se ve bien.",
+    exampleNote: "Nada del <head> se ve, pero gracias al charset la ñ de «Año» sale bien.",
     predict: {
-      question: "Una página sin <meta charset=\"utf-8\"> dice «Año nuevo en la isla». ¿Qué puede salir mal?",
+      question: "Sin <meta charset=\"utf-8\">, la página dice «Año nuevo». ¿Qué puede fallar?",
       options: [
         {
           label: "Que la ñ se vea como letras raras: «AÃ±o»",
@@ -924,15 +910,15 @@ export const htmlCards: ConceptCard[] = [
     title: "<header> y <footer>",
     tagline: "La cabecera y el pie de la página.",
     explain:
-      "<header> envuelve la parte de arriba: el nombre o el logo del sitio. <footer> envuelve el pie: contacto, autoría, créditos. No cambian cómo se ve nada: dicen qué papel tiene cada parte. Son puntos de referencia («landmarks») a los que los lectores de pantalla pueden saltar directamente, algo que un <div> (una caja sin significado) no permite.",
+      "<header> es la cabecera y <footer>, el pie. No cambian el aspecto: son puntos de referencia (landmarks) a los que salta el lector de pantalla.",
     use: [
       "<header> arriba, con el <h1> del sitio.",
       "<footer> abajo del todo, con contacto o créditos.",
       "Los dos fuera de <main>, al mismo nivel que él.",
     ],
     avoid: [
-      "Confundir <header> con <head>: <head> guarda datos invisibles; <header> es la cabecera que se ve.",
-      "Usar <div class=\"cabecera\">: se ve igual, pero no le dice a nadie que es la cabecera.",
+      "Confundir <header> con <head>: <head> guarda datos que no se ven.",
+      "Usar un <div>, una caja sin significado: se ve igual, pero no dice qué es.",
     ],
     example: {
       html: `<header>
@@ -944,13 +930,12 @@ export const htmlCards: ConceptCard[] = [
 </footer>
 `,
     },
-    exampleNote:
-      "En la vista previa no cambia nada: <header> y <footer> no tienen aspecto propio, aportan significado.",
+    exampleNote: "La vista previa no cambia: <header> y <footer> aportan significado, no aspecto.",
     predict: {
       question: "Cambias <div class=\"pie\"> por <footer>. ¿Qué cambia?",
       options: [
         {
-          label: "Se ve igual, pero ahora los lectores de pantalla saben que es el pie",
+          label: "Se ve igual, pero el lector de pantalla ya sabe que es el pie",
           correct: true,
           why: "Los landmarks no dan estilo: dan significado y atajos para moverse por la página.",
         },
@@ -962,7 +947,7 @@ export const htmlCards: ConceptCard[] = [
         {
           label: "Nada en absoluto",
           correct: false,
-          why: "En la pantalla no, pero para quien usa lector de pantalla pasa de ser una caja anónima a ser el pie.",
+          why: "En pantalla no, pero para el lector deja de ser una caja anónima y pasa a ser el pie.",
         },
       ],
     },
@@ -975,7 +960,7 @@ export const htmlCards: ConceptCard[] = [
     title: "<nav>",
     tagline: "El bloque de enlaces para moverse por el sitio.",
     explain:
-      "<nav> (de «navegación») agrupa los enlaces principales: el menú. Los lectores de pantalla lo anuncian como navegación, así que quien los usa puede ir directo al menú o saltárselo. Dentro tiene que haber enlaces <a>.",
+      "<nav> agrupa los enlaces principales: el menú. El lector de pantalla lo anuncia, así que se puede ir directo a él o saltarlo.",
     use: [
       "El menú principal, normalmente arriba, junto al <header>.",
       "Un índice con enlaces a las secciones de la misma página (#…).",
@@ -1022,15 +1007,14 @@ export const htmlCards: ConceptCard[] = [
     title: "<main>",
     tagline: "El contenido principal: lo que hace única a esta página.",
     explain:
-      "<main> envuelve lo propio de esta página, lo que viniste a buscar: los avisos, la receta, el horario. La cabecera, el menú y el pie suelen repetirse en todo el sitio, así que van fuera. Solo hay un <main> por página, y los lectores de pantalla tienen un atajo para saltar directo a él.",
+      "<main> envuelve lo propio de esta página: los avisos, la receta. Cabecera, menú y pie se repiten en todo el sitio, así que van fuera.",
     use: [
-      "Todo el contenido central: encabezados de sección, párrafos, listas, imágenes.",
-      "Después del <header> y del <nav>, y antes del <footer>, sin meterlo dentro de ellos.",
-      "Uno solo por página.",
+      "Todo el contenido central: secciones, párrafos, listas, imágenes.",
+      "Tras <header> y <nav>, antes de <footer>, sin meterlo en ellos.",
+      "Uno solo por página: el lector de pantalla tiene un atajo a él.",
     ],
     avoid: [
       "Poner dos <main>: el lector de pantalla no sabría a cuál saltar.",
-      "Meter el <div> dentro de <main> en vez de cambiarlo por <main>: sobra una capa.",
       "Meter el <header> o el <footer> de la página dentro de <main>.",
     ],
     example: {
@@ -1049,9 +1033,9 @@ export const htmlCards: ConceptCard[] = [
 </footer>
 `,
     },
-    exampleNote: "Lo que cambia de una página a otra (el pan del día) va en <main>; cabecera y pie quedan fuera.",
+    exampleNote: "Lo que cambia de una página a otra va en <main>; cabecera y pie quedan fuera.",
     predict: {
-      question: "La web de la panadería tiene una página «Pan del día» y otra «Pasteles». ¿Qué cambia entre las dos?",
+      question: "La panadería tiene las páginas «Pan del día» y «Pasteles». ¿Qué cambia entre ellas?",
       options: [
         {
           label: "Lo que hay dentro de <main>",
