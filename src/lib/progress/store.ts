@@ -61,6 +61,8 @@ type ProgressState = {
   seenCards: string[];
   /** Tutorial steps already shown, by id ("level-basics", "tiles", "fill", "map"…). */
   seenTips: string[];
+  /** Worlds the player jumped to without finishing the previous one. */
+  unlockedWorlds: string[];
   equipped: Equipped;
   /** Records a finished level. Only improvements grant XP. */
   completeLevel: (levelId: string, stars: Stars) => CompleteResult;
@@ -70,6 +72,8 @@ type ProgressState = {
   markIntroSeen: () => void;
   markCardsSeen: (ids: string[]) => void;
   markTipSeen: (id: string) => void;
+  /** "Saltar a esta isla": opens a world's first level (autonomy for players who already know). */
+  unlockWorld: (worldId: string) => void;
   /** Ignored when the current rank has not unlocked `patch.flag` yet. */
   equip: (patch: Partial<Equipped>) => void;
   reset: () => void;
@@ -90,12 +94,13 @@ const initial = {
   seenIntro: false,
   seenCards: [] as string[],
   seenTips: [] as string[],
+  unlockedWorlds: [] as string[],
   equipped: { flag: "coral" } as Equipped,
 };
 
 type Persisted = Pick<
   ProgressState,
-  "levels" | "xp" | "reviews" | "settings" | "seenIntro" | "equipped" | "seenCards" | "seenTips"
+  "levels" | "xp" | "reviews" | "settings" | "seenIntro" | "equipped" | "seenCards" | "seenTips" | "unlockedWorlds"
 >;
 
 /** Upgrades persisted state from older versions. Exported for tests. */
@@ -116,6 +121,7 @@ export function migrateProgress(persisted: unknown, version: number): Persisted 
         ? allLevels.filter((l) => (levels[l.id]?.stars ?? 0) > 0).flatMap((l) => l.cards)
         : (s.seenCards ?? []),
     seenTips: s.seenTips ?? [],
+    unlockedWorlds: s.unlockedWorlds ?? [],
     equipped: { ...initial.equipped, ...s.equipped },
   };
 }
@@ -164,6 +170,10 @@ export const useProgress = create<ProgressState>()(
       setSettings: (patch) =>
         set((s) => ({ settings: { ...s.settings, ...patch } })),
       markIntroSeen: () => set({ seenIntro: true }),
+      unlockWorld: (worldId) =>
+        set((s) =>
+          s.unlockedWorlds.includes(worldId) ? s : { unlockedWorlds: [...s.unlockedWorlds, worldId] },
+        ),
       markTipSeen: (id) =>
         set((s) => (s.seenTips.includes(id) ? s : { seenTips: [...s.seenTips, id] })),
       markCardsSeen: (ids) =>
@@ -201,12 +211,20 @@ export const useProgress = create<ProgressState>()(
 export const rankOf = (xp: number) => Math.floor(xp / XP_PER_RANK) + 1;
 
 /** A level is playable when it is the first one or the previous one has ≥1 star. */
+/**
+ * A level is playable when it is the first one, the previous one has ≥1 star,
+ * or it opens a world the player chose to jump to ("Saltar a esta isla").
+ */
 export function isUnlocked(
   levelId: string,
   levels: Record<string, LevelProgress>,
+  unlockedWorlds: readonly string[] = [],
 ): boolean {
   const i = allLevels.findIndex((l) => l.id === levelId);
   if (i <= 0) return i === 0;
+  const level = allLevels[i];
+  const opensWorld = allLevels[i - 1].worldId !== level.worldId;
+  if (opensWorld && unlockedWorlds.includes(level.worldId)) return true;
   return (levels[allLevels[i - 1].id]?.stars ?? 0) > 0;
 }
 

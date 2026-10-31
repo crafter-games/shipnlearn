@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import { migrateProgress, useProgress } from "./store";
+import { isUnlocked, migrateProgress, useProgress } from "./store";
 
 describe("progress store", () => {
   beforeEach(() => useProgress.getState().reset());
@@ -27,6 +27,15 @@ describe("progress store", () => {
     const v2 = { levels: { "html-01-titulo": { stars: 1, completedAt: 1 } }, seenIntro: true };
     expect(migrateProgress(v2, 2).seenCards).toEqual(["web-que-es", "html-que-es", "html-elemento", "html-h1"]);
     expect(migrateProgress({ ...v2, seenCards: ["x"] }, 3).seenCards).toEqual(["x"]);
+  });
+
+  it("opens a world's first level when the player jumps to it, and only that level", () => {
+    expect(isUnlocked("css-01-color", {})).toBe(false);
+    expect(isUnlocked("css-01-color", {}, ["css-basics"])).toBe(true);
+    expect(isUnlocked("css-02-clases", {}, ["css-basics"])).toBe(false);
+    useProgress.getState().unlockWorld("css-basics");
+    useProgress.getState().unlockWorld("css-basics");
+    expect(useProgress.getState().unlockedWorlds).toEqual(["css-basics"]);
   });
 
   it("marks the intro as seen and clears it on reset", () => {
