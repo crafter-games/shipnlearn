@@ -48,7 +48,7 @@ function SeenCard({ card, world, onOpen }: { card: ConceptCard; world: World; on
         <span className="ml-auto font-display text-sm text-ink">N.º {cardNumber(card.id)}</span>
       </span>
       <span className="flex flex-1 flex-col gap-2 p-2.5 sm:p-3">
-        <span className="self-start rounded-lg border-2 border-ink bg-ink px-2 py-0.5 font-mono text-base font-extrabold break-all text-sand sm:text-lg">
+        <span className="self-start rounded-lg border-2 border-ink bg-ink px-2 py-0.5 font-mono text-base font-extrabold break-words text-sand sm:text-lg">
           {card.title}
         </span>
         <span className="line-clamp-4 text-sm font-bold leading-snug text-ink-soft">{card.tagline}</span>
