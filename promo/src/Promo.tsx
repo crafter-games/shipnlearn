@@ -14,6 +14,7 @@ import { S5Islands } from "./scenes/S5Islands";
 import { S6Cast } from "./scenes/S6Cast";
 import { S7Topics } from "./scenes/S7Topics";
 import { S8Cta } from "./scenes/S8Cta";
+import { CUES } from "./sfx";
 import { H, W } from "./theme";
 
 /**
@@ -27,6 +28,9 @@ const CUTS = [96, 212, 316, 408, 524, 607, 693];
 const SHIP = 212;
 
 const WHOOSH = "https://remotion.media/whoosh.wav";
+/** Mix: the music file is mastered hot (~-11 LUFS), so it sits lower than the SFX. */
+const MUSIC = 0.4;
+const SFX_GAIN = 0.7;
 
 export const Promo: React.FC = () => {
   return (
@@ -71,32 +75,31 @@ export const Promo: React.FC = () => {
         </TransitionSeries.Sequence>
       </TransitionSeries>
 
-      {/* Music: CC0 chiptune from the game, faded in and out, ducked under the jingle. */}
+      {/* Music: upbeat CC0 chiptune (~150 bpm, major), ducked under the victory jingle. */}
       <Audio
-        src={staticFile("audio/music-map.mp3")}
-        loop
-        loopVolumeCurveBehavior="extend"
+        src={staticFile("audio/music-upbeat.mp3")}
         volume={(f) =>
-          interpolate(f, [0, 12, SHIP + 40, SHIP + 50, SHIP + 130, SHIP + 150, TOTAL - 45, TOTAL - 1], [0, 0.75, 0.75, 0.35, 0.35, 0.75, 0.75, 0], {
+          interpolate(f, [0, 8, SHIP + 40, SHIP + 48, SHIP + 120, SHIP + 140, TOTAL - 40, TOTAL - 1], [0, MUSIC, MUSIC, MUSIC * 0.45, MUSIC * 0.45, MUSIC, MUSIC, 0], {
             extrapolateLeft: "clamp",
             extrapolateRight: "clamp",
           })
         }
       />
+      <Sequence from={SHIP + 44} durationInFrames={150} layout="none">
+        <Audio src={staticFile("audio/jingle-victory.mp3")} volume={0.7} />
+      </Sequence>
+      {/* Whoosh on every cut except the soft fade. */}
       {CUTS.filter((_, i) => i !== 5).map((cut) => (
         <Sequence key={cut} from={cut - 2} durationInFrames={30} layout="none">
-          <Audio src={WHOOSH} volume={0.45} />
+          <Audio src={WHOOSH} volume={0.5 * SFX_GAIN} />
         </Sequence>
       ))}
-      <Sequence from={SHIP + 34} durationInFrames={20} layout="none">
-        <Audio src="https://remotion.media/mouse-click.wav" volume={0.8} />
-      </Sequence>
-      <Sequence from={SHIP + 44} durationInFrames={150} layout="none">
-        <Audio src={staticFile("audio/jingle-victory.mp3")} volume={0.9} />
-      </Sequence>
-      <Sequence from={CUTS[6] + 30} durationInFrames={40} layout="none">
-        <Audio src="https://remotion.media/ding.wav" volume={0.6} />
-      </Sequence>
+      {/* Interface sound effects, one per animated beat (src/sfx.ts). */}
+      {CUES.map((cue, i) => (
+        <Sequence key={i} from={cue.at} durationInFrames={45} layout="none">
+          <Audio src={staticFile(`sfx/${cue.file}.ogg`)} volume={(cue.volume ?? 0.6) * SFX_GAIN} />
+        </Sequence>
+      ))}
     </AbsoluteFill>
   );
 };
