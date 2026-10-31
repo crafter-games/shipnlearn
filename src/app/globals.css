@@ -68,6 +68,17 @@
 }
 
 @layer components {
+  /* Light sweeping across a bar while it fills (HUD XP). */
+  .hud-shimmer {
+    background: linear-gradient(100deg, transparent 20%, color-mix(in oklab, var(--color-foam) 75%, transparent) 50%, transparent 80%);
+    background-size: 200% 100%;
+    animation: shimmer 700ms linear infinite;
+  }
+  @keyframes shimmer {
+    from { background-position: 150% 0; }
+    to { background-position: -50% 0; }
+  }
+
   /* Thick text outline used on display titles over the ocean. */
   .text-stroke {
     -webkit-text-stroke: 6px var(--color-ink);
