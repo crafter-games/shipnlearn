@@ -7,11 +7,12 @@ import { subgrid } from "./05-subgrid";
 import { color } from "./06-color";
 import { fluido } from "./07-fluido";
 import { ancla } from "./08-ancla";
+import { observatorio } from "./09-observatorio";
 
 export const cssAdvanced: World = {
   id: "css-advanced",
   title: "Isla Volcán",
   subtitle: "CSS avanzado",
   accent: "#E8590C",
-  levels: [anidado, has, capas, contenedor, subgrid, color, fluido, ancla],
+  levels: [anidado, has, capas, contenedor, subgrid, color, fluido, ancla, observatorio],
 };
