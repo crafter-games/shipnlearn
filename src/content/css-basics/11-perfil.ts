@@ -111,10 +111,10 @@ export const perfil: Level = {
   title: "Jefe: Tarjeta de perfil",
   npc: { name: "Octo", avatar: "octo" },
   story:
-    "¡Ya eres shipper de estilo! Hazme una tarjeta de perfil de 320px justos: foto redonda sin aplastarme, nombre, bio, dos botones en fila… y que quepa en cualquier móvil.",
+    "Mi tarjeta de perfil: 320px justos, foto redonda sin aplastarme, botones en fila ¡y que quepa en un móvil!",
   concept: "Componente completo: caja, imagen, flexbox, foco y responsive",
   lesson:
-    "Juntaste todo el mundo CSS: box-sizing para medidas exactas, object-fit y border-radius para un avatar redondo sin deformar, flexbox para los botones, contraste y :focus-visible para que todo el mundo pueda usarla, y max-width para que quepa en el móvil.",
+    "Usaste todo el mundo CSS: border-box, object-fit, border-radius, flexbox, :focus-visible, contraste y max-width.",
   mode: "code",
   starter: { html, css: starterCss },
   editable: ["html", "css"],
@@ -126,7 +126,7 @@ export const perfil: Level = {
       kind: "required",
       label: "La tarjeta mide exactamente 320px de ancho",
       explain:
-        "Con content-box, width: 320px más 48px de padding y 6px de borde da 374px. box-sizing: border-box hace que los 320px incluyan todo.",
+        "Con content-box, 320px más 48px de padding y 6px de borde dan 374px. Usa box-sizing: border-box.",
       test: (ctx) => {
         const card = $(ctx, ".perfil");
         return !!card && Math.abs(rect(card).width - 320) <= 0.5;
@@ -179,7 +179,7 @@ export const perfil: Level = {
       kind: "required",
       label: "Los dos botones están en fila, dentro de la tarjeta",
       explain:
-        "Pon display: flex en el contenedor de los botones (.acciones) y un gap para separarlos. Cuida que no se salgan del borde.",
+        "Pon display: flex y un gap en .acciones. Que los botones no se salgan del borde.",
       test: (ctx) => {
         const card = $(ctx, ".perfil");
         const list = botones(ctx);
@@ -193,7 +193,7 @@ export const perfil: Level = {
       kind: "a11y",
       label: "Nombre, bio y botones se leen bien (contraste 4.5:1)",
       explain:
-        "El gris claro de la bio y el blanco sobre azul claro no llegan a 4.5:1. Oscurece la bio y el fondo de los botones.",
+        "La bio gris y los botones azul claro no llegan a 4.5:1. Oscurece la bio y el fondo azul.",
       test: (ctx) => {
         const els = [$(ctx, ".perfil .nombre"), $(ctx, ".perfil .bio"), ...botones(ctx)];
         return els.length === 4 && els.every((el) => !!el && textContrast(ctx, el) >= 4.5);
@@ -202,7 +202,7 @@ export const perfil: Level = {
     {
       id: "focus",
       kind: "a11y",
-      label: "Los botones muestran un contorno al enfocarlos con el teclado",
+      label: "Los botones muestran contorno al enfocarlos con Tab",
       explain:
         "Con outline: none nadie que use Tab sabe dónde está. Añade .boton:focus-visible con un outline de 2px o más.",
       test: (ctx) => {
@@ -223,7 +223,7 @@ export const perfil: Level = {
       kind: "required",
       label: "En un móvil de 360px no hay scroll horizontal",
       explain:
-        "Si la tarjeta mide más que la pantalla, aparece scroll lateral. Con border-box mide 320px y cabe; max-width: 100% la protege en pantallas aún más pequeñas.",
+        "Si la tarjeta es más ancha que la pantalla, hay scroll lateral. Con border-box y max-width: 100% cabe.",
       test: async (ctx) => {
         await ctx.setViewport(360);
         return noHorizontalScroll(ctx) && ctx.doc.documentElement.scrollWidth <= 360;
@@ -231,8 +231,8 @@ export const perfil: Level = {
     },
   ],
   hints: [
-    "Repasa el mundo: box-sizing para el ancho exacto, width = height + object-fit + border-radius para el avatar, flex para los botones, contraste y :focus-visible.",
-    ".perfil { box-sizing: border-box; }\n.avatar { width: 120px; height: 120px; object-fit: cover; border-radius: 50%; }\n.acciones { display: flex; justify-content: center; gap: 12px; }\n.boton:focus-visible { outline: 3px solid #1B1F3B; }",
+    "Repasa: border-box, avatar con width = height, object-fit y border-radius, flex, contraste y :focus-visible.",
+    ".perfil { box-sizing: border-box; }\n.avatar { height: 120px; object-fit: cover; border-radius: 50%; }\n.acciones { display: flex; gap: 12px; }",
     "Consulta object-fit y box-sizing en MDN.",
   ],
   mdn: [

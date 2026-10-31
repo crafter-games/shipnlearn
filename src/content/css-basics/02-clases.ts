@@ -28,10 +28,10 @@ export const clases: Level = {
   title: "Ofertas de la herrería",
   npc: { name: "Bruno el herrero", avatar: "bruno" },
   story:
-    "Todo lo que tiene la clase oferta va en verde (green). Y mi espada, la única con id estrella, en negrita. ¡Que brille más que mi yunque!",
+    "Lo de clase oferta, en verde (green). Mi espada, id estrella, en negrita. ¡Que brille más que mi yunque!",
   concept: "Selectores de clase (.) e id (#)",
   lesson:
-    "Una clase (.oferta) se puede repetir en muchos elementos y la regla los pinta a todos. Un id (#estrella) es único en la página y elige un solo elemento.",
+    "Una clase (.oferta) se repite y su regla pinta a todos. Un id (#estrella) es único: elige un solo elemento.",
   mode: "tiles",
   starter: { html, css: css.starter },
   editable: ["css"],
@@ -43,7 +43,7 @@ export const clases: Level = {
       kind: "required",
       label: "Todas las ofertas están en verde",
       explain:
-        "En el HTML, oferta es una clase (class=\"oferta\"), así que el selector empieza con punto: .oferta. Con # buscaría un id que no existe.",
+        "oferta es una clase (class=\"oferta\"): el selector lleva punto, .oferta. Con # buscaría un id.",
       test: (ctx) => {
         const ofertas = $$(ctx, ".oferta");
         return ofertas.length === 2 && ofertas.every((li) => hasColor(ctx, li, "color", "green"));
@@ -65,7 +65,7 @@ export const clases: Level = {
       kind: "required",
       label: "La espada estrella va en negrita",
       explain:
-        "estrella es un id (id=\"estrella\"), así que el selector usa almohadilla: #estrella. Luego font-weight: bold; engrosa la letra.",
+        "estrella es un id (id=\"estrella\"): el selector es #estrella, con font-weight: bold.",
       test: (ctx) => {
         const star = $(ctx, "#estrella");
         return !!star && Number(style(ctx, star, "font-weight")) >= 700;
@@ -76,7 +76,7 @@ export const clases: Level = {
       kind: "a11y",
       label: "El verde de las ofertas se lee bien (contraste 4.5:1)",
       explain:
-        "Algunos verdes claros casi desaparecen sobre blanco. Con contraste 4.5:1 o más, todo el mundo puede leer los precios.",
+        "Los verdes claros casi desaparecen sobre blanco. Busca un contraste de 4.5:1 o más.",
       test: (ctx) => {
         const ofertas = $$(ctx, ".oferta");
         return ofertas.length > 0 && ofertas.every((li) => textContrast(ctx, li) >= 4.5);

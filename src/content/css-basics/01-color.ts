@@ -26,7 +26,7 @@ export const color: Level = {
     "¡Mi cartel es más soso que un cactus sin flor! Quiero el título en color crimson y centrado.",
   concept: "Reglas CSS: selector { propiedad: valor; }",
   lesson:
-    "Escribiste tu primera regla CSS. El selector (h1) elige a quién pintar y cada declaración propiedad: valor; termina en punto y coma para que la siguiente se entienda.",
+    "Escribiste tu primera regla: el selector (h1) elige a quién, y cada declaración propiedad: valor; acaba en punto y coma.",
   mode: "tiles",
   starter: { html, css: css.starter },
   editable: ["css"],
@@ -38,7 +38,7 @@ export const color: Level = {
       kind: "required",
       label: "El título <h1> es de color crimson",
       explain:
-        "El texto se pinta con la propiedad color (sin «u»). Si falta el punto y coma, el navegador no entiende dónde acaba la declaración y la ignora.",
+        "Usa la propiedad color (sin «u») y cierra con punto y coma, o el navegador la ignora.",
       test: (ctx) => {
         const h1 = $(ctx, "h1");
         return !!h1 && hasColor(ctx, h1, "color", "crimson");
@@ -49,7 +49,7 @@ export const color: Level = {
       kind: "required",
       label: "El título está centrado",
       explain:
-        "text-align: center; centra el texto dentro de su caja. Revisa que la declaración esté dentro de las llaves del selector h1.",
+        "text-align: center; centra el texto. Ponlo dentro de las llaves de h1.",
       test: (ctx) => {
         const h1 = $(ctx, "h1");
         return !!h1 && style(ctx, h1, "text-align") === "center";
@@ -60,7 +60,7 @@ export const color: Level = {
       kind: "required",
       label: "El texto de abajo conserva su color",
       explain:
-        "Rosa solo quería pintar el título. El selector h1 elige únicamente los <h1>; uno general como body o * pintaría toda la página.",
+        "Solo el título va en crimson. Usa el selector h1; body o * pintaría toda la página.",
       test: (ctx) => {
         const p = $(ctx, "p");
         return !!p && !hasColor(ctx, p, "color", "crimson");
@@ -71,7 +71,7 @@ export const color: Level = {
       kind: "a11y",
       label: "El título se lee bien sobre el fondo (contraste 4.5:1)",
       explain:
-        "Un color con poco contraste cuesta leerlo, sobre todo con el sol de la playa o con baja visión. WCAG pide al menos 4.5:1 para el texto.",
+        "Con poco contraste el título cuesta leerlo. El texto necesita al menos 4.5:1.",
       test: (ctx) => {
         const h1 = $(ctx, "h1");
         return !!h1 && textContrast(ctx, h1) >= 4.5;

@@ -54,10 +54,10 @@ export const flexbox: Level = {
   title: "Macetas en fila",
   npc: { name: "Tula la tortuga jardinera", avatar: "tula" },
   story:
-    "Mis tres macetas están apiladas como una torre a punto de caerse. Ponlas en fila, en el centro del jardín, con 16px de aire entre cada una.",
+    "Mis macetas están apiladas como una torre a punto de caer. ¡En fila, centradas y con 16px entre ellas!",
   concept: "Flexbox: display: flex, justify-content y gap",
   lesson:
-    "display: flex coloca a los hijos en fila. justify-content: center los agrupa en el centro y gap pone el mismo espacio entre ellos sin márgenes que se sumen en los bordes.",
+    "display: flex puso las macetas en fila; justify-content: center las centró y gap las separó por igual.",
   mode: "code",
   starter: { html, css: base },
   editable: ["css"],
@@ -68,7 +68,7 @@ export const flexbox: Level = {
       kind: "required",
       label: "Las tres macetas están en la misma fila",
       explain:
-        "Los <div> son block y se apilan. Pon display: flex en el contenedor (.jardin) para que sus hijos se coloquen en fila.",
+        "Los <div> son block y se apilan. Pon display: flex en .jardin para ponerlos en fila.",
       test: (ctx) => {
         const list = macetas(ctx);
         return list.length === 3 && sameRow(list, 1);
@@ -79,7 +79,7 @@ export const flexbox: Level = {
       kind: "required",
       label: "Entre maceta y maceta hay 16px",
       explain:
-        "gap: 16px; en el contenedor separa a los hijos exactamente 16px. Con margin tendrías que cuidar que no se sumen ni sobren en los extremos.",
+        "gap: 16px; en el contenedor separa a los hijos 16px exactos, sin sobrar en los extremos.",
       test: (ctx) => {
         const list = macetas(ctx);
         if (list.length !== 3) return false;
@@ -93,7 +93,7 @@ export const flexbox: Level = {
       kind: "required",
       label: "El grupo de macetas está centrado en el jardín",
       explain:
-        "justify-content: center; reparte el espacio sobrante a ambos lados, así el grupo queda en el medio del contenedor.",
+        "justify-content: center; en .jardin reparte el espacio a ambos lados del grupo.",
       test: (ctx) => {
         const jardin = $(ctx, ".jardin");
         const list = macetas(ctx);
@@ -109,7 +109,7 @@ export const flexbox: Level = {
       kind: "a11y",
       label: "Se ven en el mismo orden que en el HTML",
       explain:
-        "Los lectores de pantalla y el teclado siguen el orden del HTML. Si lo inviertes con row-reverse u order, lo que se ve y lo que se oye no coinciden.",
+        "El teclado y los lectores siguen el orden del HTML. No lo inviertas con row-reverse u order.",
       test: (ctx) => {
         const list = macetas(ctx);
         return (
