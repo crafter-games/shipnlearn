@@ -1,6 +1,7 @@
 import { expect, test } from "@playwright/test";
 import { allCards } from "../src/lib/levels/cards";
 import { allLevels } from "../src/lib/levels/registry";
+import { TIP_IDS } from "../src/components/tutorial/tours";
 import type { FillSpec, Level } from "../src/lib/levels/types";
 
 /** Blank values that turn `spec.template` into the level's solution file. */
@@ -19,18 +20,18 @@ function fillAnswers(level: Level, spec: FillSpec): string[] {
 const playable = allLevels.filter((l) => l.mode === "tiles" || l.mode === "fill");
 
 test.beforeEach(async ({ page }) => {
-  // Every level unlocked, no intro, every concept card seen, no saved drafts.
+  // Every level unlocked, no intro, every concept card and tutorial tip seen, no saved drafts.
   await page.goto("/");
   await page.evaluate(
-    ([ids, seenCards]) => {
+    ([ids, seenCards, seenTips]) => {
       localStorage.clear();
       const levels = Object.fromEntries(ids.map((id) => [id, { stars: 1, completedAt: 1 }]));
       localStorage.setItem(
         "shipnlearn-progress",
-        JSON.stringify({ state: { levels, xp: 0, reviews: [], seenIntro: true, seenCards }, version: 3 }),
+        JSON.stringify({ state: { levels, xp: 0, reviews: [], seenIntro: true, seenCards, seenTips }, version: 3 }),
       );
     },
-    [allLevels.map((l) => l.id), allCards.map((c) => c.id)] as const,
+    [allLevels.map((l) => l.id), allCards.map((c) => c.id), TIP_IDS] as const,
   );
 });
 

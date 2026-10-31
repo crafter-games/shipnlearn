@@ -29,6 +29,7 @@ import { PreviewPane } from "./preview-pane";
 import { useKeyboardInset } from "./hooks";
 import { KEYBOARD_MIN, QuickKeys } from "./quick-keys";
 import { TilesBoard } from "./tiles-board";
+import { LevelTips } from "@/components/tutorial/level-tips";
 
 const DEBOUNCE_MS = 300; // tune
 const KEY_SFX_MS = 70;
@@ -247,6 +248,7 @@ export function LevelGame({ level, review = false }: { level: Level; review?: bo
   const editorPanel = (
     <section
       aria-label="Editor"
+      data-tour="editor"
       className="flex min-h-[46dvh] flex-col overflow-hidden rounded-chunk border-[3px] border-ink bg-ink shadow-chunky md:min-h-[60dvh] lg:min-h-0 lg:flex-1"
     >
       <div className="flex items-center gap-1 border-b-[3px] border-ink bg-ink-soft px-2 pt-2" role={level.mode === "code" && editable.length > 1 ? "tablist" : undefined}>
@@ -344,11 +346,12 @@ export function LevelGame({ level, review = false }: { level: Level; review?: bo
               aria-label={cards.length > 1 ? `Fichas del nivel (${cards.length})` : "Ficha del nivel"}
               onClick={() => (playSfx("ui-tap"), setCardsOpen(true))}
               data-testid="open-cards"
+              data-tour="help"
             >
               <Card className="size-7" />
             </IconButton>
           )}
-          <IconButton aria-label={`Pistas (${draft.hintsUsed} de 3 usadas)`} tone="sand" onClick={openHints}>
+          <IconButton aria-label={`Pistas (${draft.hintsUsed} de 3 usadas)`} tone="sand" onClick={openHints} data-tour="help">
             <Hint className="size-7" />
             {draft.hintsUsed > 0 && (
               <span aria-hidden className="absolute -top-1.5 -right-1.5 flex size-5 items-center justify-center rounded-full border-2 border-ink bg-coral font-sans text-[11px] font-black text-foam">
@@ -438,6 +441,10 @@ export function LevelGame({ level, review = false }: { level: Level; review?: bo
       />
 
       <CardsDialog open={introOpen} cards={unseen} mode="intro" onClose={finishIntro} />
+      <LevelTips
+        level={level}
+        active={!review && !introOpen && !cardsOpen && !hintsOpen && !restartOpen && !celebration && results !== null}
+      />
       <CardsDialog open={cardsOpen} cards={cards} mode="browse" onClose={() => setCardsOpen(false)} />
 
       <Dialog open={restartOpen} onClose={() => setRestartOpen(false)} labelledBy="restart-title">

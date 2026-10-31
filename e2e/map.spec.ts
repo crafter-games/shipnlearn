@@ -1,5 +1,6 @@
 import path from "node:path";
 import { type Page, expect, test } from "@playwright/test";
+import { TIP_IDS } from "../src/components/tutorial/tours";
 
 const KEY = "shipnlearn-progress";
 const FIRST = "html-01-titulo";
@@ -15,7 +16,8 @@ async function seed(page: Page, state: Seed) {
       localStorage.setItem(key, value);
       sessionStorage.setItem("seeded", "1");
     },
-    [KEY, JSON.stringify({ state, version: 2 })] as const,
+    // Tutorial tips already seen: they have their own spec (tutorial.spec.ts).
+    [KEY, JSON.stringify({ state: { seenTips: TIP_IDS, ...state }, version: 2 })] as const,
   );
 }
 

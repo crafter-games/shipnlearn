@@ -1,5 +1,6 @@
 import { expect, type Page, test } from "@playwright/test";
 import { allCards } from "../src/lib/levels/cards";
+import { TIP_IDS } from "../src/components/tutorial/tours";
 
 const LEVEL = "/play/html-01-titulo";
 
@@ -15,10 +16,14 @@ test.beforeEach(async ({ page }) => {
   await page.goto(LEVEL);
   // Fresh progress, but concept cards already seen: these tests are about the editor
   // (the first-visit card sequence has its own spec, cards.spec.ts).
-  await page.evaluate((seenCards) => {
-    localStorage.clear();
-    localStorage.setItem("shipnlearn-progress", JSON.stringify({ state: { seenCards }, version: 3 }));
-  }, allCards.map((c) => c.id));
+  // Tutorial tips too (tutorial.spec.ts covers them).
+  await page.evaluate(
+    ([seenCards, seenTips]) => {
+      localStorage.clear();
+      localStorage.setItem("shipnlearn-progress", JSON.stringify({ state: { seenCards, seenTips }, version: 3 }));
+    },
+    [allCards.map((c) => c.id), TIP_IDS] as const,
+  );
   await page.reload();
   await expect(page.locator("[data-check]").first()).toBeVisible();
 });

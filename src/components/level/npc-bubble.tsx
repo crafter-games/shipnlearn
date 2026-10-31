@@ -8,7 +8,7 @@ import type { Npc } from "@/lib/levels/types";
 export function NpcBubble({ npc, story, className = "" }: { npc: Npc; story: string; className?: string }) {
   const [open, setOpen] = useState(true);
   return (
-    <section aria-label={`Pedido de ${npc.name}`} className={`flex items-start gap-3 ${className}`}>
+    <section aria-label={`Pedido de ${npc.name}`} data-tour="npc" className={`flex items-start gap-3 ${className}`}>
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
