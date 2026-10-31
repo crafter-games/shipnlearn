@@ -1,7 +1,12 @@
 import type { LevelFiles } from "@/lib/levels/types";
 
 /** Base styles every preview gets, so a blank page doesn't look broken. */
-const BASE_CSS = `html{font-family:system-ui,sans-serif;line-height:1.5;color:#1B1F3B;background:#fff}body{margin:16px}img{max-width:100%}`;
+/**
+ * Inside its own cascade layer, declared first, so it has the lowest
+ * priority: player CSS always wins, including player rules in @layer
+ * (unlayered CSS would otherwise beat every layered rule they write).
+ */
+const BASE_CSS = `@layer shipnlearn-base{html{font-family:system-ui,sans-serif;line-height:1.5;color:#1B1F3B;background:#fff}body{margin:16px}img{max-width:100%}}`;
 
 /**
  * Nonce for the only script allowed in a preview: the axe-core auditor the
