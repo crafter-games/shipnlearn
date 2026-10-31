@@ -1,4 +1,4 @@
-import { expect, type Page, test } from "@playwright/test";
+import { expect, type Locator, type Page, test } from "@playwright/test";
 import { allCards, getCard } from "../src/lib/levels/cards";
 import { getLevel } from "../src/lib/levels/registry";
 
@@ -9,6 +9,22 @@ const levelCards = getLevel(LEVEL_ID)!.cards.map((id) => getCard(id)!);
 
 // Cards flip in; motion is not under test here.
 test.use({ reducedMotion: "reduce" });
+
+/** The step on screen (the one sliding out loses its test id). */
+const currentStep = (dialog: Locator) => dialog.getByTestId("card-step");
+
+/** A touch swipe on the card, as pointer events (dx < 0 goes forward). */
+async function swipe(page: Page, dx: number) {
+  await page.getByTestId("card-step").evaluate((el, dx) => {
+    const r = el.getBoundingClientRect();
+    const y = r.top + r.height / 2;
+    const x = r.left + r.width / 2;
+    const fire = (type: string, cx: number) =>
+      el.dispatchEvent(new PointerEvent(type, { bubbles: true, pointerType: "touch", clientX: cx, clientY: y }));
+    fire("pointerdown", x);
+    fire("pointerup", x + dx);
+  }, dx);
+}
 
 const seenCards = (page: Page) =>
   page.evaluate((k) => (JSON.parse(localStorage.getItem(k) ?? "{}").state?.seenCards ?? []) as string[], KEY);
@@ -36,13 +52,41 @@ test("level 1 opens with its concept cards, a predict question, then the editor"
     const view = dialog.getByTestId("concept-card");
     await expect(view).toHaveAttribute("data-card", card.id);
     await expect(view.getByRole("heading", { level: 2 })).toHaveText(card.title);
-    await expect(view).toContainText(card.tagline);
-    // The worked example renders live next to its code.
+    await expect(dialog.getByTestId("cards-progress")).toHaveText(`Ficha ${i + 1} de ${levelCards.length}`);
+
+    // 1. Qué es: one bite, no example yet.
+    await expect(currentStep(dialog)).toHaveAttribute("data-step", "que-es");
+    await expect(currentStep(dialog)).toContainText(card.tagline);
+    await expect(dialog.getByText("Paso 1 de 4: Qué es")).toBeAttached();
+    await expect(view.getByTestId("card-code")).toHaveCount(0);
+    await expect(dialog.getByTestId("card-back")).toBeEnabled({ enabled: i > 0 });
+
+    // 2. Míralo: the worked example renders live next to its code.
+    await dialog.getByTestId("card-next").click();
+    await expect(currentStep(dialog)).toHaveAttribute("data-step", "miralo");
+    await expect(dialog.getByRole("heading", { level: 3, name: "Míralo" })).toBeFocused();
+    await expect(dialog.getByText("Paso 2 de 4: Míralo")).toBeAttached();
     await expect(view.getByTestId("card-code")).toContainText(card.example.html.trim().split("\n")[0]);
     await expect(view.frameLocator('[data-testid="card-preview"]').locator("body")).not.toBeEmpty();
+    await expect(currentStep(dialog)).toContainText(card.exampleNote);
 
-    // Predict: pick a wrong option when there is one, so both explanations show.
+    // «Atrás» and the arrow keys walk the same steps.
+    await dialog.getByTestId("card-back").click();
+    await expect(currentStep(dialog)).toHaveAttribute("data-step", "que-es");
+    await page.keyboard.press("ArrowRight");
+    await page.keyboard.press("ArrowRight");
+
+    // 3. Cuándo sí / cuándo no.
+    await expect(currentStep(dialog)).toHaveAttribute("data-step", "cuando");
+    for (const t of [...card.use.slice(0, 3), ...card.avoid.slice(0, 2)]) {
+      await expect(currentStep(dialog)).toContainText(t);
+    }
+
+    // 4. Predict: moving on waits for an answer before a level.
     await dialog.getByTestId("to-predict").click();
+    await expect(currentStep(dialog)).toHaveAttribute("data-step", "prueba");
+    await expect(dialog.getByTestId("card-next")).toBeDisabled();
+    // Pick a wrong option when there is one, so both explanations show.
     const options = dialog.getByTestId("card-predict").getByRole("button");
     const wrong = card.predict.options.findIndex((o) => !o.correct);
     await options.nth(wrong).click();
@@ -114,9 +158,25 @@ test("the Fichero shows seen cards and locked silhouettes", async ({ page }) => 
   await card.click();
   const dialog = page.getByTestId("cards-dialog");
   await expect(dialog.getByRole("heading", { level: 2 })).toHaveText(levelCards[0].title);
+  await expect(currentStep(dialog)).toHaveAttribute("data-step", "que-es");
+
+  // Every step is reachable: swipes walk them, the pips jump straight to one.
+  await swipe(page, -120);
+  await expect(currentStep(dialog)).toHaveAttribute("data-step", "miralo");
+  await swipe(page, 120);
+  await expect(currentStep(dialog)).toHaveAttribute("data-step", "que-es");
+  await dialog.getByRole("button", { name: "Paso 4 de 4: Ponte a prueba" }).click();
+  await expect(currentStep(dialog)).toHaveAttribute("data-step", "prueba");
+  await expect(dialog.getByRole("button", { name: "Paso 4 de 4: Ponte a prueba" })).toHaveAttribute(
+    "aria-current",
+    "step",
+  );
+
   // Optional practice: answering works and can be retried.
   await dialog.getByTestId("card-predict").getByRole("button").first().click();
   await expect(dialog.getByTestId("predict-feedback")).toBeVisible();
+  await dialog.getByRole("button", { name: "Otra vez" }).click();
+  await expect(dialog.getByTestId("predict-feedback")).toHaveCount(0);
   await dialog.getByRole("button", { name: "Cerrar ficha" }).click();
   await expect(page.getByTestId("cards-dialog")).toHaveCount(0);
 
