@@ -55,6 +55,11 @@
 - Ficha: título, frase corta, explicación, "Cuándo usarlo", "Evita", ejemplo de código con preview en vivo, pregunta de predicción con explicación de cada opción (sin puntuación ni bloqueo), enlace MDN.
 - Fichero: álbum coleccionable con todas las fichas (vistas / bloqueadas), consultable desde el mapa y desde el nivel ("Fichas").
 
+### Tutorial y presupuesto de texto
+- Tutorial de primer uso con coach marks (foco + burbuja de Octo, ≤10 palabras por paso, saltable): recorrido del nivel 1 tras sus fichas; consejos la primera vez de cada modo (fichas, huecos, CSS) y del mapa. Se guarda en `seenTips`.
+- Cada ficha se recorre en 4 pasos de una pantalla: Qué es → Míralo → Cuándo sí / cuándo no → Ponte a prueba.
+- Presupuesto de texto verificado por test (`text-budget.test.ts`): explicación de ficha ≤150 caracteres, pedido del nivel ≤110, lección ≤140, explicación de un check ≤110, viñetas ≤70–80.
+
 ### Estrellas (1–3)
 - ⭐ todas las checks requeridas pasan.
 - ⭐⭐ + accesibilidad/semántica (checks `a11y` + axe sin `serious`/`critical`).
@@ -143,3 +148,4 @@ M2–M6 se construyen en paralelo por subagentes sobre contratos definidos en M1
 - 2026-10-30: M1–M6 entregados en paralelo (motor, mapa, audio, 20 niveles); Mareas jugables como repaso; desplegado en shipnlearn.crafter.games.
 - 2026-10-30: Música procedural sustituida por loops chiptune CC0 con intensidad dinámica en el editor (feedback: no se oía y no sonaba a juego). Regla nueva: sin emojis, todo en SVG propio.
 - 2026-10-30: Fichas de concepto antes de cada nivel y Fichero coleccionable (feedback: faltaba explicar qué es cada elemento y cuándo usarlo antes de jugar).
+- 2026-10-31: Menos texto (presupuesto por test), fichas en pasos, tutorial de primer uso y más animaciones y transiciones (feedback: demasiado texto y fricción al empezar).
