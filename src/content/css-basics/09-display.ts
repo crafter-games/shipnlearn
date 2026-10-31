@@ -48,10 +48,10 @@ export const display: Level = {
   title: "El menú del muelle",
   npc: { name: "Anzuelo el pescador", avatar: "anzuelo" },
   story:
-    "Mi menú baja como una caña de pescar y los botones no hacen caso del ancho de 120px que les puse. ¡Lo quiero en fila, como barcas amarradas!",
+    "Mi menú cuelga como una caña de pescar y los botones ignoran sus 120px. ¡En fila, como barcas amarradas!",
   concept: "display: block, inline e inline-block",
   lesson:
-    "Los elementos block (como <li>) ocupan toda la fila y se apilan; los inline (como <a>) fluyen con el texto pero ignoran width y height. inline-block combina ambos: va en fila y respeta el tamaño.",
+    "<li> es block y se apila; <a> es inline e ignora width. inline-block va en fila y respeta el tamaño.",
   mode: "code",
   starter: { html, css: base },
   editable: ["css"],
@@ -62,7 +62,7 @@ export const display: Level = {
       kind: "required",
       label: "Las cuatro opciones del menú están en la misma fila",
       explain:
-        "Un <li> es block: ocupa todo el ancho y empuja al siguiente hacia abajo. Con display: inline-block (o flex en la lista) se colocan uno al lado del otro.",
+        "Cada <li> es block y ocupa su fila. Con display: inline-block, o flex en la lista, van en fila.",
       test: (ctx) => {
         const list = items(ctx);
         return list.length === 4 && sameRow(list, 2);
@@ -73,7 +73,7 @@ export const display: Level = {
       kind: "required",
       label: "Cada botón mide 120px de ancho",
       explain:
-        "Un enlace <a> es inline y por eso ignora width. Cámbialo a display: inline-block o block para que respete los 120px.",
+        "Un <a> es inline e ignora width. Ponle display: inline-block para que mida 120px.",
       test: (ctx) => {
         const list = links(ctx);
         return list.length === 4 && list.every((a) => Math.abs(rect(a).width - 120) <= 1);
@@ -84,7 +84,7 @@ export const display: Level = {
       kind: "a11y",
       label: "Cada botón es fácil de pulsar (al menos 24×24px)",
       explain:
-        "Los objetivos táctiles diminutos son difíciles de tocar con el dedo o con temblor en la mano. WCAG pide al menos 24×24px.",
+        "Los botones diminutos cuestan de tocar con el dedo. Deben medir al menos 24×24px.",
       test: (ctx) => {
         const list = links(ctx);
         return (
@@ -105,7 +105,7 @@ export const display: Level = {
     },
   ],
   hints: [
-    "Hay dos problemas: los <li> son block (se apilan) y los <a> son inline (ignoran width). display cambia cómo se comporta cada caja.",
+    "Los <li> son block (se apilan) y los <a>, inline (ignoran width). display cambia ambos.",
     ".menu li {\n  display: inline-block;\n}\n.menu a {\n  display: inline-block;\n}",
     "Lee la propiedad display en MDN.",
   ],

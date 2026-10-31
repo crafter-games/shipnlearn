@@ -54,10 +54,10 @@ export const tipografia: Level = {
   title: "La leyenda del faro",
   npc: { name: "Lumi la farera", avatar: "lumi" },
   story:
-    "Escribí la leyenda del faro, pero la letra es tan pequeña que hasta las gaviotas usan lupa. ¿Le das una fuente bonita, más tamaño y aire entre líneas?",
+    "Las gaviotas leen mi leyenda con lupa. ¿Le das una fuente bonita, letra más grande y aire entre líneas?",
   concept: "Tipografía: font-family, rem y line-height",
   lesson:
-    "font-family lista fuentes de preferida a genérica (la última, como serif, es el respaldo seguro). font-size en rem respeta el tamaño que cada persona eligió en su navegador, y un line-height de 1.4 a 1.8 da aire a la lectura.",
+    "Elegiste fuente con respaldo genérico, tamaño en rem que respeta los ajustes de cada persona y un line-height cómodo.",
   mode: "fill",
   starter: { html, css: fillTemplate(fill, []) },
   editable: ["css"],
@@ -67,9 +67,9 @@ export const tipografia: Level = {
     {
       id: "family-fallback",
       kind: "required",
-      label: "Nueva fuente con una familia genérica de respaldo al final",
+      label: "Nueva fuente con una genérica de respaldo al final",
       explain:
-        "Si la fuente que eliges no está instalada, el navegador usa la siguiente de la lista. Termina siempre con una genérica: Georgia, serif.",
+        "Si tu fuente no está instalada, se usa la siguiente. Termina con una genérica: Georgia, serif.",
       test: (ctx) => {
         const p = paragraph(ctx);
         if (!p) return false;
@@ -87,7 +87,7 @@ export const tipografia: Level = {
       kind: "required",
       label: "El texto mide entre 18 y 32 píxeles",
       explain:
-        "12px es demasiado pequeño para leer un cuento. Con 1.25rem el texto mide 20px cuando el navegador usa su tamaño normal.",
+        "12px es muy pequeño para un cuento. 1.25rem da 20px con el tamaño normal.",
       test: (ctx) => {
         const p = paragraph(ctx);
         const size = p ? px(style(ctx, p, "font-size")) : 0;
@@ -97,9 +97,9 @@ export const tipografia: Level = {
     {
       id: "line-height",
       kind: "required",
-      label: "El interlineado está entre 1.4 y 1.8 veces el tamaño de letra",
+      label: "El interlineado mide entre 1.4 y 1.8 veces la letra",
       explain:
-        "line-height: 1 pega las líneas entre sí. Un número sin unidad como 1.6 multiplica el tamaño de la letra y deja espacio para que la vista no se pierda.",
+        "line-height: 1 pega las líneas. Usa un número sin unidad, como 1.6.",
       test: (ctx) => {
         const p = paragraph(ctx);
         if (!p) return false;
@@ -110,9 +110,9 @@ export const tipografia: Level = {
     {
       id: "scales",
       kind: "a11y",
-      label: "La letra crece si la persona agranda el texto del navegador",
+      label: "La letra crece si la persona agranda el texto",
       explain:
-        "Con px el tamaño queda fijo aunque alguien con baja visión pida letra grande. rem se calcula desde el tamaño raíz, así que escala con sus ajustes.",
+        "En px la letra no crece aunque la persona lo pida. En rem sí sigue sus ajustes.",
       test: (ctx) => {
         const p = paragraph(ctx);
         if (!p) return false;
@@ -133,7 +133,7 @@ export const tipografia: Level = {
     },
   ],
   hints: [
-    "font-family acepta una lista separada por comas; font-size en rem (1rem = tamaño base); line-height como número sin unidad.",
+    "font-family: lista con comas. font-size: en rem. line-height: número sin unidad.",
     "font-family: Georgia, serif;\nfont-size: 1.25rem;\nline-height: 1.6;",
     "Lee «Fundamentos de texto y tipografía» en MDN.",
   ],

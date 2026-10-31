@@ -34,10 +34,10 @@ export const unidades: Level = {
   title: "El pergamino infinito",
   npc: { name: "Búho el bibliotecario", avatar: "buho" },
   story:
-    "Mi pergamino de normas se sale de la pantalla y la dirección del catálogo se escapa por un lado. Que las líneas no sean eternas y que todo quepa, incluso en un móvil.",
+    "Mi pergamino se sale de la pantalla y su enlace se escapa. Quiero líneas cortas y que quepa en un móvil.",
   concept: "Unidades relativas (ch, rem) y overflow",
   lesson:
-    "max-width en ch limita las líneas a unos 60 caracteres, una medida cómoda de leer, y deja que la caja se encoja en pantallas pequeñas. overflow-wrap: anywhere permite partir palabras larguísimas como una URL para que no desborden.",
+    "max-width: 60ch deja líneas cómodas y se encoge en el móvil. overflow-wrap: anywhere parte las palabras larguísimas.",
   mode: "code",
   starter: { html, css: starterCss },
   editable: ["css"],
@@ -48,7 +48,7 @@ export const unidades: Level = {
       kind: "required",
       label: "Las líneas tienen entre 30 y 80 caracteres de ancho",
       explain:
-        "Líneas de 900px obligan a mover mucho los ojos. max-width: 60ch limita el ancho a unos 60 caracteres (1ch = ancho del «0»).",
+        "Líneas de 900px cansan la vista. max-width: 60ch las limita a unos 60 caracteres.",
       test: (ctx) => {
         const el = pergamino(ctx);
         const p = $(ctx, ".pergamino p");
@@ -62,7 +62,7 @@ export const unidades: Level = {
       kind: "required",
       label: "La página no tiene scroll horizontal",
       explain:
-        "Una caja de 900px no cabe en una pantalla de 800px. Usa max-width en vez de width: la caja crece hasta ese límite pero puede encogerse.",
+        "900px no caben en una pantalla de 800px. max-width pone un tope y deja encoger la caja.",
       test: (ctx) => noHorizontalScroll(ctx),
     },
     {
@@ -70,7 +70,7 @@ export const unidades: Level = {
       kind: "required",
       label: "La dirección larga no se sale del pergamino",
       explain:
-        "Una palabra sin espacios no se parte sola y desborda su caja. overflow-wrap: anywhere deja que el navegador la corte donde haga falta. Ocultarla con overflow: hidden no vale: el texto seguiría cortado.",
+        "Una palabra sin espacios no se parte sola. Usa overflow-wrap: anywhere; overflow: hidden la recortaría.",
       test: (ctx) => {
         const el = pergamino(ctx);
         const link = $(ctx, ".enlace");
@@ -87,7 +87,7 @@ export const unidades: Level = {
       kind: "a11y",
       label: "El ancho se adapta si la persona agranda el texto",
       explain:
-        "Con px el ancho queda fijo aunque la letra crezca, y caben menos palabras por línea. Con ch o rem el pergamino crece junto con el texto.",
+        "En px el ancho no crece con la letra. En ch o rem, el pergamino crece con el texto.",
       test: (ctx) => {
         const el = pergamino(ctx);
         if (!el) return false;
@@ -102,7 +102,7 @@ export const unidades: Level = {
       kind: "required",
       label: "En un móvil de 360px tampoco hay scroll horizontal",
       explain:
-        "width fija el ancho aunque la pantalla sea más estrecha. max-width solo pone un tope, así que en un móvil la caja se encoge.",
+        "width no se encoge en pantallas estrechas. max-width solo pone un tope y sí se encoge.",
       test: async (ctx) => {
         await ctx.setViewport(360);
         return noHorizontalScroll(ctx);
@@ -110,7 +110,7 @@ export const unidades: Level = {
     },
   ],
   hints: [
-    "Cambia width por max-width con una unidad relativa al texto (ch o rem), y deja que la dirección larga pueda partirse.",
+    "Cambia width por max-width en ch o rem, y deja que la dirección larga se parta.",
     ".pergamino {\n  max-width: 60ch;\n}\n.enlace {\n  overflow-wrap: anywhere;\n}",
     "Lee «Valores y unidades» en MDN y la propiedad overflow-wrap.",
   ],

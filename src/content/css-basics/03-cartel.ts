@@ -30,10 +30,10 @@ export const cartel: Level = {
   title: "El cartel de la fiesta",
   npc: { name: "DJ Marea", avatar: "dj-marea" },
   story:
-    "Mi cartel parece un aviso de impuestos. Quiero fondo rebeccapurple, un borde dorado (gold) de 4px y esquinas redondeadas. ¡Y que se lea!",
+    "Parece un aviso de impuestos. Fondo rebeccapurple, borde gold de 4px, esquinas redondas ¡y que se lea!",
   concept: "Fondos, bordes y esquinas",
   lesson:
-    "background-color pinta el fondo de la caja, border dibuja su contorno con grosor, estilo y color, y border-radius redondea las esquinas. Cambiar el fondo obliga a revisar el color del texto.",
+    "background-color pinta el fondo, border dibuja el contorno y border-radius redondea esquinas. Nuevo fondo: revisa el color del texto.",
   mode: "fill",
   starter: { html, css: fillTemplate(fill, []) },
   editable: ["css"],
@@ -56,7 +56,7 @@ export const cartel: Level = {
       kind: "required",
       label: "Tiene un borde dorado de 4px por los cuatro lados",
       explain:
-        "El atajo border necesita tres piezas: grosor, estilo y color (4px solid gold). Sin el estilo (solid) el borde no se dibuja.",
+        "border necesita grosor, estilo y color: 4px solid gold. Sin estilo, no se dibuja.",
       test: (ctx) => {
         const el = $(ctx, ".cartel");
         if (!el) return false;
@@ -85,7 +85,7 @@ export const cartel: Level = {
       kind: "a11y",
       label: "El texto se lee sobre el fondo morado (contraste 4.5:1)",
       explain:
-        "El texto oscuro casi desaparece sobre morado. Al cambiar el fondo, cambia también color para que el contraste sea de al menos 4.5:1.",
+        "El texto oscuro no se lee sobre morado. Cambia también color hasta 4.5:1 o más.",
       test: (ctx) => {
         const h2 = $(ctx, ".cartel h2");
         const p = $(ctx, ".cartel p");
@@ -94,7 +94,7 @@ export const cartel: Level = {
     },
   ],
   hints: [
-    "Fondo con background-color, texto con color, contorno con border (grosor estilo color) y esquinas con border-radius.",
+    "Fondo: background-color. Texto: color. Contorno: border (grosor estilo color). Esquinas: border-radius.",
     "background-color: rebeccapurple;\ncolor: white;\nborder: 4px solid gold;\nborder-radius: 16px;",
     "Consulta border y border-radius en MDN.",
   ],

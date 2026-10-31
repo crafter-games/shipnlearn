@@ -25,20 +25,20 @@ export const cssCards: ConceptCard[] = [
     title: "CSS",
     tagline: "El idioma que decide cómo se ve cada parte de la página.",
     explain:
-      "En la isla anterior usaste HTML para decir qué es cada cosa. CSS es el segundo idioma de la web: no cambia el contenido, cambia su aspecto. Colores, tamaños, espacios, bordes y la posición de cada caja se escriben en CSS, normalmente en un archivo aparte que el navegador aplica sobre el HTML.",
+      "HTML dice qué es cada cosa; CSS dice cómo se ve. Suele ir en un archivo aparte y cambia el aspecto, nunca el contenido.",
     use: [
-      "Úsalo para todo lo visual: colores, letras, espacios, bordes, columnas.",
-      "Deja el HTML para el significado y el CSS para el diseño: así puedes rediseñar sin tocar el contenido.",
+      "Para todo lo visual: colores, letras, espacios, bordes, columnas.",
+      "HTML para el significado, CSS para el diseño.",
     ],
     avoid: [
-      "Cambiar una etiqueta HTML solo para que se vea distinta (un <h3> porque es más pequeño): eso se hace con CSS.",
+      "Cambiar una etiqueta solo por cómo se ve (un <h3> por pequeño): eso es CSS.",
     ],
     example: {
       html: "<h1>Floristería Rosa</h1>\n<p>Ramos frescos cada día.</p>\n",
       css: "h1 {\n  color: #D63A52;\n}\np {\n  color: #4FA82F;\n}\n",
     },
     exampleNote:
-      "El HTML es el mismo de siempre; el CSS solo pinta el título de coral y el párrafo de verde.",
+      "El HTML no cambia; el CSS pinta el título de coral y el párrafo de verde.",
     predict: {
       question: "Si borras todo el CSS de este ejemplo, ¿qué le pasa al título?",
       options: [
@@ -69,15 +69,15 @@ export const cssCards: ConceptCard[] = [
     title: "Regla CSS",
     tagline: "Le dice al navegador a quién cambiar y cómo debe verse.",
     explain:
-      "HTML dice qué es cada cosa; CSS dice cómo se ve. Una regla empieza con un selector, que elige a quién se aplica, y entre llaves { } lleva declaraciones propiedad: valor; (qué cambiar y cómo). El selector más simple es el nombre de una etiqueta sin < >: p elige todos los <p> de la página.",
+      "El selector elige a quién se aplica la regla: p elige todos los <p>. Entre llaves { } van las declaraciones propiedad: valor;",
     use: [
-      "Escribe una regla por cada grupo de elementos que quieras cambiar.",
-      "Junta en las mismas llaves todas las declaraciones para esos elementos.",
-      "Termina cada declaración con punto y coma, incluso la última: así añadir otra no rompe nada.",
+      "Una regla por cada grupo de elementos que quieras cambiar.",
+      "Todas las declaraciones de esos elementos, en las mismas llaves.",
+      "Punto y coma al final de cada declaración, incluso la última.",
     ],
     avoid: [
-      "Escribir el selector como en HTML: <p> { … } no funciona; el selector es p, sin < >.",
-      "Olvidar los dos puntos o el punto y coma: el navegador no entiende la declaración y la ignora.",
+      "Escribir el selector con < >: es p { … }, no <p> { … }.",
+      "Olvidar los dos puntos o el punto y coma: el navegador ignora la declaración.",
     ],
     example: {
       html: `<h1>Flores de Rosa</h1>
@@ -90,7 +90,7 @@ export const cssCards: ConceptCard[] = [
 `,
     },
     exampleNote:
-      "p es el selector, color la propiedad y darkmagenta el valor; las llaves encierran la declaración.",
+      "p es el selector, color la propiedad y darkmagenta el valor.",
     predict: {
       question: "Con la regla p { color: darkmagenta; }, ¿qué se pinta de ese color?",
       options: [
@@ -102,7 +102,7 @@ export const cssCards: ConceptCard[] = [
         {
           label: "Solo el primer párrafo",
           correct: false,
-          why: "p no distingue entre párrafos: los elige a todos. Para elegir uno concreto hacen falta clases o ids.",
+          why: "p elige todos los párrafos. Para elegir uno solo hacen falta clases o ids.",
         },
         {
           label: "Toda la página, título incluido",
@@ -123,15 +123,15 @@ export const cssCards: ConceptCard[] = [
     title: "color",
     tagline: "Cambia el color del texto.",
     explain:
-      "color pinta las letras de un elemento. Acepta nombres de color en inglés (crimson, navy, seagreen) o códigos como #B00020. Solo afecta al texto, no al fondo de la caja.",
+      "color pinta las letras, no el fondo. Acepta nombres en inglés (crimson, navy) o códigos como #B00020.",
     use: [
       "Destacar un título con el color de tu marca.",
       "Oscurecer un texto que se lee mal sobre su fondo.",
+      "Junto a texto o un icono: el color solo no basta como señal.",
     ],
     avoid: [
-      "Escribir colour, con u: CSS usa inglés americano y la ignora sin avisar.",
-      "Elegir un color claro sobre fondo blanco: con un contraste menor de 4.5:1, mucha gente no podrá leerlo.",
-      "Usar el color como única señal (rojo para error): quien no distingue colores se lo pierde.",
+      "Escribir colour, con u: CSS no la entiende y la ignora sin avisar.",
+      "Un color claro sobre blanco: con contraste menor de 4.5:1, cuesta leerlo.",
     ],
     example: {
       html: `<h1>Flores de Rosa</h1>
@@ -149,7 +149,7 @@ export const cssCards: ConceptCard[] = [
         {
           label: "El título no cambia de color",
           correct: true,
-          why: "colour no es una propiedad de CSS. El navegador ignora lo que no entiende, sin mostrar ningún error.",
+          why: "colour no existe en CSS. El navegador ignora lo que no entiende, sin avisar.",
         },
         {
           label: "Funciona igual",
@@ -175,13 +175,13 @@ export const cssCards: ConceptCard[] = [
     title: "text-align",
     tagline: "Alinea el texto a la izquierda, al centro o a la derecha.",
     explain:
-      "text-align decide hacia dónde se coloca el texto dentro de su caja: left (izquierda), center (centro) o right (derecha). La caja no se mueve ni cambia de tamaño; solo se recoloca lo que hay dentro.",
+      "text-align coloca el texto dentro de su caja: left, center o right. La caja no se mueve; solo lo de dentro.",
     use: [
       "Centrar un título corto o el texto de un cartel.",
       "Alinear a la derecha una firma o una fecha.",
     ],
     avoid: [
-      "Centrar párrafos largos: con muchas líneas, el ojo pierde dónde empieza cada una.",
+      "Centrar párrafos largos: el ojo pierde dónde empieza cada línea.",
       "Esperar que centre la caja entera: text-align mueve el contenido, no la caja.",
     ],
     example: {
@@ -198,7 +198,7 @@ p {
 `,
     },
     exampleNote:
-      "text-align: center coloca el título en el medio de su fila; text-align: right lleva el párrafo a la derecha.",
+      "center lleva el título al medio de su fila; right lleva el párrafo a la derecha.",
     predict: {
       question: "Si añades text-align: center a la regla de h2, ¿qué se mueve?",
       options: [
@@ -230,16 +230,15 @@ p {
     title: ".clase y #id",
     tagline: "Eligen elementos por el nombre que tú les pones en el HTML.",
     explain:
-      "En el HTML puedes ponerle a un elemento el atributo class=\"fresco\" o id=\"pesca-del-dia\". En CSS, el punto elige una clase (.fresco) y la almohadilla elige un id (#pesca-del-dia). Una clase se puede repetir en muchos elementos; un id es único: solo un elemento por página.",
+      "En el HTML escribes class=\"fresco\"; en CSS la eliges con .fresco. Una clase se repite; un id (#pesca-del-dia) es único.",
     use: [
-      "Una clase para un grupo que comparte estilo: todas las ofertas, todas las tarjetas.",
-      "Un id para algo que solo existe una vez en la página.",
-      "Para dar estilo, prefiere clases: se reutilizan y son más fáciles de cambiar después.",
+      "Clase para un grupo con el mismo estilo: todas las ofertas.",
+      "Id para algo que existe una sola vez en la página.",
+      "Para dar estilo, prefiere clases: se reutilizan.",
     ],
     avoid: [
-      "Confundir los símbolos: si el HTML dice class=\"fresco\", el selector es .fresco, no #fresco.",
-      "Repetir el mismo id en dos elementos: un id es como un DNI, uno por persona.",
-      "Poner el punto en el HTML: se escribe class=\"fresco\", no class=\".fresco\".",
+      "Usar # para una clase: class=\"fresco\" se elige con .fresco.",
+      "Repetir un id en dos elementos: es como un DNI, uno por persona.",
     ],
     example: {
       html: `<h2>Puesto de Anzuelo</h2>
@@ -260,7 +259,7 @@ p {
 `,
     },
     exampleNote:
-      ".fresco pinta los dos elementos con esa clase; #pesca-del-dia elige solo el que tiene ese id.",
+      ".fresco pinta los dos elementos con esa clase; #pesca-del-dia, solo uno.",
     predict: {
       question: "Si añades class=\"fresco\" al elemento de Anzuelos, ¿qué pasa?",
       options: [
@@ -293,13 +292,13 @@ p {
     title: "font-weight",
     tagline: "Hace la letra más gruesa o más fina.",
     explain:
-      "font-weight controla el grosor de las letras. bold (o 700) es negrita y normal (o 400) es el grosor habitual. Los títulos ya vienen en negrita; en un texto normal, bold lo hace destacar.",
+      "font-weight cambia el grosor de la letra. bold (700) es negrita y normal (400), el grosor habitual.",
     use: [
       "Resaltar un precio, un nombre o una palabra clave solo por estilo.",
-      "Quitar la negrita de un título con font-weight: normal si el diseño lo pide.",
+      "Quitar la negrita de un título con font-weight: normal.",
     ],
     avoid: [
-      "Usarla para marcar algo importante para el significado: para eso está <strong> en el HTML; font-weight solo cambia el aspecto.",
+      "Marcar algo importante para el significado: eso es <strong> en el HTML.",
       "Poner todo en negrita: si todo destaca, nada destaca.",
     ],
     example: {
@@ -323,7 +322,7 @@ p {
         {
           label: "Sigue en negrita, porque la regla .precio existe",
           correct: false,
-          why: "Una regla solo actúa sobre los elementos que encajan con su selector. Sin la clase, no encaja.",
+          why: "Una regla solo actúa sobre lo que encaja con su selector. Sin la clase, no encaja.",
         },
       ],
     },
@@ -343,13 +342,13 @@ p {
     title: "background-color",
     tagline: "Pinta el fondo de la caja de un elemento.",
     explain:
-      "Cada elemento es una caja rectangular, aunque no la veas. background-color rellena esa caja de color, por detrás del texto. Cuando cambias el fondo, revisa también color: CSS no cambia el color del texto por ti.",
+      "Cada elemento es una caja; background-color la rellena de color por detrás del texto. El texto no cambia de color solo: revísalo.",
     use: [
-      "Dar fondo a un cartel, un botón o una tarjeta para separarlos del resto.",
+      "Dar fondo a un cartel, un botón o una tarjeta para destacarlos.",
       "Marcar una zona de la página, como un aviso.",
     ],
     avoid: [
-      "Cambiar el fondo y olvidar el texto: letras oscuras sobre morado apenas se leen (pide al menos 4.5:1 de contraste).",
+      "Cambiar el fondo y olvidar el texto: busca 4.5:1 de contraste.",
       "Confundirlo con color: color pinta las letras; background-color, el fondo.",
     ],
     example: {
@@ -364,14 +363,14 @@ p {
 `,
     },
     exampleNote:
-      "background-color: navy pinta la caja entera del párrafo, de lado a lado; color: white mantiene el texto legible.",
+      "navy pinta la caja entera del párrafo; color: white mantiene el texto legible.",
     predict: {
       question: "Si borras color: white, ¿qué pasa con el aviso?",
       options: [
         {
           label: "El texto vuelve a ser oscuro y casi no se lee sobre navy",
           correct: true,
-          why: "El color del texto no cambia solo al cambiar el fondo: vuelve al de siempre, que es oscuro.",
+          why: "El texto no cambia solo al cambiar el fondo: sigue con su color oscuro.",
         },
         {
           label: "El texto se pone blanco igualmente, porque el fondo es oscuro",
@@ -392,14 +391,15 @@ p {
     title: "border",
     tagline: "Dibuja un contorno alrededor de la caja.",
     explain:
-      "border es un atajo que lleva tres valores separados por espacios: grosor, estilo y color, por ejemplo 4px solid gold. El estilo dice cómo es la línea: solid (continua), dashed (rayas) o dotted (puntos). Sin estilo no hay borde, porque el estilo por defecto es none (ninguno).",
+      "border lleva tres valores separados por espacios: grosor, estilo y color (4px solid gold). Sin estilo no hay borde.",
     use: [
       "Enmarcar un cartel, una tarjeta o una foto.",
       "Separar zonas con una línea, por ejemplo border-bottom bajo un título.",
+      "Estilos: solid (continua), dashed (rayas) o dotted (puntos).",
     ],
     avoid: [
       "Olvidar el estilo: border: 4px gold; no dibuja nada.",
-      "Separar los valores con comas: border: 4px, solid, gold; es inválido; van con espacios.",
+      "Separar con comas: border: 4px, solid, gold; no funciona.",
     ],
     example: {
       html: `<p class="cartel">Entrada libre</p>
@@ -443,13 +443,13 @@ p {
     title: "border-radius",
     tagline: "Redondea las esquinas de la caja.",
     explain:
-      "border-radius recibe un tamaño: cuanto mayor, más redonda la esquina. 8px suaviza, 16px redondea bastante, y 50% convierte una caja cuadrada en un círculo. Redondea a la vez el fondo y el borde.",
+      "border-radius redondea las esquinas: cuanto mayor el valor, más curva. 50% vuelve círculo una caja cuadrada.",
     use: [
       "Suavizar botones, tarjetas y carteles.",
-      "Hacer fotos de perfil redondas con border-radius: 50% en una imagen cuadrada.",
+      "Fotos de perfil redondas: border-radius: 50% en una imagen cuadrada.",
     ],
     avoid: [
-      "Esperar un círculo de una caja rectangular: con 50%, una caja ancha se vuelve un óvalo.",
+      "Esperar un círculo de una caja ancha: con 50% sale un óvalo.",
       "Ponerlo en un elemento sin fondo ni borde: redondea igual, pero no se nota.",
     ],
     example: {
@@ -501,15 +501,15 @@ p {
     title: "font-family",
     tagline: "Elige la fuente (la tipografía) del texto.",
     explain:
-      "font-family recibe una lista de fuentes separadas por comas, de la preferida a la de respaldo. El navegador usa la primera que tenga instalada. Al final va siempre una familia genérica, como serif (letras con remates) o sans-serif (sin remates), que existe en todos los dispositivos.",
+      "font-family recibe una lista separada por comas; el navegador usa la primera que tenga. Termina con una genérica, como serif o sans-serif.",
     use: [
       "Dar personalidad a un título o a todo un texto.",
-      "Una fuente serif para un cuento largo, una sans-serif para botones y menús.",
+      "serif (con remates) en cuentos; sans-serif (sin remates) en menús.",
       "Si el nombre lleva espacios, escríbelo entre comillas: \"Courier New\".",
     ],
     avoid: [
-      "Poner una sola fuente sin respaldo: si no está instalada, el navegador usa la suya por defecto.",
-      "Poner comillas a la genérica: \"serif\" entre comillas se busca como una fuente llamada así y deja de ser el respaldo.",
+      "Poner una sola fuente: si no está instalada, sale la de por defecto.",
+      "Poner comillas a la genérica: \"serif\" ya no sirve de respaldo.",
     ],
     example: {
       html: `<p class="bitacora">Bitácora del faro: noche tranquila, mar en calma, tres barcos a la vista.</p>
@@ -527,7 +527,7 @@ p {
         {
           label: "Una fuente monoespaciada cualquiera, la genérica monospace",
           correct: true,
-          why: "El navegador recorre la lista de izquierda a derecha y usa la primera que tiene. La genérica siempre existe.",
+          why: "El navegador usa la primera de la lista que tenga. La genérica siempre existe.",
         },
         {
           label: "Ninguna: el texto no se ve",
@@ -553,10 +553,10 @@ p {
     title: "font-size y rem",
     tagline: "Cambia el tamaño de la letra; en rem, respeta a quien lee.",
     explain:
-      "font-size fija el tamaño de la letra. 1rem es el tamaño base que cada persona tiene en su navegador (16px si nunca lo tocó), así que 1.25rem son 20px. Si alguien con baja visión sube su tamaño base, todo lo que mediste en rem crece con él; lo que mediste en px se queda igual.",
+      "font-size fija el tamaño de la letra. 1rem es el tamaño base del navegador de cada persona: 16px si nunca lo cambió.",
     use: [
       "Mide el texto en rem para que crezca con los ajustes de cada persona.",
-      "Unos 1rem para texto normal, 1.25rem para lecturas largas, de 1.5rem a 2rem para títulos.",
+      "1rem texto, 1.25rem lecturas largas, de 1.5rem a 2rem títulos.",
     ],
     avoid: [
       "Fijar el texto en px: ignora a quien agrandó la letra del navegador.",
@@ -577,7 +577,7 @@ p {
     },
     exampleNote: "Con el tamaño base de 16px, 0.75rem son 12px y 1.25rem son 20px.",
     predict: {
-      question: "Una persona sube el tamaño base de su navegador a 20px. ¿Cuánto mide ahora el texto .comoda?",
+      question: "Alguien sube la base de su navegador a 20px. ¿Cuánto mide ahora .comoda?",
       options: [
         {
           label: "25px",
@@ -603,14 +603,14 @@ p {
     title: "line-height",
     tagline: "Controla el espacio entre las líneas de un texto.",
     explain:
-      "line-height marca la altura de cada línea. Escrito como número sin unidad (1.6), multiplica el tamaño de la letra: con letra de 20px, cada línea mide 32px. Las líneas apretadas cansan la vista; entre 1.4 y 1.8 el texto respira.",
+      "line-height marca la altura de cada línea. Un número sin unidad (1.6) multiplica el tamaño de la letra.",
     use: [
-      "Párrafos largos: 1.5 o 1.6 hace la lectura más cómoda.",
-      "Títulos de varias líneas: algo menos, como 1.2, para que no se separen de más.",
+      "Párrafos: entre 1.4 y 1.8, como 1.6, se leen cómodos.",
+      "Títulos de varias líneas: algo menos, como 1.2.",
     ],
     avoid: [
       "line-height: 1 en párrafos: las líneas casi se tocan.",
-      "Darle unidad (24px): si luego agrandas la letra, el interlineado no crece con ella y las líneas se pisan.",
+      "Darle unidad (24px): no crece si luego agrandas la letra.",
     ],
     example: {
       html: `<p class="apretado">Cada noche Lumi sube los escalones del faro, limpia el cristal y enciende la luz para los barcos.</p>
@@ -660,17 +660,17 @@ p {
     worldId: "css-basics",
     kind: "concept",
     title: "Modelo de caja",
-    tagline: "Toda caja tiene contenido, padding, border y margin, de dentro hacia fuera.",
+    tagline: "Contenido, padding, border y margin, de dentro afuera.",
     explain:
-      "Cada elemento es una caja de cuatro capas. En el centro está el contenido (el texto). Alrededor, padding: el relleno interior, que comparte el fondo de la caja. Luego el border. Y por fuera, margin: un espacio transparente que la separa de sus vecinas.",
+      "Cada caja tiene capas: contenido, padding (relleno con fondo), border y margin (espacio transparente por fuera).",
     use: [
       "padding para que el texto no toque el borde: aire por dentro.",
       "margin para separar una caja de otra: aire por fuera.",
-      "padding: 20px vale para los cuatro lados; margin: 0 0 24px da 0 arriba, 0 a los lados y 24px abajo.",
+      "padding: 20px, a los cuatro lados; margin: 0 0 24px, solo abajo.",
     ],
     avoid: [
-      "Usar margin para apartar el texto del borde: el margin está fuera del borde y no lleva fondo.",
-      "Usar padding para separar dos cajas: la caja crece en vez de alejarse de la otra.",
+      "Usar margin para apartar el texto del borde: va fuera y sin fondo.",
+      "Usar padding para separar cajas: crece en vez de alejarse.",
     ],
     example: {
       html: `<p class="tabla">Se venden sillas</p>
@@ -685,7 +685,7 @@ p {
 `,
     },
     exampleNote:
-      "El fondo wheat cubre contenido y padding; el margin de 24px queda fuera del borde, transparente.",
+      "El fondo wheat cubre contenido y padding; el margin queda fuera, transparente.",
     predict: {
       question: "Si cambias padding a 40px, ¿qué crece?",
       options: [
@@ -718,13 +718,13 @@ p {
     title: "box-sizing",
     tagline: "Decide si width incluye el padding y el borde.",
     explain:
-      "Por defecto (content-box), width mide solo el contenido, y el padding y el borde se suman por fuera: width: 300px con 20px de padding y 4px de borde ocupa 348px. Con box-sizing: border-box, width mide la caja entera, borde incluido, y el contenido se encoge para que todo quepa.",
+      "Por defecto, width mide solo el contenido y el padding y el borde se suman. Con box-sizing: border-box, width mide la caja entera.",
     use: [
-      "Cuando una caja debe medir justo lo que dices: botones, tarjetas, columnas.",
-      "Muchos proyectos se lo ponen a todas las cajas desde el principio para no tener que sumar.",
+      "Cajas que deben medir justo lo que dices: botones, tarjetas.",
+      "Muchos proyectos lo ponen en todas las cajas desde el inicio.",
     ],
     avoid: [
-      "Sumar de cabeza padding y borde para cuadrar el ancho: con border-box no hace falta.",
+      "Sumar padding y borde de cabeza: con border-box no hace falta.",
       "Pensar que border-box quita el padding: sigue ahí, solo que dentro del ancho.",
     ],
     example: {
@@ -745,9 +745,9 @@ p {
 `,
     },
     exampleNote:
-      "Las dos dicen width: 200px, pero solo la de box-sizing: border-box mide 200px con borde y todo.",
+      "Las dos dicen width: 200px; solo la de border-box mide 200px en total.",
     predict: {
-      question: "En la caja .exacta (200px de ancho, 20px de padding, 4px de borde), ¿cuánto ancho le queda al texto?",
+      question: "En .exacta (200px, 20px de padding, 4px de borde), ¿cuánto ancho le queda al texto?",
       options: [
         {
           label: "152px",
@@ -778,14 +778,14 @@ p {
     title: "Fusión de márgenes",
     tagline: "Dos márgenes verticales que se tocan se funden en uno.",
     explain:
-      "Cuando una caja con margen abajo queda justo encima de otra con margen arriba, los dos márgenes no se suman: se funden y gana el mayor. 24px y 24px dejan 24px de separación, no 48px. Solo pasa en vertical, entre cajas apiladas una encima de otra.",
+      "Si una caja con margen abajo toca otra con margen arriba, los márgenes no se suman: gana el mayor. Solo pasa en vertical.",
     use: [
-      "Para separar cajas apiladas, ponles margen solo por un lado (por ejemplo, abajo): es más fácil de prever.",
-      "Si ves menos espacio del esperado entre dos cajas, sospecha de la fusión.",
+      "Separa cajas apiladas con margen por un solo lado, como abajo.",
+      "¿Menos espacio del esperado entre cajas? Sospecha de la fusión.",
     ],
     avoid: [
       "Poner 12px arriba y 12px abajo esperando 24px entre cajas: obtendrás 12px.",
-      "Esperar que pase en horizontal: los márgenes izquierdo y derecho siempre se suman.",
+      "Esperarlo en horizontal: los márgenes de los lados sí se suman.",
     ],
     example: {
       html: `<p class="nota">Primera nota de pedido</p>
@@ -799,9 +799,9 @@ p {
 `,
     },
     exampleNote:
-      "Cada nota tiene 30px de margin arriba y abajo, pero entre ellas solo hay 30px: los márgenes se fundieron.",
+      "Cada nota tiene 30px arriba y abajo, pero entre ellas solo hay 30px.",
     predict: {
-      question: "Si la primera caja tiene margin-bottom: 40px y la segunda margin-top: 10px, ¿cuánto espacio queda entre ellas?",
+      question: "Una caja tiene margin-bottom: 40px y la de abajo margin-top: 10px. ¿Cuánto las separa?",
       options: [
         {
           label: "40px",
@@ -834,16 +834,16 @@ p {
     worldId: "css-basics",
     kind: "concept",
     title: "Cascada",
-    tagline: "Cuando dos reglas chocan, CSS sigue un orden para decidir cuál gana.",
+    tagline: "Cuando dos reglas chocan, decide cuál gana.",
     explain:
-      "Si dos reglas dan valores distintos a la misma propiedad del mismo elemento, solo una puede ganar. Primero se compara la especificidad de los selectores (la siguiente ficha); si empatan, gana la que aparece más abajo en el CSS. Las declaraciones que no chocan se combinan sin problema.",
+      "Si dos reglas chocan en la misma propiedad, gana el selector más específico. Si empatan, gana la que va más abajo.",
     use: [
       "Escribe primero los estilos generales y después los casos especiales.",
-      "Si dos selectores pesan lo mismo, basta con escribir la regla nueva después de la original.",
+      "Con selectores del mismo peso, escribe la regla nueva después.",
     ],
     avoid: [
       "Repetir el mismo selector por todo el archivo: cuesta saber cuál manda.",
-      "Creer que la regla de abajo gana siempre: un selector más específico gana aunque esté arriba.",
+      "Creer que la de abajo gana siempre: un selector más específico pesa más.",
     ],
     example: {
       html: `<p>Pan recién horneado</p>
@@ -859,7 +859,7 @@ p {
 `,
     },
     exampleNote:
-      "Las dos reglas dan color: gana sienna porque va después. font-weight no choca con nada y se mantiene.",
+      "Las dos dan color: gana sienna porque va después. font-weight no choca y se mantiene.",
     predict: {
       question: "Si intercambias el orden de las dos reglas, ¿cómo queda el texto?",
       options: [
@@ -876,7 +876,7 @@ p {
         {
           label: "Navy y sin negrita",
           correct: false,
-          why: "Solo se pisan las propiedades repetidas. font-weight solo aparece una vez, así que se aplica.",
+          why: "Solo se pisan las propiedades repetidas. font-weight aparece una vez y se aplica.",
         },
       ],
     },
@@ -892,10 +892,10 @@ p {
     title: "Especificidad",
     tagline: "Cuanto más concreto es un selector, más pesa.",
     explain:
-      "Cada selector tiene un peso: una etiqueta (a) pesa poco, una clase (.especial) pesa más y un id (#menu) muchísimo; un solo id vence a cualquier cantidad de clases. Un espacio entre selectores significa «dentro de»: #menu a elige los <a> que están dentro de #menu, y su peso es la suma de un id y una etiqueta.",
+      "Una etiqueta (a) pesa poco, una clase (.especial) más y un id (#menu) muchísimo. Un espacio es «dentro de»: #menu a elige los <a> de #menu.",
     use: [
-      "Cuando una regla no se aplica, compara el peso de los selectores que chocan.",
-      "Para ganarle a una regla, usa un selector un poco más concreto, no uno enorme.",
+      "Si una regla no se aplica, compara el peso de los selectores.",
+      "Para ganar, usa un selector un poco más concreto, no uno enorme.",
       "Da estilo sobre todo con clases: así es fácil prever quién gana.",
     ],
     avoid: [
@@ -919,7 +919,7 @@ p {
 `,
     },
     exampleNote:
-      "Tarta sigue navy: #menu a (un id y una etiqueta) pesa más que .especial (una clase), aunque esta vaya después.",
+      "Tarta sigue navy: #menu a (id y etiqueta) pesa más que .especial, aunque vaya después.",
     predict: {
       question: "¿Qué selector pintaría la Tarta de crimson sin tocar la regla #menu a?",
       options: [
@@ -950,15 +950,15 @@ p {
     worldId: "css-basics",
     kind: "concept",
     title: "!important",
-    tagline: "Obliga a una declaración a ganar siempre. Casi nunca es buena idea.",
+    tagline: "Obliga a una declaración a ganar. Casi nunca conviene.",
     explain:
-      "Escribir !important al final de una declaración (color: crimson !important;) la hace ganar por encima de la especificidad y del orden. Funciona, pero rompe la cascada: para cambiar ese valor más adelante necesitarás otro !important, y así cada vez.",
+      "!important al final de una declaración la hace ganar siempre. Pero rompe la cascada: para cambiarla luego necesitarás otro !important.",
     use: [
-      "En tu propio CSS, casi nunca: primero sube la especificidad del selector o cambia el orden.",
-      "Se reserva para casos raros, como pisar código ajeno que no puedes editar.",
+      "En tu CSS, casi nunca: antes sube la especificidad o cambia el orden.",
+      "Casos raros, como pisar código ajeno que no puedes editar.",
     ],
     avoid: [
-      "Usarlo como primer remedio cuando una regla no se aplica: esconde el problema en vez de entenderlo.",
+      "Usarlo como primer remedio: esconde el problema en vez de resolverlo.",
       "Encadenar !important para ganarle a otro !important.",
     ],
     example: {
@@ -1008,14 +1008,14 @@ p {
     title: ":hover",
     tagline: "Aplica estilos mientras el puntero del ratón está encima.",
     explain:
-      "Una pseudoclase describe un estado del elemento y se pega al selector con dos puntos, sin espacio: .boton:hover. Sus estilos solo se aplican mientras el ratón pasa por encima; al salir, todo vuelve a como estaba.",
+      "Una pseudoclase es un estado. :hover se activa con el ratón encima y va pegada al selector: .boton:hover.",
     use: [
-      "Dar respuesta visual a botones y enlaces: cambiar el fondo o el subrayado.",
+      "Respuesta visual en botones y enlaces: otro fondo o subrayado.",
       "Confirmar que algo se puede pulsar antes de hacer clic.",
     ],
     avoid: [
-      "Esconder información importante solo en :hover: en un móvil no hay ratón y no se ve.",
-      "Dejar un espacio: .boton :hover busca elementos dentro del botón y no funciona como esperas.",
+      "Esconder información solo en :hover: en el móvil no hay ratón.",
+      "Dejar un espacio: .boton :hover busca dentro del botón.",
     ],
     example: {
       html: `<button class="boton" type="button">Pedir helado</button>
@@ -1058,12 +1058,12 @@ p {
     worldId: "css-basics",
     kind: "selector",
     title: ":focus-visible",
-    tagline: "Muestra dónde está el foco cuando alguien navega con el teclado.",
+    tagline: "Marca dónde está el foco al navegar con el teclado.",
     explain:
-      "Mucha gente no usa ratón: recorre la página con la tecla Tab. El elemento que recibe el foco necesita una marca visible, normalmente un contorno hecho con outline. :focus-visible aplica estilos cuando el foco llega desde el teclado, sin molestar a quien hace clic.",
+      "Mucha gente navega con la tecla Tab y necesita ver dónde está el foco. :focus-visible le da estilo, como un outline, al llegar con teclado.",
     use: [
       "En todos los botones y enlaces a los que cambies el estilo.",
-      "outline: 3px solid con un color que contraste al menos 3:1 con el fondo.",
+      "outline: 3px solid, con contraste de al menos 3:1 con el fondo.",
       "outline-offset separa el contorno del borde para que se vea mejor.",
     ],
     avoid: [
@@ -1090,7 +1090,7 @@ p {
     exampleNote:
       "Haz clic en la vista y pulsa Tab: el botón enfocado muestra un contorno navy de 3px.",
     predict: {
-      question: "Alguien pone outline: none en .sabor y borra la regla :focus-visible. ¿Qué le pasa a quien usa Tab?",
+      question: "Si pones outline: none en .sabor y borras :focus-visible, ¿qué le pasa a quien usa Tab?",
       options: [
         {
           label: "No ve qué botón tiene el foco",
@@ -1125,14 +1125,14 @@ p {
     title: "px, rem, ch y %",
     tagline: "Formas de medir: unas fijas y otras relativas a algo.",
     explain:
-      "px es una medida fija. rem depende del tamaño de letra base del navegador (1rem son 16px por defecto). ch es el ancho del carácter «0» de la fuente actual, ideal para medir líneas de texto. % depende del contenedor: width: 50% ocupa la mitad del ancho de su padre.",
+      "px es fijo. rem sigue la letra base (16px por defecto), ch mide caracteres y % depende del ancho del contenedor.",
     use: [
       "px para detalles que no deben cambiar, como bordes de 2px o 3px.",
       "rem para letras y espacios que deben crecer con el texto.",
-      "ch para el ancho de un texto; % para que una caja se adapte a su contenedor.",
+      "ch para anchos de texto; % para adaptarse al contenedor.",
     ],
     avoid: [
-      "Medir todo en px: la página no se adapta a quien agranda la letra ni a pantallas pequeñas.",
+      "Medir todo en px: no se adapta a letra grande ni a pantallas pequeñas.",
       "Pensar que % depende de la pantalla: depende de la caja que lo contiene.",
     ],
     example: {
@@ -1194,13 +1194,13 @@ p {
     title: "max-width",
     tagline: "Pone un tope al ancho de una caja sin impedir que se encoja.",
     explain:
-      "width fija un ancho exacto: si la pantalla es más estrecha, la caja se sale y aparece scroll horizontal. max-width solo marca un máximo: la caja crece hasta ese límite y, en pantallas pequeñas, se encoge para caber. Con max-width: 60ch, las líneas no pasan de unos 60 caracteres, una medida cómoda de leer.",
+      "width fija el ancho aunque no quepa, y aparece scroll horizontal. max-width solo pone un tope: en pantallas pequeñas, la caja se encoge.",
     use: [
       "Textos largos: entre 45ch y 75ch las líneas se siguen sin esfuerzo.",
-      "Tarjetas e imágenes: max-width: 100% impide que sean más anchas que su contenedor.",
+      "max-width: 100% para que tarjetas e imágenes no desborden.",
     ],
     avoid: [
-      "Darle un width grande (900px) a una caja de texto: en el móvil provoca scroll horizontal.",
+      "Un width grande (900px) en un texto: en el móvil da scroll lateral.",
       "Esperar que ensanche la caja: max-width solo la limita.",
     ],
     example: {
@@ -1214,7 +1214,7 @@ p {
 `,
     },
     exampleNote:
-      "max-width: 30ch corta las líneas a unos 30 caracteres; en una vista estrecha la caja se encoge.",
+      "30ch corta las líneas a unos 30 caracteres; en vista estrecha, la caja se encoge.",
     predict: {
       question: "En una pantalla más estrecha que 30ch, ¿qué hace el pergamino?",
       options: [
@@ -1240,16 +1240,16 @@ p {
     worldId: "css-basics",
     kind: "property",
     title: "overflow-wrap",
-    tagline: "Permite partir palabras larguísimas para que no se salgan de su caja.",
+    tagline: "Parte palabras larguísimas para que no se salgan.",
     explain:
-      "El navegador solo corta las líneas en los espacios. Una palabra enorme sin espacios, como una dirección web, no cabe y desborda: sobresale de su caja. overflow-wrap: anywhere permite cortarla en cualquier punto para que encaje.",
+      "El navegador solo corta líneas en los espacios, así que una URL larga se sale de su caja. overflow-wrap: anywhere la corta donde haga falta.",
     use: [
       "Direcciones web, correos o códigos largos dentro de cajas estrechas.",
       "Textos que escriben otras personas, que pueden traer palabras enormes.",
     ],
     avoid: [
-      "Tapar el desborde con overflow: hidden: recorta lo que sobra y parte del texto deja de verse.",
-      "Esperar que parta palabras normales: solo actúa cuando una palabra no cabe en la línea.",
+      "Tapar el desborde con overflow: hidden: parte del texto deja de verse.",
+      "Esperar que parta palabras normales: solo actúa si una no cabe.",
     ],
     example: {
       html: `<p>faro.islaestilo.example/horariosDeLaLuzYDeLasMareas</p>
@@ -1267,7 +1267,7 @@ p {
 `,
     },
     exampleNote:
-      "La primera dirección se sale del borde; en la segunda, overflow-wrap: anywhere la parte en dos líneas.",
+      "La primera dirección se sale; en la segunda, overflow-wrap: anywhere la parte.",
     predict: {
       question: "¿Y si a la primera caja le pones overflow: hidden en vez de overflow-wrap?",
       options: [
@@ -1279,7 +1279,7 @@ p {
         {
           label: "La dirección se parte en varias líneas",
           correct: false,
-          why: "Partir palabras es cosa de overflow-wrap. overflow solo decide qué hacer con lo que sobresale.",
+          why: "overflow no parte palabras: solo decide qué hacer con lo que sobresale.",
         },
       ],
     },
@@ -1299,10 +1299,10 @@ p {
     title: "display: block e inline",
     tagline: "Decide si una caja ocupa toda la fila o fluye con el texto.",
     explain:
-      "Cada elemento trae un display de serie. Los block (<p>, <h1>, <li>, <div>) ocupan todo el ancho y empujan al siguiente hacia abajo. Los inline (<a>, <strong>, <span>) se colocan dentro de la línea, uno tras otro, pero ignoran width y height. La propiedad display cambia ese comportamiento.",
+      "Los block (<p>, <div>, <li>) ocupan todo el ancho y se apilan. Los inline (<a>, <span>) van en la línea, pero ignoran width y height.",
     use: [
       "display: block para que un enlace ocupe su propia fila entera.",
-      "display: inline para poner en la misma línea elementos que son block, como <li>, si no necesitas darles tamaño.",
+      "display: inline para poner <li> en fila, si no necesitan tamaño.",
     ],
     avoid: [
       "Darle width a un <a> o un <span> y esperar que cambie: siendo inline, lo ignora.",
@@ -1326,7 +1326,7 @@ a {
 `,
     },
     exampleNote:
-      "Los <p> se estiran a todo el ancho y se apilan; los <a> van en fila e ignoran width: 200px.",
+      "Los <p> ocupan todo el ancho; los <a> van en fila e ignoran width: 200px.",
     predict: {
       question: "Si añades display: block a la regla de a, ¿qué pasa con los enlaces?",
       options: [
@@ -1359,14 +1359,14 @@ a {
     title: "display: inline-block",
     tagline: "En fila como el texto, pero respetando width y height.",
     explain:
-      "inline-block mezcla lo mejor de los dos: la caja se coloca en la línea junto a sus vecinas, como inline, pero acepta width, height y padding como una block. Es la forma clásica de hacer botones en fila.",
+      "inline-block va en la línea junto a sus vecinas, como inline, pero acepta width, height y padding, como block.",
     use: [
       "Botones o etiquetas que van en fila y necesitan un ancho fijo.",
       "Elementos de lista (<li>) que quieres poner uno al lado del otro.",
     ],
     avoid: [
-      "Ponérselo solo al hijo cuando el padre es block: si cada <a> está en su <li>, los <li> también lo necesitan.",
-      "Esperar que se centren o repartan solos: para eso, flexbox es más cómodo (próximo nivel).",
+      "Dárselo solo al <a> si cada uno vive en un <li>: el <li> también lo necesita.",
+      "Esperar que se centren solos: para eso, flexbox (próximo nivel).",
     ],
     example: {
       html: `<a class="boton" href="#">Barcos</a>
@@ -1385,12 +1385,12 @@ a {
     },
     exampleNote: "display: inline-block deja los enlaces en fila y hace que respeten width: 140px.",
     predict: {
-      question: "Cada enlace está dentro de su propio <li>. Si solo les das inline-block a los <a>, ¿quedan en fila?",
+      question: "Cada enlace está en su propio <li>. Si solo los <a> llevan inline-block, ¿quedan en fila?",
       options: [
         {
           label: "No: cada <li> sigue siendo block y ocupa su fila",
           correct: true,
-          why: "El padre manda en la fila: los <li> también necesitan inline-block (o flexbox en la lista).",
+          why: "El padre manda: los <li> también necesitan inline-block (o flexbox en la lista).",
         },
         {
           label: "Sí, porque los enlaces ya van en fila",
@@ -1411,14 +1411,14 @@ a {
     title: "object-fit",
     tagline: "Decide cómo encaja una imagen en una caja de otra forma.",
     explain:
-      "Si le das a una imagen un width y un height con otra proporción (una foto apaisada en un cuadrado), el navegador la estira y la deforma. object-fit: cover la agranda sin deformarla hasta cubrir la caja y recorta lo que sobra. object-fit: contain la mete entera y deja huecos.",
+      "Una imagen con width y height de otra proporción se deforma. object-fit: cover la recorta sin deformarla; contain la mete entera con huecos.",
     use: [
       "Fotos de perfil cuadradas o redondas a partir de fotos apaisadas.",
       "Galerías donde todas las miniaturas miden lo mismo.",
     ],
     avoid: [
-      "Forzar width y height con otra proporción sin object-fit: la imagen sale aplastada.",
-      "Usar cover cuando no se puede recortar nada importante, como un mapa: ahí mejor contain.",
+      "Forzar width y height de otra proporción sin object-fit: sale aplastada.",
+      "Usar cover si no puedes recortar nada, como en un mapa: ahí, contain.",
     ],
     example: {
       html: `<img src="${LIGHTHOUSE_SRC}" alt="Un faro, aplastado a la fuerza">
@@ -1436,14 +1436,14 @@ a {
 `,
     },
     exampleNote:
-      "Las dos imágenes son apaisadas y miden 120 por 120px; solo la de object-fit: cover no sale aplastada.",
+      "Ambas son apaisadas en 120 por 120px; solo la de object-fit: cover no se aplasta.",
     predict: {
       question: "Con object-fit: cover, una foto apaisada dentro de un cuadrado pierde…",
       options: [
         {
           label: "Un trozo de los lados izquierdo y derecho",
           correct: true,
-          why: "La foto crece hasta cubrir el alto; como es más ancha que alta, lo que sobra está a los lados.",
+          why: "Crece hasta cubrir el alto; como es más ancha que alta, sobra por los lados.",
         },
         {
           label: "Un trozo de arriba y de abajo",
@@ -1471,16 +1471,16 @@ a {
     worldId: "css-basics",
     kind: "property",
     title: "display: flex",
-    tagline: "Convierte una caja en un contenedor que pone a sus hijos en fila.",
+    tagline: "Pone a los hijos de una caja en fila.",
     explain:
-      "display: flex se escribe en el padre, no en los hijos. Desde ese momento, sus hijos directos se colocan uno al lado del otro, aunque sean block. Después, con otras propiedades del contenedor, decides cómo se reparten y alinean.",
+      "display: flex va en el padre. Sus hijos directos se ponen en fila, aunque sean block; luego decides cómo se reparten.",
     use: [
       "Menús, barras de botones, filas de tarjetas o de iconos.",
       "Cualquier grupo que deba ir en fila y alinearse.",
     ],
     avoid: [
       "Ponérselo a los hijos esperando que se pongan en fila: va en el contenedor.",
-      "Cambiar el orden visual con row-reverse u order: el teclado y los lectores de pantalla siguen el orden del HTML.",
+      "Cambiar el orden con row-reverse u order: el teclado sigue el HTML.",
     ],
     example: {
       html: `<div class="jardin">
@@ -1530,11 +1530,11 @@ a {
     title: "justify-content y align-items",
     tagline: "Reparten y alinean a los hijos de un contenedor flex.",
     explain:
-      "En un contenedor flex, justify-content decide dónde van los hijos a lo largo de la fila: al inicio (flex-start), al centro (center), al final (flex-end) o repartidos (space-between). align-items los alinea en vertical: arriba (flex-start), centrados (center) o abajo (flex-end). Las dos se escriben en el contenedor.",
+      "En un contenedor flex, justify-content reparte a los hijos en la fila y align-items los alinea en vertical. Las dos van en el contenedor.",
     use: [
-      "justify-content: center para agrupar elementos en el medio.",
-      "space-between para llevar los extremos a los lados, como un logo a la izquierda y un menú a la derecha.",
-      "align-items: center para centrar en vertical elementos de distinta altura.",
+      "justify-content: center para agrupar en el medio.",
+      "space-between para llevar los extremos a los lados: logo y menú.",
+      "align-items: center para centrar en vertical cajas de distinto alto.",
     ],
     avoid: [
       "Usarlas sin display: flex en el contenedor: no hacen nada.",
@@ -1567,14 +1567,14 @@ a {
 `,
     },
     exampleNote:
-      "justify-content: center las agrupa en el medio de la fila; align-items: center las centra en vertical.",
+      "justify-content: center las agrupa en el medio; align-items: center, en vertical.",
     predict: {
       question: "Cambias justify-content: center por space-between. ¿Dónde quedan las macetas?",
       options: [
         {
           label: "Una en cada extremo y la del medio en el centro",
           correct: true,
-          why: "space-between pega la primera y la última a los bordes y reparte el espacio sobrante entre ellas.",
+          why: "Pega la primera y la última a los bordes y reparte el espacio entre ellas.",
         },
         {
           label: "Todas juntas a la izquierda",
@@ -1600,13 +1600,13 @@ a {
     title: "gap",
     tagline: "Pone el mismo espacio entre los hijos de un contenedor flex.",
     explain:
-      "gap fija la separación entre cada hijo y el siguiente, por ejemplo gap: 16px. Solo añade espacio entre ellos, nunca antes del primero ni después del último. Se escribe en el contenedor, junto a display: flex.",
+      "gap pone el mismo espacio entre cada hijo y el siguiente, nunca en los extremos. Va en el contenedor, junto a display: flex.",
     use: [
       "Separar botones, tarjetas o iconos en fila con una distancia exacta.",
       "Cambiar toda la separación de una vez tocando un solo valor.",
     ],
     avoid: [
-      "Separar con margin en cada hijo: sobra espacio en los extremos y hay que compensarlo.",
+      "Separar con margin en cada hijo: sobra espacio en los extremos.",
       "Ponérselo a los hijos: gap va en el contenedor.",
     ],
     example: {
@@ -1631,7 +1631,7 @@ a {
 `,
     },
     exampleNote:
-      "gap: 24px separa cada maceta de la siguiente; la primera sigue pegada al relleno del jardín.",
+      "gap: 24px separa las macetas entre sí; la primera sigue pegada al relleno.",
     predict: {
       question: "Con tres macetas y gap: 24px, ¿cuántos huecos de 24px hay?",
       options: [

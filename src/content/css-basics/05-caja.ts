@@ -30,10 +30,10 @@ export const caja: Level = {
   title: "Placas a medida",
   npc: { name: "Tablas la carpintera", avatar: "tablas" },
   story:
-    "Mis placas tienen que medir 300px justos, con borde y todo, para caber en el poste. Dales 20px de relleno y 24px de separación entre ellas. ¡Ni un milímetro más!",
+    "Quiero placas de 300px justos, borde incluido, con 20px de relleno y 24px entre ellas. ¡Ni un milímetro más!",
   concept: "Modelo de caja: padding, border, margin y box-sizing",
   lesson:
-    "Cada caja tiene contenido, padding (relleno), border y margin (separación exterior). Con box-sizing: border-box, width incluye padding y borde, así que la caja mide justo lo que dices. Y los márgenes verticales vecinos se fusionan: 24px y 24px dan 24px, no 48px.",
+    "Con border-box, width incluye padding y borde: la placa mide justo 300px. Y los márgenes verticales vecinos se funden.",
   mode: "fill",
   starter: { html, css: fillTemplate(fill, []) },
   editable: ["css"],
@@ -43,9 +43,9 @@ export const caja: Level = {
     {
       id: "width",
       kind: "required",
-      label: "Cada placa mide exactamente 300px de ancho, borde incluido",
+      label: "Cada placa mide 300px de ancho, borde incluido",
       explain:
-        "Por defecto (content-box), width solo mide el contenido y luego se suman padding y borde: 300 + 40 + 8 = 348px. box-sizing: border-box hace que width incluya todo.",
+        "Con content-box, padding y borde se suman: 300 + 40 + 8 = 348px. Usa box-sizing: border-box.",
       test: (ctx) => {
         const list = placas(ctx);
         return list.length === 2 && list.every((el) => Math.abs(rect(el).width - 300) <= 0.5);
@@ -70,7 +70,7 @@ export const caja: Level = {
       kind: "required",
       label: "Entre las dos placas hay 24px de separación",
       explain:
-        "margin separa cajas por fuera. Ojo: los márgenes verticales de dos cajas vecinas se fusionan y gana el mayor, no se suman.",
+        "margin separa las cajas. Los márgenes verticales vecinos no se suman: gana el mayor.",
       test: (ctx) => {
         const [a, b] = placas(ctx);
         if (!a || !b) return false;
@@ -89,7 +89,7 @@ export const caja: Level = {
     },
   ],
   hints: [
-    "padding es el relleno interior; margin, la separación exterior; box-sizing: border-box mete padding y borde dentro de width.",
+    "padding, relleno interior; margin, separación exterior; border-box mete padding y borde en width.",
     "box-sizing: border-box;\npadding: 20px;\nmargin: 0 0 24px;",
     "Repasa «El modelo de caja» y la fusión de márgenes en MDN.",
   ],

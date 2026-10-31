@@ -39,10 +39,10 @@ export const especificidad: Level = {
   title: "El botón que no quería ser rojo",
   npc: { name: "Migas el panadero", avatar: "migas" },
   story:
-    "Le puse la clase oferta al botón para pintarlo de rojo #B00020 y no hay manera. Y nada de !important: eso es pan para hoy y hambre para mañana.",
+    "Pinto el botón .oferta de rojo #B00020 y no cambia. Y sin !important: pan para hoy, hambre para mañana.",
   concept: "Cascada y especificidad",
   lesson:
-    "Cuando dos reglas chocan, gana la más específica: un id pesa más que cualquier cantidad de clases, y una clase más que una etiqueta. #panaderia .oferta (id + clase) vence a #panaderia a (id + etiqueta) sin trucos.",
+    "Gana el selector más específico: #panaderia .oferta (id + clase) vence a #panaderia a (id + etiqueta) sin trucos.",
   mode: "code",
   starter: { html, css: starterCss },
   editable: ["css"],
@@ -53,7 +53,7 @@ export const especificidad: Level = {
       kind: "required",
       label: "El botón de oferta tiene fondo rojo #B00020",
       explain:
-        "La regla .oferta pierde contra #panaderia a porque un id pesa más que una clase. Escribe un selector igual de fuerte o más, como #panaderia .oferta.",
+        ".oferta pierde contra #panaderia a: un id pesa más. Usa un selector más fuerte, como #panaderia .oferta.",
       test: (ctx) => {
         const el = $(ctx, ".oferta");
         return !!el && hasColor(ctx, el, "background-color", "#B00020");
@@ -78,7 +78,7 @@ export const especificidad: Level = {
       kind: "required",
       label: "Sin !important",
       explain:
-        "!important gana a la fuerza, pero rompe la cascada: la próxima vez que quieras cambiar algo necesitarás otro !important. Mejor sube la especificidad del selector.",
+        "!important rompe la cascada y obliga a usar otro para cambiarlo. Sube la especificidad del selector.",
       test: (ctx) => !usesImportant(cssSource(ctx)),
     },
     {
@@ -93,7 +93,7 @@ export const especificidad: Level = {
     },
   ],
   hints: [
-    "Cuenta el peso de cada selector: #panaderia a tiene un id y una etiqueta; .oferta solo una clase. Gana el que más pesa.",
+    "Cuenta el peso: #panaderia a lleva id y etiqueta; .oferta, solo una clase. Gana el que más pesa.",
     "#panaderia .oferta {\n  background-color: #B00020;\n}",
     "Lee «Especificidad» y «Conflictos en cascada» en MDN.",
   ],

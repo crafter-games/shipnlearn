@@ -47,10 +47,10 @@ export const pseudoclases: Level = {
   title: "Sabores que responden",
   npc: { name: "Nieve la heladera", avatar: "nieve" },
   story:
-    "Mis botones de sabores están congelados: no reaccionan al pasar el ratón y quien usa teclado no sabe dónde está. ¡Descongélalos!",
+    "Mis botones están congelados: no reaccionan al ratón y con teclado no se ve dónde estás. ¡Descongélalos!",
   concept: "Pseudoclases :hover y :focus-visible",
   lesson:
-    "Una pseudoclase aplica estilos según el estado: :hover cuando el puntero pasa por encima y :focus-visible cuando el elemento recibe foco desde el teclado. Nunca quites el outline sin dar otro indicador de foco.",
+    ":hover da estilo con el ratón encima y :focus-visible al llegar con el teclado. Si quitas el outline, pon otro indicador.",
   mode: "code",
   starter: { html, css: base },
   editable: ["css"],
@@ -61,7 +61,7 @@ export const pseudoclases: Level = {
       kind: "required",
       label: "Los botones cambian algo al pasar el ratón (:hover)",
       explain:
-        "Escribe una regla con la pseudoclase :hover pegada al selector (.sabor:hover) y cambia una propiedad, como el fondo, para que el botón reaccione.",
+        "Escribe .sabor:hover, pegado y sin espacio, y cambia algo, como el fondo.",
       test: (ctx) => {
         const list = sabores(ctx);
         return list.length === 3 && list.every((el) => pseudoRuleChanges(ctx, el, ":hover"));
@@ -70,9 +70,9 @@ export const pseudoclases: Level = {
     {
       id: "focus-visible",
       kind: "required",
-      label: "Con el teclado, el botón enfocado muestra un contorno de 2px o más",
+      label: "El foco por teclado muestra un contorno de 2px o más",
       explain:
-        "outline: none borró el anillo de foco y quien navega con Tab ya no sabe dónde está. Devuélvelo en .sabor:focus-visible con, por ejemplo, outline: 3px solid.",
+        "outline: none borró el foco. Devuélvelo en .sabor:focus-visible con outline: 3px solid.",
       test: (ctx) => {
         const list = sabores(ctx);
         return list.length === 3 && list.every((el) => hasVisibleFocus(ctx, el));
@@ -83,7 +83,7 @@ export const pseudoclases: Level = {
       kind: "a11y",
       label: "El contorno de foco contrasta con el fondo (3:1)",
       explain:
-        "Un anillo de foco pálido es casi invisible. WCAG pide que los indicadores visuales contrasten al menos 3:1 con lo que tienen alrededor.",
+        "Un contorno pálido casi no se ve. Debe contrastar al menos 3:1 con su alrededor.",
       test: (ctx) => {
         const el = sabores(ctx)[0];
         if (!el?.parentElement) return false;
@@ -93,7 +93,7 @@ export const pseudoclases: Level = {
     },
   ],
   hints: [
-    "Las pseudoclases se pegan al selector con dos puntos: .sabor:hover cuando el ratón pasa encima, .sabor:focus-visible al llegar con Tab.",
+    "La pseudoclase va pegada con dos puntos: .sabor:hover para el ratón, .sabor:focus-visible para Tab.",
     ".sabor:hover {\n  background-color: #FF9EB5;\n}\n.sabor:focus-visible {\n  outline: 3px solid #1E5BFF;\n}",
     "Consulta :hover y :focus-visible en MDN.",
   ],
