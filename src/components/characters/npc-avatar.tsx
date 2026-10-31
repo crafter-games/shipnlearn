@@ -9,6 +9,7 @@ import { Cifras, Marisol } from "./npcs/market";
 import { OctoPortrait } from "./npcs/octo-portrait";
 import type { PortraitProps } from "./npcs/parts";
 import { Brea, Pinzas, Remedios, Sello } from "./npcs/town";
+import { Escuadra, Pixel } from "./npcs/workshop";
 
 type Props = { id: AvatarId; className?: string };
 
@@ -50,9 +51,9 @@ const PORTRAITS: Record<AvatarId, ComponentType<PortraitProps>> = {
   tula: Tula,
   marisol: Marisol,
   cifras: Cifras,
+  escuadra: Escuadra,
+  pixel: Pixel,
   // Placeholders until the new islanders are drawn.
-  escuadra: Placeholder("E", "var(--color-grape)"),
-  pixel: Placeholder("P", "var(--color-grape)"),
   eco: Placeholder("E", "var(--color-ocean-light)"),
   llave: Placeholder("L", "var(--color-ocean-light)"),
   magma: Placeholder("M", "var(--color-sand-deep)"),
