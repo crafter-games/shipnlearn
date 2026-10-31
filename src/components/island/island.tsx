@@ -1,12 +1,16 @@
 "use client";
 
 import { motion } from "motion/react";
-import type { ReactNode } from "react";
 import { useReducedMotion } from "@/components/ui/use-reduced-motion";
+import type { WorldId } from "@/lib/levels/types";
 import type { FlagColor } from "@/lib/progress/store";
 import { type IslandProgress, islandFeatures } from "./features";
+import { LANDMARKS, landmarkFlag, landmarkTransform, mutedPaint } from "./landmarks";
+import { GREY, INK, Pop, shade } from "./parts";
 
 type Props = {
+  /** Picks the world's landmark (market, workshop…); omit for a plain island. */
+  worldId?: WorldId;
   /** World name painted on the sign once the island is named. */
   name: string;
   /** Land colour (`world.accent`). */
@@ -18,36 +22,6 @@ type Props = {
   className?: string;
 };
 
-const INK = "var(--color-ink)";
-const GREY = "color-mix(in oklab, var(--color-foam) 50%, var(--color-ink-soft))";
-const shade = (c: string, ink = 30) => `color-mix(in oklab, ${c} ${100 - ink}%, var(--color-ink))`;
-
-/** Wraps a feature so it springs in when it first appears. */
-function Pop({
-  children,
-  x,
-  y,
-  delay = 0,
-  r,
-}: {
-  children: ReactNode;
-  x: number;
-  y: number;
-  delay?: number;
-  r: boolean;
-}) {
-  return (
-    <motion.g
-      initial={r ? false : { scale: 0 }}
-      animate={{ scale: 1 }}
-      transition={{ type: "spring", stiffness: 420, damping: 16, delay }}
-      style={{ transformOrigin: `${x}px ${y}px`, transformBox: "view-box" }}
-    >
-      {children}
-    </motion.g>
-  );
-}
-
 const LAND =
   "M30 148 C30 110 92 92 160 92 C228 92 290 110 290 148 C290 180 230 194 160 194 C90 194 30 180 30 148Z";
 
@@ -56,10 +30,12 @@ const LAND =
  * sign, palms, houses, a lighthouse and a boat. Rank unlocks cosmetics.
  * Reusable on the map and in the celebration screen (new parts pop in).
  */
-export function Island({ name, accent, progress, flag = "coral", label, className = "" }: Props) {
+export function Island({ worldId, name, accent, progress, flag = "coral", label, className = "" }: Props) {
   const f = islandFeatures(progress);
   const reduced = useReducedMotion();
   const land = f.named ? accent : GREY;
+  const landmark = worldId ? LANDMARKS[worldId] : undefined;
+  const flagAt = landmark ? landmarkFlag(landmark) : { x: 160, y: 90 };
 
   return (
     <svg
@@ -80,8 +56,14 @@ export function Island({ name, accent, progress, flag = "coral", label, classNam
         d="M52 146 C52 118 104 104 160 104 C216 104 268 118 268 146 C268 170 218 182 160 182 C102 182 52 170 52 146Z"
         style={{ fill: land, filter: f.named ? undefined : "brightness(0.92)" }}
       />
-      {/* hill */}
-      <path d="M118 112 C126 84 194 84 202 112 Z" style={{ fill: shade(land, 12) }} stroke={INK} strokeWidth="4" strokeLinejoin="round" />
+      {!landmark?.hidesHill && (
+        <path d="M118 112 C126 84 194 84 202 112 Z" style={{ fill: shade(land, 12) }} stroke={INK} strokeWidth="4" strokeLinejoin="round" />
+      )}
+      {landmark && (
+        <g transform={landmarkTransform(landmark)}>
+          <landmark.Art stage={f.landmark} reduced={reduced} paint={mutedPaint(f.landmark)} />
+        </g>
+      )}
       {!f.named && (
         <g opacity="0.85">
           <path d="M210 150 l10 -14 l14 4 l6 12 z" style={{ fill: shade(GREY, 20) }} stroke={INK} strokeWidth="3" strokeLinejoin="round" />
@@ -90,21 +72,23 @@ export function Island({ name, accent, progress, flag = "coral", label, classNam
       )}
 
       {f.flag && (
-        <Pop r={reduced} x={160} y={90}>
+        <Pop r={reduced} x={flagAt.x} y={flagAt.y}>
+          <g transform={`translate(${flagAt.x - 160} ${flagAt.y - 90})`}>
           <line x1="160" y1="90" x2="160" y2="52" stroke={INK} strokeWidth="4" strokeLinecap="round" />
           <motion.path
             d="M162 54 L190 61 L162 70 Z"
-            style={{ fill: `var(--color-${flag})`, transformOrigin: "162px 62px" }}
+            style={{ fill: `var(--color-${flag})`, transformBox: "fill-box", transformOrigin: "0% 50%" }}
             stroke={INK}
             strokeWidth="3"
             strokeLinejoin="round"
             animate={reduced ? undefined : { scaleX: [1, 0.86, 1] }}
             transition={{ duration: 1.4, repeat: Infinity, ease: "easeInOut" }}
           />
+          </g>
         </Pop>
       )}
 
-      {f.lighthouse && (
+      {f.lighthouse && !landmark?.hidesLighthouse && (
         <Pop r={reduced} x={262} y={140} delay={0.1}>
           <path d="M252 140 L256 92 L270 92 L274 140 Z" fill="var(--color-foam)" stroke={INK} strokeWidth="4" strokeLinejoin="round" />
           <path d="M254.5 112 L271.5 112 L272.6 124 L253.4 124 Z" fill="var(--color-coral)" />

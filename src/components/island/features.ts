@@ -23,7 +23,14 @@ export type IslandFeatures = {
   flag: boolean;
   flowers: boolean;
   lanterns: boolean;
+  /**
+   * How far the world's landmark is built: 0 untouched (muted, still),
+   * 1 named, 2 past halfway, 3 finished.
+   */
+  landmark: LandmarkStage;
 };
+
+export type LandmarkStage = 0 | 1 | 2 | 3;
 
 /** Rank needed for each cosmetic (tune). */
 export const COSMETIC_RANKS = { flag: 2, flowers: 3, lanterns: 4 } as const;
@@ -31,15 +38,17 @@ export const COSMETIC_RANKS = { flag: 2, flowers: 3, lanterns: 4 } as const;
 export function islandFeatures(p: IslandProgress): IslandFeatures {
   const frac = p.total > 0 ? p.completed / p.total : 0;
   const named = p.completed > 0;
+  const boat = p.bossDone || (p.total > 0 && p.completed === p.total);
   return {
     named,
     palms: named ? Math.min(3, Math.ceil(p.stars / 5)) : 0,
     houses: (frac >= 0.3 ? 1 : 0) + (frac >= 0.55 ? 1 : 0) + (frac >= 0.8 ? 1 : 0),
     lighthouse: frac >= 0.65,
-    boat: p.bossDone || (p.total > 0 && p.completed === p.total),
+    boat,
     flag: named && p.rank >= COSMETIC_RANKS.flag,
     flowers: named && p.rank >= COSMETIC_RANKS.flowers,
     lanterns: named && p.rank >= COSMETIC_RANKS.lanterns,
+    landmark: !named ? 0 : boat ? 3 : frac >= 0.5 ? 2 : 1,
   };
 }
 
