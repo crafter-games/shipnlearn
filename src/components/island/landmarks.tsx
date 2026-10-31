@@ -127,7 +127,80 @@ function Market({ stage, reduced, paint }: LandmarkProps) {
   );
 }
 
+/* ------------------------------------------------------------- Taller */
+
+function Gear({ x, y, r, spin }: { x: number; y: number; r: number; spin: boolean }) {
+  return (
+    <motion.g
+      animate={spin ? { rotate: 360 } : undefined}
+      transition={{ duration: 6, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
+      style={{ transformOrigin: `${x}px ${y}px`, transformBox: "view-box" }}
+    >
+      {[0, 45, 90, 135].map((a) => (
+        <rect key={a} x={x - 1.8} y={y - r - 2} width="3.6" height={2 * r + 4} rx="1" fill="var(--color-sand)" stroke={INK} strokeWidth="1.5" transform={`rotate(${a} ${x} ${y})`} />
+      ))}
+      <circle cx={x} cy={y} r={r} fill="var(--color-sand)" stroke={INK} strokeWidth="2" />
+      <circle cx={x} cy={y} r={r * 0.38} fill="var(--color-ink-soft)" />
+    </motion.g>
+  );
+}
+
+function Workshop({ stage, reduced, paint }: LandmarkProps) {
+  const teeth = [126, 146, 166];
+  return (
+    <g>
+      {stage >= 2 && (
+        <Pop r={reduced} x={204} y={116}>
+          {/* crane tower with lattice */}
+          <rect x="199" y="42" width="10" height="74" style={{ fill: paint("var(--color-sand)") }} stroke={INK} strokeWidth="3" />
+          <path d="M199 50 L209 58 L199 66 L209 74 L199 82 L209 90 L199 98 L209 106 L199 114" fill="none" stroke={INK} strokeWidth="1.8" strokeLinejoin="round" />
+          {/* jib + counter-jib */}
+          <rect x="146" y="38" width="88" height="7" style={{ fill: paint("var(--color-sand)") }} stroke={INK} strokeWidth="3" />
+          <path d="M152 45 L158 38 L164 45 L170 38 L176 45 L182 38 L188 45 L194 38" fill="none" stroke={INK} strokeWidth="1.5" strokeLinejoin="round" />
+          <path d="M204 38 L204 26 M204 26 L150 38 M204 26 L232 38" stroke={INK} strokeWidth="2" strokeLinecap="round" />
+          <rect x="222" y="45" width="12" height="9" rx="1.5" fill="var(--color-ink-soft)" stroke={INK} strokeWidth="2.5" />
+          {/* cab */}
+          <rect x="196" y="45" width="16" height="11" rx="2" fill="var(--color-coral)" stroke={INK} strokeWidth="2.5" />
+          <rect x="199" y="47.5" width="7" height="5" fill="var(--color-ocean-light)" />
+          {/* cable + crate (swings once the island is done) */}
+          <motion.g
+            animate={reduced || stage < 3 ? undefined : { rotate: [-5, 5, -5] }}
+            transition={loop(2.8)}
+            style={{ transformOrigin: "166px 45px", transformBox: "view-box" }}
+          >
+            <path d="M166 45 L166 60" stroke={INK} strokeWidth="2" />
+            <path d="M162 60 L166 56 L170 60" fill="none" stroke={INK} strokeWidth="2" />
+            <rect x="157" y="60" width="18" height="13" rx="1.5" fill="var(--color-sand-deep)" stroke={INK} strokeWidth="2.5" />
+            <path d="M157 60 L175 73 M175 60 L157 73" stroke={INK} strokeWidth="1.3" opacity="0.6" />
+          </motion.g>
+        </Pop>
+      )}
+      {/* walls */}
+      <rect x="126" y="94" width="60" height="22" style={{ fill: paint("var(--color-foam)") }} stroke={INK} strokeWidth="3.5" strokeLinejoin="round" />
+      {/* saw-tooth roof with north-light glazing */}
+      {teeth.map((x) => (
+        <g key={x}>
+          <path d={`M${x} 94 L${x} 76 L${x + 20} 94 Z`} style={{ fill: paint("var(--color-coral)") }} stroke={INK} strokeWidth="3.5" strokeLinejoin="round" />
+          <path d={`M${x + 2} 81 L${x + 2} 92 L${x + 7} 92 L${x + 7} 85.5 Z`} style={{ fill: paint("var(--color-ocean-light)") }} />
+        </g>
+      ))}
+      {/* roller door */}
+      <rect x="150" y="101" width="16" height="15" style={{ fill: paint("var(--color-sand-deep)") }} stroke={INK} strokeWidth="2.5" />
+      <path d="M151 105 L165 105 M151 109 L165 109 M151 113 L165 113" stroke={INK} strokeWidth="1.3" opacity="0.6" />
+      <rect x="171" y="100" width="10" height="7" rx="1" style={{ fill: paint("var(--color-ocean-light)") }} stroke={INK} strokeWidth="2" />
+      {stage >= 1 ? (
+        <Pop r={reduced} x={137} y={104}>
+          <Gear x={137} y={104} r={5} spin={!reduced && stage >= 3} />
+        </Pop>
+      ) : (
+        <rect x="132" y="100" width="10" height="7" rx="1" style={{ fill: paint("var(--color-ocean-light)") }} stroke={INK} strokeWidth="2" />
+      )}
+    </g>
+  );
+}
+
 /** Landmark per world. Worlds without an entry keep the plain island. */
 export const LANDMARKS: Partial<Record<WorldId, Landmark>> = {
   "html-intermediate": { Art: Market, scale: 1.5, flagAt: { x: 200, y: 84 } },
+  "css-intermediate": { Art: Workshop, scale: 1.3, flagAt: { x: 126, y: 77 } },
 };
