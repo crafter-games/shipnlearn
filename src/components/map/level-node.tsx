@@ -4,6 +4,8 @@ import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useRef } from "react";
 import { LinkButton } from "@/components/ui/link-button";
 import { Crown, Lock, Question, Star } from "@/components/icons";
+import { NAV_IN } from "@/components/ui/page-transition";
+import { markTransitionOrigin } from "@/components/ui/transition-origin";
 import { useReducedMotion } from "@/components/ui/use-reduced-motion";
 import { playSfx, unlockAudio } from "@/lib/audio";
 import type { Level } from "@/lib/levels/types";
@@ -168,10 +170,12 @@ export function LevelNode({ level, number, state, stars, s, top, open, onToggle,
             ) : (
               <LinkButton
                 href={`/play/${level.id}`}
+                transitionTypes={NAV_IN}
                 className="mt-3 w-full"
                 onClick={() => {
                   void unlockAudio();
                   playSfx("ui-tap");
+                  markTransitionOrigin(btnRef.current);
                 }}
               >
                 {state === "done" ? "¡Jugar otra vez!" : "¡Jugar!"}

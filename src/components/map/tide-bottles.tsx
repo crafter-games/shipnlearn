@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { Bottle } from "@/components/icons";
+import { NAV_IN } from "@/components/ui/page-transition";
+import { markTransitionOrigin } from "@/components/ui/transition-origin";
 import { useReducedMotion } from "@/components/ui/use-reduced-motion";
 import { playSfx, unlockAudio } from "@/lib/audio";
 import { getLevel } from "@/lib/levels/registry";
@@ -24,10 +26,12 @@ export function TideBottles({ levelIds }: { levelIds: string[] }) {
           <li key={id}>
             <Link
               href={`/play/${id}?review=1`}
+              transitionTypes={NAV_IN}
               aria-label={`Botella de marea: repasa «${level.title}»`}
-              onClick={() => {
+              onClick={(e) => {
                 void unlockAudio();
                 playSfx("ui-tap");
+                markTransitionOrigin(e.currentTarget);
               }}
               className={`block rounded-xl p-1 transition-transform hover:-translate-y-1 ${reduced ? "" : "animate-bob"}`}
               style={{ animationDelay: `${i * 0.4}s` }}

@@ -7,6 +7,8 @@ import { CardsDialog } from "@/components/cards/cards-dialog";
 import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
 import { IconButton } from "@/components/ui/icon-button";
+import { NAV_OUT } from "@/components/ui/page-transition";
+import { markTransitionOrigin } from "@/components/ui/transition-origin";
 import { playSfx, setIntensity, setScene, setWorld, unlockAudio } from "@/lib/audio";
 import { type AxeReport, preloadAxe } from "@/lib/engine/axe";
 import { buildSrcdoc } from "@/lib/engine/preview";
@@ -323,8 +325,12 @@ export function LevelGame({ level, review = false }: { level: Level; review?: bo
         <header className="flex items-center gap-2 px-3 pt-[max(0.5rem,env(safe-area-inset-top))] pb-1 sm:gap-3 sm:px-4">
           <Link
             href="/"
+            transitionTypes={NAV_OUT}
             aria-label="Volver al mapa"
-            onClick={() => playSfx("ui-tap")}
+            onClick={() => {
+              playSfx("ui-tap");
+              markTransitionOrigin();
+            }}
             className="flex size-11 shrink-0 items-center justify-center rounded-full border-[3px] border-ink bg-foam text-ink shadow-chunky-sm active:translate-y-0.5 active:shadow-pressed"
           >
             <ArrowLeft className="size-6" />

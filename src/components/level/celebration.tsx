@@ -6,6 +6,8 @@ import { useEffect, useState } from "react";
 import { ArrowRight, Island, Rocket, Star } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
+import { NAV_NEXT, NAV_OUT } from "@/components/ui/page-transition";
+import { markTransitionOrigin } from "@/components/ui/transition-origin";
 import { useReducedMotion } from "@/components/ui/use-reduced-motion";
 import { playSfx } from "@/lib/audio";
 import type { Level } from "@/lib/levels/types";
@@ -131,6 +133,7 @@ function Content({ level, next, data, onImprove }: Props & { data: CelebrationDa
           {next ? (
             <Link
               href={`/play/${next.id}`}
+              transitionTypes={NAV_NEXT}
               data-autofocus
               onClick={() => playSfx("ui-tap")}
               className="inline-flex h-16 items-center justify-center gap-2 rounded-chunk border-[3px] border-ink bg-lime font-display text-2xl tracking-wide text-ink shadow-chunky transition-[transform,box-shadow] duration-75 active:translate-y-1 active:shadow-pressed"
@@ -144,8 +147,12 @@ function Content({ level, next, data, onImprove }: Props & { data: CelebrationDa
           <div className="flex gap-2">
             <Link
               href="/"
+              transitionTypes={NAV_OUT}
               data-autofocus={next ? undefined : true}
-              onClick={() => playSfx("ui-tap")}
+              onClick={() => {
+                playSfx("ui-tap");
+                markTransitionOrigin();
+              }}
               className="inline-flex h-12 flex-1 items-center justify-center gap-2 rounded-2xl border-[3px] border-ink bg-foam font-display text-lg text-ink shadow-chunky transition-[transform,box-shadow] duration-75 active:translate-y-1 active:shadow-pressed"
             >
               <Island className="size-7" />

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { LevelLoading, LevelScreen } from "@/components/level/level-screen";
+import { PageTransition } from "@/components/ui/page-transition";
 import { allLevels, getLevel } from "@/lib/levels/registry";
 
 export function generateStaticParams() {
@@ -19,9 +20,11 @@ export async function generateMetadata({
 export default function PlayPage({ params }: PageProps<"/play/[levelId]">) {
   // Reading params suspends: keep it inside a boundary so navigation is instant.
   return (
-    <Suspense fallback={<LevelLoading />}>
-      <PlayLevel params={params} />
-    </Suspense>
+    <PageTransition>
+      <Suspense fallback={<LevelLoading />}>
+        <PlayLevel params={params} />
+      </Suspense>
+    </PageTransition>
   );
 }
 
