@@ -5,11 +5,12 @@ import { validacion } from "./03-validacion";
 import { opciones } from "./04-opciones";
 import { tabla } from "./05-tabla";
 import { cuentas } from "./06-cuentas";
+import { media } from "./07-media";
 
 export const htmlIntermediate: World = {
   id: "html-intermediate",
   title: "Isla Mercado",
   subtitle: "HTML intermedio",
   accent: "#7ED957",
-  levels: [formulario, tipos, validacion, opciones, tabla, cuentas],
+  levels: [formulario, tipos, validacion, opciones, tabla, cuentas, media],
 };
