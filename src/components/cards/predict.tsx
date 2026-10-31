@@ -2,7 +2,7 @@
 
 import { motion } from "motion/react";
 import { useEffect, useRef } from "react";
-import { Check, Cross, Question, Restart } from "@/components/icons";
+import { Check, Cross, Question, Restart, Sparkle } from "@/components/icons";
 import { useReducedMotion } from "@/components/ui/use-reduced-motion";
 import type { ConceptCard } from "@/lib/levels/types";
 import { RichText } from "./rich-text";
@@ -18,6 +18,39 @@ type Props = {
 };
 
 const LETTERS = ["A", "B", "C", "D"];
+
+const BURST = Array.from({ length: 8 }, (_, i) => {
+  const a = (i / 8) * Math.PI * 2 + 0.3;
+  const r = i % 2 ? 30 : 44;
+  return { x: Math.cos(a) * r, y: Math.sin(a) * r, fill: i % 2 ? "var(--color-foam)" : "var(--color-sand)" };
+});
+
+/** Sparkles that fly out of the right answer's badge, then vanish. */
+function Burst() {
+  return (
+    <span aria-hidden className="pointer-events-none absolute inset-0">
+      {BURST.map((p, i) => (
+        <motion.span
+          key={i}
+          className="absolute top-1/2 left-1/2 -mt-2 -ml-2"
+          initial={{ x: 0, y: 0, scale: 0, rotate: 0 }}
+          animate={{ x: p.x, y: p.y, scale: [0, 1.1, 0], rotate: 90 }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
+        >
+          <Sparkle className="size-4" fill={p.fill} />
+        </motion.span>
+      ))}
+    </span>
+  );
+}
+
+/** Correct pick pops, wrong pick shakes; everything else stays put. */
+const REACTION = {
+  idle: { scale: 1, x: 0 },
+  muted: { scale: 1, x: 0 },
+  right: { scale: [1, 1.07, 0.98, 1], x: 0, transition: { duration: 0.32 } },
+  wrong: { x: [0, -8, 8, -5, 5, 0], scale: 1, transition: { duration: 0.3 } },
+};
 
 /**
  * PRIMM "predict": one retrieval question. Picking an option locks the
@@ -54,8 +87,9 @@ export function Predict({ predict, answer, onAnswer, onRetry, headingId }: Props
           const state = !answered ? "idle" : o.correct ? "right" : isChosen ? "wrong" : "muted";
           return (
             <li key={i}>
-              <button
+              <motion.button
                 type="button"
+                animate={REACTION[state === "right" && !isChosen ? "muted" : state]}
                 disabled={answered}
                 aria-pressed={isChosen}
                 onClick={() => onAnswer(i)}
@@ -72,9 +106,10 @@ export function Predict({ predict, answer, onAnswer, onRetry, headingId }: Props
               >
                 <span
                   aria-hidden
-                  className={`grid size-7 shrink-0 place-items-center rounded-full border-[3px] border-ink font-display text-sm ${state === "right" ? "bg-foam text-lime-deep" : state === "wrong" ? "bg-foam text-coral-deep" : "bg-sand"}`}
+                  className={`relative grid size-7 shrink-0 place-items-center rounded-full border-[3px] border-ink font-display text-sm ${state === "right" ? "bg-foam text-lime-deep" : state === "wrong" ? "bg-foam text-coral-deep" : "bg-sand"}`}
                 >
                   {state === "right" ? <Check className="size-4" /> : state === "wrong" ? <Cross className="size-4" /> : LETTERS[i]}
+                  {state === "right" && isChosen && <Burst />}
                 </span>
                 <span className="min-w-0 flex-1 pt-0.5">
                   <RichText text={o.label} />
@@ -90,7 +125,7 @@ export function Predict({ predict, answer, onAnswer, onRetry, headingId }: Props
                     </motion.span>
                   )}
                 </span>
-              </button>
+              </motion.button>
             </li>
           );
         })}
@@ -99,9 +134,9 @@ export function Predict({ predict, answer, onAnswer, onRetry, headingId }: Props
       <div ref={feedbackRef} aria-live="polite" className="mt-3 min-h-0 scroll-mb-4">
         {chosen && (
           <motion.p
-            initial={{ scale: 0.6, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ type: "spring", stiffness: 500, damping: 22 }}
+            initial={{ y: 18, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ type: "spring", stiffness: 520, damping: 26, delay: 0.08 }}
             className="flex flex-wrap items-center gap-2 font-display text-xl tracking-wide"
             data-testid="predict-feedback"
           >

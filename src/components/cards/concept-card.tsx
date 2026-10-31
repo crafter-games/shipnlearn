@@ -1,5 +1,6 @@
 "use client";
 
+import { AnimatePresence, motion, useIsPresent } from "motion/react";
 import { type ReactNode, useEffect, useRef } from "react";
 import { Check, Cross, ExternalLink, Hint } from "@/components/icons";
 import { allCards } from "@/lib/levels/cards";
@@ -26,7 +27,15 @@ type Props = {
   focusStep?: boolean;
   /** id for the card title, so a dialog can be labelled by it. */
   titleId?: string;
+  /** Direction of the last move: 1 forward, -1 back. Steps slide that way. */
+  dir?: number;
 };
+
+/** Snappy spring shared by the step slide (settles in ~300 ms). */
+const SLIDE = { type: "spring", stiffness: 420, damping: 38, mass: 0.8 } as const;
+/** Bouncy spring for things that pop in (rows, pips). */
+const POP = { type: "spring", stiffness: 560, damping: 24 } as const;
+const STAGGER = 0.07;
 
 /** Stripes over the world accent: the coloured band on top of every card. */
 export const bandStyle = (accent: string) => ({
@@ -58,29 +67,42 @@ function StepHeading({ step, focus }: { step: number; focus?: boolean }) {
   );
 }
 
-function Rows({ items, tone }: { items: string[]; tone: "use" | "avoid" }) {
+/** "Úsalo para" / "Evita" rows, dealt in one after another. */
+function Rows({ items, tone, delay = 0 }: { items: string[]; tone: "use" | "avoid"; delay?: number }) {
   const use = tone === "use";
+  const label = use ? "Úsalo para" : "Evita";
   return (
-    <section aria-label={use ? "Úsalo para" : "Evita"} className="flex flex-col gap-2">
-      <p className={`font-display text-lg tracking-wide ${use ? "text-lime-deep" : "text-coral-deep"}`}>
-        {use ? "Úsalo para" : "Evita"}
-      </p>
+    <section aria-label={label} className="flex flex-col gap-2">
+      <motion.p
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ ...POP, delay }}
+        className={`self-start rounded-lg border-2 border-ink px-2 py-0.5 font-display text-base tracking-wide text-ink ${use ? "bg-lime" : "bg-coral"}`}
+      >
+        {label}
+      </motion.p>
       <ul className="flex flex-col gap-2">
         {items.map((t, i) => (
-          <li
+          <motion.li
             key={i}
+            initial={{ opacity: 0, x: use ? -28 : 28, scale: 0.92 }}
+            animate={{ opacity: 1, x: 0, scale: 1 }}
+            transition={{ ...POP, delay: delay + STAGGER * (i + 1) }}
             className={`flex items-start gap-2.5 rounded-2xl border-[3px] border-ink px-3 py-2 text-[15px] font-bold leading-snug shadow-chunky-sm sm:text-base ${use ? "bg-lime/30" : "bg-coral/20"}`}
           >
-            <span
+            <motion.span
               aria-hidden
+              initial={{ scale: 0, rotate: -45 }}
+              animate={{ scale: 1, rotate: 0 }}
+              transition={{ ...POP, stiffness: 700, damping: 14, delay: delay + STAGGER * (i + 1) + 0.08 }}
               className={`mt-px grid size-7 shrink-0 place-items-center rounded-full border-[3px] border-ink text-ink ${use ? "bg-lime" : "bg-coral"}`}
             >
               {use ? <Check className="size-4" /> : <Cross className="size-4" />}
-            </span>
+            </motion.span>
             <span className="min-w-0 self-center">
               <RichText text={t} />
             </span>
-          </li>
+          </motion.li>
         ))}
       </ul>
     </section>
@@ -92,12 +114,21 @@ function StepBody({ card, step, answer, onAnswer, onRetry }: Omit<Props, "onStep
     case "que-es":
       return (
         <>
-          <p className="font-display text-[1.7rem] leading-tight tracking-wide sm:text-3xl">
+          <motion.p
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ ...POP, delay: 0.05 }}
+            className="font-display text-[1.7rem] leading-tight tracking-wide sm:text-3xl"
+          >
             <RichText text={card.tagline} />
-          </p>
-          <p className="rounded-2xl border-[3px] border-ink bg-ocean-light/25 px-4 py-3 text-[17px] font-semibold leading-relaxed text-ink">
+          </motion.p>
+          <motion.p
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ ...POP, delay: 0.14 }}
+            className="rounded-2xl border-[3px] border-ink bg-ocean-light/25 px-4 py-3 text-[17px] font-semibold leading-relaxed text-ink">
             <RichText text={card.explain} />
-          </p>
+          </motion.p>
         </>
       );
     case "miralo":
@@ -105,9 +136,20 @@ function StepBody({ card, step, answer, onAnswer, onRetry }: Omit<Props, "onStep
         <section aria-label="Ejemplo" className="flex flex-col gap-3">
           <div className="grid gap-3 md:grid-cols-2 md:items-start">
             <CodeView html={card.example.html} css={card.example.css} />
-            <ExamplePreview files={card.example} title={card.title} />
+            <motion.div
+              className="min-w-0"
+              initial={{ opacity: 0, scale: 0.9, rotate: 2 }}
+              animate={{ opacity: 1, scale: 1, rotate: 0 }}
+              transition={{ ...POP, delay: 0.12 }}
+            >
+              <ExamplePreview files={card.example} title={card.title} />
+            </motion.div>
           </div>
-          <p className="relative flex gap-2 rounded-2xl border-[3px] border-ink bg-sand px-3 py-2 text-[15px] font-bold leading-snug shadow-chunky-sm sm:text-base">
+          <motion.p
+            initial={{ opacity: 0, y: 14, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ ...POP, delay: 0.22 }}
+            className="relative flex gap-2 rounded-2xl border-[3px] border-ink bg-sand px-3 py-2 text-[15px] font-bold leading-snug shadow-chunky-sm sm:text-base">
             {/* Pointer notch aiming at the example above. */}
             <span
               aria-hidden
@@ -117,15 +159,15 @@ function StepBody({ card, step, answer, onAnswer, onRetry }: Omit<Props, "onStep
             <span className="min-w-0 self-center">
               <RichText text={card.exampleNote} />
             </span>
-          </p>
+          </motion.p>
         </section>
       );
     case "cuando":
       return (
         <>
           <div className="grid gap-3 md:grid-cols-2 md:gap-4">
-            <Rows items={card.use.slice(0, 3)} tone="use" />
-            <Rows items={card.avoid.slice(0, 2)} tone="avoid" />
+            <Rows items={card.use.slice(0, 3)} tone="use" delay={0.05} />
+            <Rows items={card.avoid.slice(0, 2)} tone="avoid" delay={0.1 + STAGGER * Math.min(3, card.use.length)} />
           </div>
           <a
             href={card.mdn.url}
@@ -165,9 +207,13 @@ function Pips({ step, onStep }: { step: number; onStep?: (i: number) => void }) 
           aria-current={i === step ? "step" : undefined}
           className="grid h-8 w-9 place-items-center"
         >
-          <span
-            className={`block h-3 rounded-full border-2 border-ink transition-all ${
-              i === step ? "w-7 bg-grape" : i < step ? "w-3 bg-lime" : "w-3 bg-foam"
+          <motion.span
+            key={i < step ? "done" : i === step ? "now" : "todo"}
+            initial={{ width: 12, scale: 0.6 }}
+            animate={{ width: i === step ? 28 : 12, scale: 1 }}
+            transition={POP}
+            className={`block h-3 rounded-full border-2 border-ink ${
+              i === step ? "bg-grape" : i < step ? "bg-lime" : "bg-foam"
             }`}
           />
         </button>
@@ -180,7 +226,32 @@ function Pips({ step, onStep }: { step: number; onStep?: (i: number) => void }) 
  * A collectible concept card ("ficha"), read one bite-sized step at a time:
  * what it is, a live example, when to use it (and not), and a predict question.
  */
-export function ConceptCardView({ card, step, onStep, answer, onAnswer, onRetry, focusStep, titleId }: Props) {
+/** One step, absolutely stacked so the old and new can slide past each other. */
+function StepPane({ id, dir, children }: { id: string; dir: number; children: ReactNode }) {
+  const present = useIsPresent();
+  return (
+    <motion.div
+      custom={dir}
+      variants={{
+        enter: (d: number) => ({ x: `${d * 100}%`, opacity: 0.4, rotate: d * 1.5 }),
+        center: { x: "0%", opacity: 1, rotate: 0 },
+        exit: (d: number) => ({ x: `${d * -100}%`, opacity: 0.4, rotate: d * -1.5 }),
+      }}
+      initial="enter"
+      animate="center"
+      exit="exit"
+      transition={SLIDE}
+      inert={!present}
+      data-testid={present ? "card-step" : undefined}
+      data-step={id}
+      className="absolute inset-0 overflow-y-auto overscroll-contain"
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+export function ConceptCardView({ card, step, onStep, answer, onAnswer, onRetry, focusStep, titleId, dir = 1 }: Props) {
   const world = getWorld(card.worldId);
   const accent = world?.accent ?? "var(--color-sand)";
   const hero = step === 0;
@@ -216,18 +287,15 @@ export function ConceptCardView({ card, step, onStep, answer, onAnswer, onRetry,
         </h2>
       </header>
 
-      <div className="relative min-h-0 flex-1">
-        <div
-          key={step}
-          data-testid="card-step"
-          data-step={STEPS[step].id}
-          className="absolute inset-0 overflow-y-auto overscroll-contain"
-        >
-          <div className={`flex min-h-full flex-col gap-3 p-4 sm:p-5 ${hero ? "justify-center" : ""}`}>
-            <StepHeading step={step} focus={focusStep} />
-            <StepBody card={card} step={step} answer={answer} onAnswer={onAnswer} onRetry={onRetry} />
-          </div>
-        </div>
+      <div className="relative min-h-0 flex-1 overflow-hidden">
+        <AnimatePresence initial={false} custom={dir}>
+          <StepPane key={step} id={STEPS[step].id} dir={dir}>
+            <div className={`flex min-h-full flex-col gap-3 p-4 sm:p-5 ${hero ? "justify-center" : ""}`}>
+              <StepHeading step={step} focus={focusStep} />
+              <StepBody card={card} step={step} answer={answer} onAnswer={onAnswer} onRetry={onRetry} />
+            </div>
+          </StepPane>
+        </AnimatePresence>
       </div>
 
       <Pips step={step} onStep={onStep} />
