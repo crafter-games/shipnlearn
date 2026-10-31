@@ -1,6 +1,6 @@
 "use client";
 
-import { MotionConfig } from "motion/react";
+import { MotionConfig, motion } from "motion/react";
 import Link from "next/link";
 import { useEffect, useLayoutEffect, useMemo, useState } from "react";
 import { ArrowLeft, Cards, Lock } from "@/components/icons";
@@ -48,7 +48,7 @@ function SeenCard({ card, world, onOpen }: { card: ConceptCard; world: World; on
         <span className="ml-auto font-display text-sm text-ink">N.º {cardNumber(card.id)}</span>
       </span>
       <span className="flex flex-1 flex-col gap-2 p-2.5 sm:p-3">
-        <span className="self-start rounded-lg border-2 border-ink bg-ink px-2 py-0.5 font-mono text-base font-extrabold break-all text-sand sm:text-lg">
+        <span className="self-start rounded-lg border-2 border-ink bg-ink px-2 py-0.5 font-mono text-base font-extrabold break-words text-sand sm:text-lg">
           {card.title}
         </span>
         <span className="line-clamp-4 text-sm font-bold leading-snug text-ink-soft">{card.tagline}</span>
@@ -150,10 +150,17 @@ export function Fichero() {
                     </p>
                   ) : (
                     <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
-                      {cards.map((card) => {
+                      {cards.map((card, n) => {
                         const i = seen.indexOf(card);
                         return (
-                          <li key={card.id} className="min-h-48">
+                          <motion.li
+                            key={card.id}
+                            className="min-h-48"
+                            // Cards are dealt onto the table, a quick wave left to right.
+                            initial={{ opacity: 0, y: 24, rotate: n % 2 ? 4 : -4, scale: 0.9 }}
+                            animate={{ opacity: 1, y: 0, rotate: 0, scale: 1 }}
+                            transition={{ type: "spring", stiffness: 420, damping: 24, delay: Math.min(n, 12) * 0.03 }}
+                          >
                             {i >= 0 ? (
                               <SeenCard
                                 card={card}
@@ -166,7 +173,7 @@ export function Fichero() {
                             ) : (
                               <LockedCard id={card.id} level={UNLOCK_AT.get(card.id)} worldTitle={world.title} />
                             )}
-                          </li>
+                          </motion.li>
                         );
                       })}
                     </ul>

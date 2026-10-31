@@ -1,8 +1,9 @@
 "use client";
 
 import { motion } from "motion/react";
-import type { Ref } from "react";
-import { Check, Cross, Question, Restart } from "@/components/icons";
+import { useEffect, useRef } from "react";
+import { Check, Cross, Question, Restart, Sparkle } from "@/components/icons";
+import { useReducedMotion } from "@/components/ui/use-reduced-motion";
 import type { ConceptCard } from "@/lib/levels/types";
 import { RichText } from "./rich-text";
 
@@ -14,37 +15,70 @@ type Props = {
   /** Offered when the question is optional practice (Fichero, mid-level). */
   onRetry?: () => void;
   headingId: string;
-  ref?: Ref<HTMLElement>;
 };
 
 const LETTERS = ["A", "B", "C", "D"];
+
+const BURST = Array.from({ length: 8 }, (_, i) => {
+  const a = (i / 8) * Math.PI * 2 + 0.3;
+  const r = i % 2 ? 30 : 44;
+  return { x: Math.cos(a) * r, y: Math.sin(a) * r, fill: i % 2 ? "var(--color-foam)" : "var(--color-sand)" };
+});
+
+/** Sparkles that fly out of the right answer's badge, then vanish. */
+function Burst() {
+  return (
+    <span aria-hidden className="pointer-events-none absolute inset-0">
+      {BURST.map((p, i) => (
+        <motion.span
+          key={i}
+          className="absolute top-1/2 left-1/2 -mt-2 -ml-2"
+          initial={{ x: 0, y: 0, scale: 0, rotate: 0 }}
+          animate={{ x: p.x, y: p.y, scale: [0, 1.1, 0], rotate: 90 }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
+        >
+          <Sparkle className="size-4" fill={p.fill} />
+        </motion.span>
+      ))}
+    </span>
+  );
+}
+
+/** Correct pick pops, wrong pick shakes; everything else stays put. */
+const REACTION = {
+  idle: { scale: 1, x: 0 },
+  muted: { scale: 1, x: 0 },
+  right: { scale: [1, 1.07, 0.98, 1], x: 0, transition: { duration: 0.32 } },
+  wrong: { x: [0, -8, 8, -5, 5, 0], scale: 1, transition: { duration: 0.3 } },
+};
 
 /**
  * PRIMM "predict": one retrieval question. Picking an option locks the
  * question and explains it; a wrong pick also explains the right one. No
  * score, no gating: it is a check for the player, not a test.
  */
-export function Predict({ predict, answer, onAnswer, onRetry, headingId, ref }: Props) {
+export function Predict({ predict, answer, onAnswer, onRetry, headingId }: Props) {
   const answered = answer !== null;
   const chosen = answered ? predict.options[answer] : null;
   const correctIndex = predict.options.findIndex((o) => o.correct);
   const correct = predict.options[correctIndex];
+  const reduced = useReducedMotion();
+  const feedbackRef = useRef<HTMLDivElement>(null);
+
+  // The verdict lands below the options: bring it into view on small screens.
+  useEffect(() => {
+    if (answered) feedbackRef.current?.scrollIntoView({ block: "nearest", behavior: reduced ? "auto" : "smooth" });
+  }, [answered, reduced]);
 
   return (
     <section
-      ref={ref}
-      tabIndex={-1}
       aria-labelledby={headingId}
       data-testid="card-predict"
-      className="relative rounded-2xl border-[3px] border-ink bg-grape-deep p-3 text-foam shadow-chunky-sm outline-none sm:p-4"
+      className="relative rounded-2xl border-[3px] border-ink bg-grape-deep p-3 text-foam shadow-chunky-sm sm:p-4"
     >
-      <p className="flex items-center gap-1.5 font-display text-sm uppercase tracking-[0.14em] text-foam">
-        <Question className="size-6" />
-        Reto rápido
-      </p>
-      <h3 id={headingId} className="mt-1.5 text-lg font-extrabold leading-snug sm:text-xl">
+      <p id={headingId} className="text-lg font-extrabold leading-snug sm:text-xl">
         <RichText text={predict.question} chip="bg-ink/40" />
-      </h3>
+      </p>
 
       <ul className="mt-3 grid gap-2">
         {predict.options.map((o, i) => {
@@ -53,8 +87,9 @@ export function Predict({ predict, answer, onAnswer, onRetry, headingId, ref }: 
           const state = !answered ? "idle" : o.correct ? "right" : isChosen ? "wrong" : "muted";
           return (
             <li key={i}>
-              <button
+              <motion.button
                 type="button"
+                animate={REACTION[state === "right" && !isChosen ? "muted" : state]}
                 disabled={answered}
                 aria-pressed={isChosen}
                 onClick={() => onAnswer(i)}
@@ -71,9 +106,10 @@ export function Predict({ predict, answer, onAnswer, onRetry, headingId, ref }: 
               >
                 <span
                   aria-hidden
-                  className={`grid size-7 shrink-0 place-items-center rounded-full border-[3px] border-ink font-display text-sm ${state === "right" ? "bg-foam text-lime-deep" : state === "wrong" ? "bg-foam text-coral-deep" : "bg-sand"}`}
+                  className={`relative grid size-7 shrink-0 place-items-center rounded-full border-[3px] border-ink font-display text-sm ${state === "right" ? "bg-foam text-lime-deep" : state === "wrong" ? "bg-foam text-coral-deep" : "bg-sand"}`}
                 >
                   {state === "right" ? <Check className="size-4" /> : state === "wrong" ? <Cross className="size-4" /> : LETTERS[i]}
+                  {state === "right" && isChosen && <Burst />}
                 </span>
                 <span className="min-w-0 flex-1 pt-0.5">
                   <RichText text={o.label} />
@@ -89,18 +125,18 @@ export function Predict({ predict, answer, onAnswer, onRetry, headingId, ref }: 
                     </motion.span>
                   )}
                 </span>
-              </button>
+              </motion.button>
             </li>
           );
         })}
       </ul>
 
-      <div aria-live="polite" className="mt-3 min-h-0">
+      <div ref={feedbackRef} aria-live="polite" className="mt-3 min-h-0 scroll-mb-4">
         {chosen && (
           <motion.p
-            initial={{ scale: 0.6, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ type: "spring", stiffness: 500, damping: 22 }}
+            initial={{ y: 18, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ type: "spring", stiffness: 520, damping: 26, delay: 0.08 }}
             className="flex flex-wrap items-center gap-2 font-display text-xl tracking-wide"
             data-testid="predict-feedback"
           >

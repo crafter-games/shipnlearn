@@ -40,7 +40,7 @@ export function ExamplePreview({ files, title }: { files: LevelFiles; title: str
         onLoad={measure}
         tabIndex={-1}
         style={{ height }}
-        className="pointer-events-none block w-full bg-white"
+        className="pointer-events-none block w-full bg-white max-md:[zoom:0.8]"
         data-testid="card-preview"
       />
     </div>

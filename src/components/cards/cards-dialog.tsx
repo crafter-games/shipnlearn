@@ -1,7 +1,7 @@
 "use client";
 
-import { motion } from "motion/react";
-import { useEffect, useId, useRef, useState } from "react";
+import { MotionConfig, motion } from "motion/react";
+import { type PointerEvent, useEffect, useId, useRef, useState } from "react";
 import { ArrowLeft, ArrowRight, Card, Close, Question } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
@@ -9,6 +9,7 @@ import { useReducedMotion } from "@/components/ui/use-reduced-motion";
 import { playSfx } from "@/lib/audio";
 import type { ConceptCard } from "@/lib/levels/types";
 import { ConceptCardView } from "./concept-card";
+import { LAST_STEP, STEPS } from "./steps";
 
 export type CardsDialogMode =
   /** First time before a level: one card at a time, predict, then "¡A construir!". */
@@ -29,17 +30,24 @@ type Props = {
 export function CardsDialog({ open, cards, mode, startIndex = 0, onClose }: Props) {
   const labelId = useId();
   const titleId = useId();
+  const reduced = useReducedMotion();
   return (
     <Dialog
       open={open && cards.length > 0}
       onClose={() => onClose("skip")}
       labelledBy={`${labelId} ${titleId}`}
-      className="w-[min(100vw-1rem,60rem)]! max-h-[calc(100dvh-1rem)]!"
+      className="w-[min(100vw-1rem,56rem)]! max-h-[calc(100dvh-1rem)]!"
     >
-      <Viewer cards={cards} mode={mode} startIndex={startIndex} onClose={onClose} labelId={labelId} titleId={titleId} />
+      {/* The in-game "reduce motion" setting counts as much as the OS one. */}
+      <MotionConfig reducedMotion={reduced ? "always" : "never"}>
+        <Viewer cards={cards} mode={mode} startIndex={startIndex} onClose={onClose} labelId={labelId} titleId={titleId} />
+      </MotionConfig>
     </Dialog>
   );
 }
+
+/** Horizontal travel (px) that turns a touch drag into a step change. */
+const SWIPE = 56;
 
 function Viewer({
   cards,
@@ -51,36 +59,93 @@ function Viewer({
 }: Omit<Props, "open"> & { startIndex: number; labelId: string; titleId: string }) {
   const reduced = useReducedMotion();
   const intro = mode === "intro";
-  const [index, setIndex] = useState(Math.min(startIndex, cards.length - 1));
+  const [pos, setPos] = useState({ index: Math.min(startIndex, cards.length - 1), step: 0, dir: 1 });
+  // The step heading only takes focus once the player has navigated.
+  const [moved, setMoved] = useState(false);
   const [answers, setAnswers] = useState<Record<string, number | null>>({});
-  const predictRef = useRef<HTMLElement>(null);
+  const swipe = useRef<{ x: number; y: number } | null>(null);
+  const footerRef = useRef<HTMLDivElement>(null);
+  const { index, step, dir } = pos;
   const card = cards[index];
   const answer = answers[card.id] ?? null;
-  const last = index === cards.length - 1;
+  const lastCard = index === cards.length - 1;
+  const onPredict = step === LAST_STEP;
+  // Before a level, the predict question is answered before moving on.
+  const blocked = intro && onPredict && answer === null;
 
   // Reveal sound for every new card in the sequence.
   useEffect(() => {
     playSfx(intro ? "star" : "ui-tap");
   }, [intro, index]);
 
-  const go = (to: number) => {
-    setIndex(to);
+  const goTo = (to: { index: number; step: number }) => {
+    if (to.index === index && to.step === step) return;
+    if (to.index === index) playSfx("ui-tap");
+    setMoved(true);
+    const forward = to.index > index || (to.index === index && to.step > step);
+    setPos({ ...to, dir: forward ? 1 : -1 });
+  };
+
+  const next = () => {
+    if (blocked) return;
+    if (step < LAST_STEP) goTo({ index, step: step + 1 });
+    else if (!lastCard) goTo({ index: index + 1, step: 0 });
+    else {
+      playSfx("ui-tap");
+      onClose("done");
+    }
+  };
+  const canBack = index > 0 || step > 0;
+  const back = () => {
+    if (step > 0) goTo({ index, step: step - 1 });
+    else if (index > 0) goTo({ index: index - 1, step: LAST_STEP });
+  };
+  /** Keys and swipes walk the steps but never close the viewer. */
+  const nudge = (dir: 1 | -1) => {
+    if (dir < 0) back();
+    else if (!(onPredict && lastCard)) next();
   };
 
   const answerWith = (i: number) => {
     playSfx(card.predict.options[i]?.correct ? "check" : "error");
     setAnswers((a) => ({ ...a, [card.id]: i }));
+    // The picked option locks (disabled): hand focus to the way forward.
+    requestAnimationFrame(() => footerRef.current?.querySelector<HTMLElement>("[data-autofocus]")?.focus({ preventScroll: true }));
   };
 
-  const toPredict = () => {
-    playSfx("ui-tap");
-    const el = predictRef.current;
-    el?.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "center" });
-    el?.querySelector<HTMLElement>("button:not(:disabled)")?.focus({ preventScroll: true });
+  const onPointerDown = (e: PointerEvent) => {
+    const fromControl = (e.target as HTMLElement).closest("pre, a, button");
+    swipe.current = e.pointerType === "mouse" || fromControl ? null : { x: e.clientX, y: e.clientY };
   };
+  const onPointerUp = (e: PointerEvent) => {
+    const s = swipe.current;
+    swipe.current = null;
+    if (!s) return;
+    const dx = e.clientX - s.x;
+    if (Math.abs(dx) > SWIPE && Math.abs(dx) > Math.abs(e.clientY - s.y) * 1.5) nudge(dx < 0 ? 1 : -1);
+  };
+
+  const primary = (() => {
+    if (step < LAST_STEP - 1) return { label: "Siguiente", testId: "card-next" };
+    if (step === LAST_STEP - 1) return { label: "Ponte a prueba", testId: "to-predict" };
+    if (blocked) return { label: "Elige una respuesta", testId: "card-next" };
+    if (!lastCard) return { label: "Siguiente ficha", testId: "card-next" };
+    return { label: intro ? "¡A construir!" : "¡Entendido!", testId: "card-next" };
+  })();
+  const toPredict = primary.testId === "to-predict";
 
   return (
-    <div className="flex max-h-[calc(100dvh-1rem)] flex-col gap-2" data-testid="cards-dialog" data-mode={mode}>
+    <div
+      className="flex h-[calc(100dvh-1rem)] flex-col gap-2 sm:h-[min(calc(100dvh-1rem),42rem)]"
+      data-testid="cards-dialog"
+      data-mode={mode}
+      onKeyDown={(e) => {
+        if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
+          e.preventDefault();
+          nudge(e.key === "ArrowRight" ? 1 : -1);
+        }
+      }}
+    >
       {/* Top bar, floating over the backdrop. */}
       <div className="flex items-center gap-2">
         <motion.p
@@ -95,19 +160,12 @@ function Viewer({
           {intro ? "¡Ficha nueva!" : "Ficha"}
         </motion.p>
         {cards.length > 1 && (
-          <div className="flex shrink-0 items-center gap-1.5 rounded-full border-[3px] border-ink bg-foam px-2.5 py-1 shadow-chunky-sm" data-testid="cards-progress">
-            <span aria-hidden className="hidden gap-1 sm:flex">
-              {cards.map((c, i) => (
-                <span
-                  key={c.id}
-                  className={`size-2.5 rounded-full border-2 border-ink ${i === index ? "bg-grape" : i < index || !intro ? "bg-ink-soft/40" : "bg-foam"}`}
-                />
-              ))}
-            </span>
-            <span className="text-sm font-extrabold whitespace-nowrap">
-              {index + 1} de {cards.length}
-            </span>
-          </div>
+          <p
+            className="shrink-0 rounded-full border-[3px] border-ink bg-foam px-2.5 py-1 text-sm font-extrabold whitespace-nowrap shadow-chunky-sm"
+            data-testid="cards-progress"
+          >
+            Ficha {index + 1} de {cards.length}
+          </p>
         )}
         {intro ? (
           <button
@@ -133,72 +191,84 @@ function Viewer({
         )}
       </div>
 
-      {/* The card itself scrolls; the bars stay put. */}
+      <p aria-live="polite" className="sr-only">
+        Paso {step + 1} de {STEPS.length}: {STEPS[step].label}
+      </p>
+
+      {/* The card: steps swap inside it; swipe left/right to walk them. */}
       <div
-        key={card.id}
-        tabIndex={-1}
-        data-autofocus
-        className="min-h-0 flex-1 overflow-y-auto overscroll-contain rounded-[1.6rem] pb-1.5 outline-none [perspective:1600px]"
+        className="min-h-0 flex-1 touch-pan-y pb-1.5 [perspective:1600px]"
+        onPointerDown={onPointerDown}
+        onPointerUp={onPointerUp}
+        onPointerCancel={() => (swipe.current = null)}
       >
         <motion.div
-          initial={reduced ? { opacity: 0 } : { rotateY: -80, scale: 0.85, opacity: 0 }}
-          animate={{ rotateY: 0, scale: 1, opacity: 1 }}
-          transition={reduced ? { duration: 0.15 } : { type: "spring", stiffness: 260, damping: 22 }}
-          style={{ transformOrigin: "50% 50%" }}
+          key={card.id}
+          className="h-full"
+          initial={
+            reduced
+              ? { opacity: 0 }
+              : { rotateY: dir * -75, rotate: dir * -6, y: 36, scale: 0.86, opacity: 0 }
+          }
+          animate={{ rotateY: 0, rotate: 0, y: 0, scale: 1, opacity: 1 }}
+          transition={
+            reduced
+              ? { duration: 0.15 }
+              : { type: "spring", stiffness: 300, damping: 19, opacity: { duration: 0.12 } }
+          }
+          style={{ transformOrigin: "50% 60%" }}
         >
           <ConceptCardView
             card={card}
+            step={step}
+            onStep={(i) => goTo({ index, step: i })}
+            focusStep={moved}
+            dir={dir}
             titleId={titleId}
             answer={answer}
             onAnswer={answerWith}
             onRetry={intro ? undefined : () => setAnswers((a) => ({ ...a, [card.id]: null }))}
-            predictRef={predictRef}
           />
         </motion.div>
       </div>
 
-      {/* Footer actions. */}
-      <div className="flex gap-2">
-        {intro ? (
-          answer === null ? (
-            <Button variant="accent" className="flex-1" onClick={toPredict} data-testid="to-predict">
-              <Question className="size-7" />
-              Ponte a prueba
-            </Button>
-          ) : last ? (
-            <Button
-              className="flex-1"
-              onClick={() => {
-                playSfx("ui-tap");
-                onClose("done");
-              }}
-            >
-              ¡A construir!
-              <ArrowRight className="size-6" />
-            </Button>
-          ) : (
-            <Button className="flex-1" onClick={() => go(index + 1)}>
-              Siguiente ficha
-              <ArrowRight className="size-6" />
-            </Button>
-          )
-        ) : cards.length > 1 ? (
-          <>
-            <Button variant="secondary" className="flex-1" disabled={index === 0} onClick={() => go(index - 1)}>
-              <ArrowLeft className="size-6" />
-              Anterior
-            </Button>
-            <Button variant="secondary" className="flex-1" disabled={last} onClick={() => go(index + 1)}>
-              Siguiente
-              <ArrowRight className="size-6" />
-            </Button>
-          </>
-        ) : (
-          <Button variant="secondary" className="flex-1" onClick={() => onClose("done")}>
-            ¡Entendido!
-          </Button>
-        )}
+      {/* Footer: back + one big forward button. */}
+      <div ref={footerRef} className="flex gap-2">
+        <Button
+          variant="secondary"
+          className="shrink-0 px-4"
+          disabled={!canBack}
+          onClick={back}
+          data-testid="card-back"
+          aria-label="Atrás"
+        >
+          <ArrowLeft className="size-6" />
+          <span aria-hidden className="hidden sm:inline">
+            Atrás
+          </span>
+        </Button>
+        <Button
+          data-autofocus
+          variant={toPredict ? "accent" : "primary"}
+          className="flex-1"
+          disabled={blocked}
+          onClick={next}
+          data-testid={primary.testId}
+        >
+          <motion.span
+            key={primary.label}
+            initial={{ scale: 0.7, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ type: "spring", stiffness: 600, damping: 20 }}
+            className="flex items-center gap-2"
+          >
+            {toPredict && <Question className="size-7" />}
+            {primary.label}
+            {!toPredict && !blocked && <ArrowRight className="size-6" />}
+          </motion.span>
+        </Button>
       </div>
     </div>
   );
 }
+
