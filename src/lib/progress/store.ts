@@ -59,6 +59,8 @@ type ProgressState = {
   seenIntro: boolean;
   /** Concept cards the player has opened (their Fichero). */
   seenCards: string[];
+  /** Tutorial steps already shown, by id ("level-basics", "tiles", "fill", "map"…). */
+  seenTips: string[];
   equipped: Equipped;
   /** Records a finished level. Only improvements grant XP. */
   completeLevel: (levelId: string, stars: Stars) => CompleteResult;
@@ -67,6 +69,7 @@ type ProgressState = {
   setSettings: (patch: Partial<Settings>) => void;
   markIntroSeen: () => void;
   markCardsSeen: (ids: string[]) => void;
+  markTipSeen: (id: string) => void;
   /** Ignored when the current rank has not unlocked `patch.flag` yet. */
   equip: (patch: Partial<Equipped>) => void;
   reset: () => void;
@@ -86,12 +89,13 @@ const initial = {
   settings: defaultSettings,
   seenIntro: false,
   seenCards: [] as string[],
+  seenTips: [] as string[],
   equipped: { flag: "coral" } as Equipped,
 };
 
 type Persisted = Pick<
   ProgressState,
-  "levels" | "xp" | "reviews" | "settings" | "seenIntro" | "equipped" | "seenCards"
+  "levels" | "xp" | "reviews" | "settings" | "seenIntro" | "equipped" | "seenCards" | "seenTips"
 >;
 
 /** Upgrades persisted state from older versions. Exported for tests. */
@@ -111,6 +115,7 @@ export function migrateProgress(persisted: unknown, version: number): Persisted 
       version < 3
         ? allLevels.filter((l) => (levels[l.id]?.stars ?? 0) > 0).flatMap((l) => l.cards)
         : (s.seenCards ?? []),
+    seenTips: s.seenTips ?? [],
     equipped: { ...initial.equipped, ...s.equipped },
   };
 }
@@ -159,6 +164,8 @@ export const useProgress = create<ProgressState>()(
       setSettings: (patch) =>
         set((s) => ({ settings: { ...s.settings, ...patch } })),
       markIntroSeen: () => set({ seenIntro: true }),
+      markTipSeen: (id) =>
+        set((s) => (s.seenTips.includes(id) ? s : { seenTips: [...s.seenTips, id] })),
       markCardsSeen: (ids) =>
         set((s) => {
           const fresh = ids.filter((id) => !s.seenCards.includes(id));
