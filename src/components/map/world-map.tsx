@@ -1,11 +1,9 @@
 "use client";
 
-import { MotionConfig } from "motion/react";
 import { useEffect, useState, useSyncExternalStore } from "react";
 import { Octo } from "@/components/characters/octo";
 import { Hud } from "@/components/hud/hud";
 import { Intro } from "@/components/intro/intro";
-import { useReducedMotion } from "@/components/ui/use-reduced-motion";
 import { setScene, unlockAudio } from "@/lib/audio";
 import { allLevels, worlds } from "@/lib/levels/registry";
 import { FLAG_RANKS, dueReviews, isUnlocked, rankOf, useProgress } from "@/lib/progress/store";
@@ -33,7 +31,6 @@ function MapSkeleton() {
 /** Home: the archipelago map, or the intro on a first visit. */
 export function WorldMap() {
   const hydrated = useHydrated();
-  const reduced = useReducedMotion();
   const levels = useProgress((s) => s.levels);
   const xp = useProgress((s) => s.xp);
   const reviews = useProgress((s) => s.reviews);
@@ -72,7 +69,7 @@ export function WorldMap() {
   }, [ready]);
 
   return (
-    <MotionConfig reducedMotion={reduced ? "always" : "user"}>
+    <>
       <Ocean />
       {showIntro ? (
         <Intro />
@@ -110,6 +107,6 @@ export function WorldMap() {
           </main>
         </>
       )}
-    </MotionConfig>
+    </>
   );
 }

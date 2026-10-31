@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { JetBrains_Mono, Lilita_One, Nunito } from "next/font/google";
 import { ProgressHydrator } from "@/components/providers/progress-hydrator";
+import { MotionRoot } from "@/components/ui/motion-root";
 import "./globals.css";
 
 const lilita = Lilita_One({ weight: "400", subsets: ["latin"], variable: "--font-lilita" });
@@ -25,7 +26,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html lang="es" className={`${lilita.variable} ${nunito.variable} ${jetbrains.variable}`}>
       <body className="antialiased">
         <ProgressHydrator />
-        {children}
+        <MotionRoot>{children}</MotionRoot>
       </body>
     </html>
   );

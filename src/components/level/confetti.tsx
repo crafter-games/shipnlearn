@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { useReducedMotion } from "@/components/ui/use-reduced-motion";
 
 const TOKENS = ["--color-lime", "--color-sand", "--color-coral", "--color-ocean", "--color-grape", "--color-foam"];
 
@@ -18,14 +19,15 @@ type Particle = {
 
 /**
  * Lightweight canvas confetti: two side cannons and a top burst, ~2.5 s.
- * Renders nothing for prefers-reduced-motion.
+ * Renders nothing when motion is reduced (OS or in-game setting).
  */
 export function Confetti() {
   const ref = useRef<HTMLCanvasElement>(null);
+  const reduced = useReducedMotion();
 
   useEffect(() => {
     const canvas = ref.current;
-    if (!canvas || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (!canvas || reduced) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -83,7 +85,7 @@ export function Confetti() {
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, []);
+  }, [reduced]);
 
   return <canvas ref={ref} aria-hidden className="pointer-events-none fixed inset-0 h-dvh w-screen" />;
 }

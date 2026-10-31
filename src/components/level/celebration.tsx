@@ -1,11 +1,12 @@
 "use client";
 
-import { motion, useReducedMotion } from "motion/react";
+import { motion } from "motion/react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ArrowRight, Island, Rocket, Star } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
+import { useReducedMotion } from "@/components/ui/use-reduced-motion";
 import { playSfx } from "@/lib/audio";
 import type { Level } from "@/lib/levels/types";
 import { rankOf, type Stars, useProgress } from "@/lib/progress/store";

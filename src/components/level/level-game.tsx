@@ -1,6 +1,5 @@
 "use client";
 
-import { MotionConfig } from "motion/react";
 import Link from "next/link";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { ArrowLeft, Card, Document, Hint, Palette, Pencil, Puzzle, Restart, Rocket } from "@/components/icons";
@@ -319,7 +318,7 @@ export function LevelGame({ level, review = false }: { level: Level; review?: bo
   );
 
   return (
-    <MotionConfig reducedMotion="user">
+    <>
       <div className="flex min-h-dvh flex-col lg:h-dvh lg:overflow-hidden">
         <header className="flex items-center gap-2 px-3 pt-[max(0.5rem,env(safe-area-inset-top))] pb-1 sm:gap-3 sm:px-4">
           <Link
@@ -468,6 +467,6 @@ export function LevelGame({ level, review = false }: { level: Level; review?: bo
           setScene("editor");
         }}
       />
-    </MotionConfig>
+    </>
   );
 }
