@@ -5,11 +5,12 @@ import { dialogo } from "./03-dialogo";
 import { nombres } from "./04-nombres";
 import { avisos } from "./05-avisos";
 import { metadatos } from "./06-metadatos";
+import { imagenes } from "./07-imagenes";
 
 export const htmlAdvanced: World = {
   id: "html-advanced",
   title: "Isla Faro",
   subtitle: "HTML avanzado",
   accent: "#7CC4FF",
-  levels: [acordeon, popover, dialogo, nombres, avisos, metadatos],
+  levels: [acordeon, popover, dialogo, nombres, avisos, metadatos, imagenes],
 };
