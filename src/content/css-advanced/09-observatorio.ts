@@ -40,9 +40,7 @@ ${sensor("Ladera sur", "Grietas nuevas, en observación.")}
 </main>
 `;
 
-const starterCss = `/* Observatorio: todo suelto, sin capas ni temas.
-   Ojo: el CSS base de la vista previa (html, body) va sin capas
-   y gana a cualquier regla tuya que esté dentro de una capa. */
+const starterCss = `/* Observatorio: todo suelto, sin capas ni temas. */
 * {
   box-sizing: border-box;
 }
@@ -122,8 +120,7 @@ h1 {
 
 const solutionCss = `@layer reset, components, utilities;
 
-/* El CSS base de la vista previa va sin capas y ganaría a las tuyas:
-   el lienzo de la página queda fuera de capas para poder cambiarlo. */
+/* El lienzo de la página: fondo y tinta del tema. */
 html {
   background-color: var(--fondo);
   color: var(--tinta);
