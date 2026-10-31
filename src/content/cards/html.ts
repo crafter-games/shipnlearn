@@ -31,7 +31,7 @@ export const htmlCards: ConceptCard[] = [
       html: "<h1>Panadería de la isla</h1>\n<p>Pan recién hecho cada mañana.</p>\n",
     },
     exampleNote:
-      "A la izquierda, el código; a la derecha, la página que dibuja el navegador.",
+      "Primero el código que escribe una persona; luego, la página que dibuja el navegador.",
     predict: {
       question: "Al abrir una web en el móvil, ¿quién convierte el código en la página?",
       options: [
