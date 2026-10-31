@@ -10,24 +10,10 @@ import { Cifras, Marisol } from "./npcs/market";
 import { OctoPortrait } from "./npcs/octo-portrait";
 import type { PortraitProps } from "./npcs/parts";
 import { Brea, Pinzas, Remedios, Sello } from "./npcs/town";
+import { Magma, Prisma } from "./npcs/volcano";
 import { Escuadra, Pixel } from "./npcs/workshop";
 
 type Props = { id: AvatarId; className?: string };
-
-/** Round initial on a coloured disc, for islanders not drawn yet. */
-function Placeholder(letter: string, fill: string): ComponentType<PortraitProps> {
-  function PlaceholderPortrait({ className = "" }: PortraitProps) {
-    return (
-      <svg viewBox="0 0 64 64" aria-hidden className={className}>
-        <circle cx="32" cy="32" r="29" fill={fill} stroke="var(--color-ink)" strokeWidth="3" />
-        <text x="32" y="42" textAnchor="middle" fontSize="28" fontFamily="var(--font-display)" fill="var(--color-ink)">
-          {letter}
-        </text>
-      </svg>
-    );
-  }
-  return PlaceholderPortrait;
-}
 
 /** Every AvatarId must have a portrait: TypeScript flags a missing one here. */
 const PORTRAITS: Record<AvatarId, ComponentType<PortraitProps>> = {
@@ -56,9 +42,8 @@ const PORTRAITS: Record<AvatarId, ComponentType<PortraitProps>> = {
   pixel: Pixel,
   eco: Eco,
   llave: Llave,
-  // Placeholders until the new islanders are drawn.
-  magma: Placeholder("M", "var(--color-sand-deep)"),
-  prisma: Placeholder("P", "var(--color-sand-deep)"),
+  magma: Magma,
+  prisma: Prisma,
 };
 
 export const AVATAR_IDS = Object.keys(PORTRAITS) as AvatarId[];
