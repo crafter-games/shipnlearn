@@ -64,10 +64,72 @@
   :focus-visible {
     outline: 3px solid var(--color-sand);
     outline-offset: 3px;
+    /* The ring snaps in from outside, so keyboard focus is easy to follow. */
+    animation: focus-ring 180ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  @keyframes focus-ring {
+    from { outline-offset: 9px; outline-color: transparent; }
   }
 }
 
 @layer components {
+  /*
+   * Level screen entry: panels rise in, staggered by --i (0, 1, 2…). CSS
+   * animations replay whenever a kept-alive page is shown again, which is
+   * exactly when the player enters it.
+   */
+  .enter-rise {
+    animation: enter-rise 340ms cubic-bezier(0.22, 1.25, 0.36, 1) calc(var(--i, 0) * 55ms + 80ms) backwards;
+  }
+  @keyframes enter-rise {
+    from { opacity: 0; translate: 0 22px; scale: 0.96; }
+  }
+  /* The islander's request pops out of their avatar (text is readable at once). */
+  .bubble-pop {
+    transform-origin: 0 1.25rem;
+    animation: bubble-pop 300ms cubic-bezier(0.34, 1.56, 0.64, 1) 200ms backwards;
+  }
+  @keyframes bubble-pop {
+    from { scale: 0.6; opacity: 0; }
+  }
+  /* Editor tabs slide in from their side (--tab-dir: -1 left, 1 right). */
+  .tab-in {
+    animation: tab-in 200ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  @keyframes tab-in {
+    from { opacity: 0; translate: calc(var(--tab-dir, 1) * 28px) 0; }
+  }
+  .fade-in {
+    animation: fade-in 200ms ease-out;
+  }
+  @keyframes fade-in {
+    from { opacity: 0; }
+  }
+  /* Ship it! breathes once every required goal passes. A ring, not a scale, so the button never moves. */
+  .ship-ready::after {
+    content: "";
+    position: absolute;
+    inset: -3px;
+    border-radius: inherit;
+    pointer-events: none;
+    animation: ship-breathe 1.6s ease-in-out infinite;
+  }
+  @keyframes ship-breathe {
+    0% { box-shadow: 0 0 0 0 color-mix(in oklab, var(--color-sand) 95%, transparent); }
+    70%, 100% { box-shadow: 0 0 0 16px color-mix(in oklab, var(--color-sand) 0%, transparent); }
+  }
+
+  /* Light sweeping across a bar while it fills (HUD XP). */
+  .hud-shimmer {
+    background: linear-gradient(100deg, transparent 20%, color-mix(in oklab, var(--color-foam) 75%, transparent) 50%, transparent 80%);
+    background-size: 200% 100%;
+    animation: shimmer 700ms linear infinite;
+  }
+  @keyframes shimmer {
+    from { background-position: 150% 0; }
+    to { background-position: -50% 0; }
+  }
+
   /* Thick text outline used on display titles over the ocean. */
   .text-stroke {
     -webkit-text-stroke: 6px var(--color-ink);
@@ -75,12 +137,91 @@
   }
 }
 
+/*
+ * Page transitions (see components/ui/page-transition.tsx). The leaving page
+ * goes fast so it never competes with the arriving one; the whole swap stays
+ * under 400 ms and clicks pass through to the live page.
+ */
+::view-transition {
+  pointer-events: none;
+}
+::view-transition-old(.nav-in) {
+  transform-origin: var(--vt-old-x, 50%) var(--vt-old-y, 50%);
+  animation:
+    240ms cubic-bezier(0.3, 0, 0.2, 1) both vt-zoom-past,
+    200ms ease-in both vt-fade-out;
+}
+::view-transition-new(.nav-in) {
+  transform-origin: var(--vt-new-x, 50%) var(--vt-new-y, 50%);
+  animation: 320ms cubic-bezier(0.22, 1.2, 0.36, 1) 60ms both vt-grow;
+}
+::view-transition-old(.nav-out) {
+  transform-origin: var(--vt-old-x, 50%) var(--vt-old-y, 50%);
+  animation:
+    220ms cubic-bezier(0.3, 0, 0.2, 1) both vt-shrink,
+    180ms ease-in both vt-fade-out;
+}
+::view-transition-new(.nav-out) {
+  animation: 300ms cubic-bezier(0.22, 1, 0.36, 1) 40ms both vt-settle;
+}
+::view-transition-old(.nav-next) {
+  animation:
+    220ms cubic-bezier(0.3, 0, 0.2, 1) both vt-slide-out,
+    180ms ease-in both vt-fade-out;
+}
+::view-transition-new(.nav-next) {
+  animation: 320ms cubic-bezier(0.22, 1.2, 0.36, 1) 60ms both vt-slide-in;
+}
+@keyframes vt-fade-out {
+  to { opacity: 0; }
+}
+@keyframes vt-zoom-past {
+  to { scale: 1.5; }
+}
+@keyframes vt-grow {
+  from { opacity: 0; scale: 0.6; }
+}
+@keyframes vt-shrink {
+  to { scale: 0.85; }
+}
+@keyframes vt-settle {
+  from { opacity: 0; scale: 1.06; }
+}
+@keyframes vt-slide-out {
+  to { translate: -80px 0; }
+}
+@keyframes vt-slide-in {
+  from { opacity: 0; translate: 120px 0; }
+}
+
+/* OS preference, or the in-game "Reducir movimiento" setting (MotionRoot). */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
   *::after {
     animation-duration: 1ms !important;
+    animation-delay: 0ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 1ms !important;
   }
+}
+:root[data-reduced-motion] *,
+:root[data-reduced-motion] *::before,
+:root[data-reduced-motion] *::after {
+  animation-duration: 1ms !important;
+  animation-delay: 0ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 1ms !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(*),
+  ::view-transition-new(*),
+  ::view-transition-group(*) {
+    animation: none !important;
+  }
+}
+:root[data-reduced-motion]::view-transition-old(*),
+:root[data-reduced-motion]::view-transition-new(*),
+:root[data-reduced-motion]::view-transition-group(*) {
+  animation: none !important;
 }

@@ -1,17 +1,36 @@
 "use client";
 
+import { AnimatePresence, motion, useAnimate } from "motion/react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { SettingsDialog } from "@/components/settings/settings-dialog";
 import { Cards, Gear, Speaker, Star } from "@/components/icons";
+import { useCountUp } from "@/components/ui/use-count-up";
 import { allLevels } from "@/lib/levels/registry";
 import { applySettings, playSfx, unlockAudio } from "@/lib/audio";
 import { XP_PER_RANK, rankOf, useProgress } from "@/lib/progress/store";
 import { useHydrated } from "@/lib/progress/use-hydrated";
 
+/** Seconds to wait so counting starts after the page transition back to the map. */
+const COUNT_DELAY = 0.45;
+
 function RankBadge({ rank }: { rank: number }) {
+  // Rank up: the badge punches out and a ring bursts behind it.
+  const [scope, animate] = useAnimate<HTMLDivElement>();
+  const prev = useRef(rank);
+  useEffect(() => {
+    if (rank <= prev.current) {
+      prev.current = rank;
+      return;
+    }
+    prev.current = rank;
+    void animate(scope.current, { scale: [1, 1.55, 0.9, 1], rotate: [0, -12, 6, 0] }, { duration: 0.55, ease: "easeOut" });
+    void animate("[data-burst]", { scale: [0.6, 2.4], opacity: [0.9, 0] }, { duration: 0.6, ease: "easeOut" });
+  }, [rank, animate, scope]);
+
   return (
-    <div className="relative z-10 grid size-12 shrink-0 place-items-center">
+    <div ref={scope} className="relative z-10 grid size-12 shrink-0 place-items-center">
+      <span data-burst aria-hidden className="pointer-events-none absolute inset-0 rounded-full border-4 border-sand opacity-0" />
       <svg viewBox="0 0 48 52" className="absolute inset-0 size-full" aria-hidden>
         <path
           d="M24 3 L43 13 L43 35 L24 49 L5 35 L5 13 Z"
@@ -29,6 +48,21 @@ function RankBadge({ rank }: { rank: number }) {
   );
 }
 
+/** The HUD star that kicks every time the counter ticks up. */
+function BumpStar({ value }: { value: number }) {
+  const [scope, animate] = useAnimate<HTMLSpanElement>();
+  const prev = useRef(value);
+  useEffect(() => {
+    if (value > prev.current) void animate(scope.current, { scale: [1.45, 1], rotate: [-18, 0] }, { type: "spring", stiffness: 600, damping: 12 });
+    prev.current = value;
+  }, [value, animate, scope]);
+  return (
+    <span ref={scope} className="block">
+      <Star className="size-6" />
+    </span>
+  );
+}
+
 function IconButton({
   label,
   onClick,
@@ -43,7 +77,7 @@ function IconButton({
       type="button"
       aria-label={label}
       onClick={onClick}
-      className="grid size-11 shrink-0 place-items-center rounded-xl border-[3px] border-ink bg-foam shadow-chunky-sm transition-transform duration-75 active:translate-y-0.5 active:shadow-pressed"
+      className="grid size-11 shrink-0 place-items-center rounded-xl border-[3px] border-ink bg-foam shadow-chunky-sm transition-[translate,scale,box-shadow] duration-100 [@media(hover:hover)]:hover:-translate-y-0.5 [@media(hover:hover)]:hover:shadow-chunky active:translate-y-0.5 active:scale-[0.94] active:shadow-pressed active:duration-75"
     >
       {children}
     </button>
@@ -68,6 +102,12 @@ export function Hud() {
   const rank = rankOf(xp);
   const into = xp % XP_PER_RANK;
   const stars = Object.values(levels).reduce((n, l) => n + l.stars, 0);
+  // What the bar and counters show: they count up to the real values (which
+  // the accessible labels always use), filling the bar and wrapping on rank up.
+  const shownXp = useCountUp(xp, { enabled: hydrated, delay: COUNT_DELAY, duration: 1 });
+  const shownStars = useCountUp(stars, { enabled: hydrated, delay: COUNT_DELAY, duration: 0.6 });
+  const shownInto = shownXp % XP_PER_RANK;
+  const filling = shownXp !== xp;
   const maxStars = allLevels.length * 3;
 
   // Push persisted settings to the audio engine once loaded and on change.
@@ -95,7 +135,7 @@ export function Hud() {
           aria-hidden={!hydrated}
           data-tour="progress"
         >
-          <RankBadge rank={rank} />
+          <RankBadge rank={rankOf(shownXp)} />
           <div className="-ml-3 min-w-0 max-w-64 flex-1">
             <div
               role="progressbar"
@@ -105,14 +145,12 @@ export function Hud() {
               aria-valuenow={into}
               className="relative h-7 overflow-hidden rounded-r-full border-[3px] border-l-0 border-ink bg-ink-soft shadow-chunky-sm"
             >
-              <div
-                className="h-full bg-lime transition-[width] duration-500 ease-out"
-                style={{ width: `${(into / XP_PER_RANK) * 100}%` }}
-              >
+              <div className="relative h-full overflow-hidden bg-lime" style={{ width: `${(shownInto / XP_PER_RANK) * 100}%` }}>
                 <div className="h-1/3 bg-foam/40" />
+                {filling && <span aria-hidden className="hud-shimmer absolute inset-0" />}
               </div>
-              <span className="absolute inset-0 flex items-center justify-center pl-2 font-display text-sm tracking-wide text-foam [text-shadow:0_1.5px_0_var(--color-ink),0_-1.5px_0_var(--color-ink),1.5px_0_0_var(--color-ink),-1.5px_0_0_var(--color-ink)]">
-                {into}/{XP_PER_RANK} XP
+              <span className="absolute inset-0 flex items-center justify-center pl-2 font-display text-sm tracking-wide text-foam tabular-nums [text-shadow:0_1.5px_0_var(--color-ink),0_-1.5px_0_var(--color-ink),1.5px_0_0_var(--color-ink),-1.5px_0_0_var(--color-ink)]">
+                {shownInto}/{XP_PER_RANK} XP
               </span>
             </div>
           </div>
@@ -124,9 +162,23 @@ export function Hud() {
           role="status"
           data-tour="progress"
         >
-          <Star className="size-6" />
-          <span className="font-display text-lg tabular-nums" aria-hidden>
-            {stars}
+          <BumpStar value={shownStars} />
+          <span className="relative font-display text-lg tabular-nums" aria-hidden>
+            {shownStars}
+            <AnimatePresence>
+              {shownStars !== stars && (
+                <motion.span
+                  key="gain"
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 18 }}
+                  exit={{ opacity: 0, y: 26 }}
+                  transition={{ duration: 0.3 }}
+                  className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full border-2 border-ink bg-sand px-1.5 text-sm leading-tight"
+                >
+                  +{stars - shownStars}
+                </motion.span>
+              )}
+            </AnimatePresence>
           </span>
         </div>
         <Link
@@ -137,7 +189,7 @@ export function Hud() {
             playSfx("ui-tap");
           }}
           data-testid="hud-fichero"
-          className="grid size-11 shrink-0 place-items-center rounded-xl border-[3px] border-ink bg-sand shadow-chunky-sm transition-transform duration-75 active:translate-y-0.5 active:shadow-pressed"
+          className="grid size-11 shrink-0 place-items-center rounded-xl border-[3px] border-ink bg-sand shadow-chunky-sm transition-[translate,scale,box-shadow] duration-100 [@media(hover:hover)]:hover:-translate-y-0.5 [@media(hover:hover)]:hover:shadow-chunky active:translate-y-0.5 active:scale-[0.94] active:shadow-pressed active:duration-75"
         >
           <Cards className="size-7" />
         </Link>

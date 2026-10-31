@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import { Octo } from "@/components/characters/octo";
 import { Island } from "@/components/island/island";
 import { Button } from "@/components/ui/button";
+import { NAV_IN } from "@/components/ui/page-transition";
+import { markTransitionOrigin } from "@/components/ui/transition-origin";
 import { useReducedMotion } from "@/components/ui/use-reduced-motion";
 import { playSfx, unlockAudio } from "@/lib/audio";
 import { allLevels } from "@/lib/levels/registry";
@@ -31,7 +33,8 @@ export function Intro() {
     void unlockAudio();
     playSfx("ui-tap");
     useProgress.getState().markIntroSeen();
-    router.push(`/play/${first.id}`);
+    markTransitionOrigin();
+    router.push(`/play/${first.id}`, { transitionTypes: NAV_IN });
   };
 
   return (
