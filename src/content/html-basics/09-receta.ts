@@ -17,10 +17,10 @@ export const receta: Level = {
   title: "Jefe: la receta de la abuela",
   npc: { name: "Abuela Remedios, la cocinera", avatar: "remedios" },
   story:
-    "Te dicté mi famosa sopa de mar y la escribiste toda seguida, ¡como una carta de amor sin comas! Conviértela en una página de receta de verdad, que la quiero colgar en el puerto.",
+    "Te dicté mi sopa de mar y la escribiste toda seguida, ¡como una carta sin comas! Hazla una receta de verdad.",
   concept: "Una página completa: encabezados, listas, imagen, enlace y landmarks",
   lesson:
-    "Has juntado todo lo de la isla: un <h1> y sus <h2>, una lista sin orden para los ingredientes, una ordenada para los pasos, una imagen con alt, un enlace que dice adónde va y landmarks que dan forma a la página. Eso es HTML con significado.",
+    "Juntaste todo lo de la isla: encabezados, listas, imagen con alt, un enlace claro y landmarks. Eso es HTML con significado.",
   mode: "code",
   boss: true,
   starter: {
@@ -82,7 +82,7 @@ Receta original: ${SOURCE}
       kind: "required",
       label: "El nombre de la sopa es el título principal <h1>",
       explain:
-        "Lo primero que busca cualquiera es el nombre del plato. Envuelve «Sopa de mar de la abuela Remedios» en un <h1>.",
+        "Lo primero que se busca es el nombre del plato: pon «Sopa de mar de la abuela Remedios» en un <h1>.",
       test: (ctx) => /sopa/i.test(text($(ctx, "h1"))),
     },
     {
@@ -114,7 +114,7 @@ Receta original: ${SOURCE}
       kind: "required",
       label: "La receta original es un enlace que funciona",
       explain:
-        `Una dirección escrita como texto no se puede pulsar. Ponla en el href de un <a>: <a href="${SOURCE}">…</a>.`,
+        "Una dirección escrita como texto no se puede pulsar. Ponla en el href de un <a>.",
       test: (ctx) => sourceLinks(ctx).length > 0,
     },
     {
@@ -122,7 +122,7 @@ Receta original: ${SOURCE}
       kind: "required",
       label: "La receta está dentro de un único <main>",
       explain:
-        "El contenido principal (ingredientes y pasos) va en un solo <main>; el título puede ir en <header> y la fuente en <footer>.",
+        "Ingredientes y pasos van en un solo <main>; el título puede ir en <header> y la fuente en <footer>.",
       test: (ctx) =>
         $$(ctx, "main").length === 1 &&
         !!listWith(ctx, "ul", 4)?.closest("main") &&
@@ -133,7 +133,7 @@ Receta original: ${SOURCE}
       kind: "a11y",
       label: "«Ingredientes» y «Pasos» son <h2> bajo un único <h1>",
       explain:
-        "Las secciones de la receta son encabezados de nivel 2: así el índice queda h1 → h2 → h2, sin saltos ni títulos duplicados.",
+        "«Ingredientes» y «Pasos» son secciones: <h2> bajo el único <h1>, sin saltos ni duplicados.",
       test: (ctx) => {
         const h2 = $$(ctx, "h2").map((h) => text(h).toLowerCase());
         return (
@@ -157,7 +157,7 @@ Receta original: ${SOURCE}
       kind: "a11y",
       label: "El enlace dice adónde lleva (no la URL ni «clic aquí»)",
       explain:
-        "Una URL leída en voz alta es un trabalenguas. Usa un texto como «la sopa en Wikipedia» y deja la dirección en href.",
+        "Una URL leída en voz alta es un trabalenguas. Usa un texto como «la sopa en Wikipedia».",
       test: (ctx) => {
         const links = sourceLinks(ctx);
         return links.length > 0 && links.every((a) => isDescriptiveLinkText(text(a)));
@@ -165,7 +165,7 @@ Receta original: ${SOURCE}
     },
   ],
   hints: [
-    "Ve por partes: título (h1), secciones (h2), listas (ul/ol con li), alt en la imagen, el enlace, y envuelve todo con header, main y footer.",
+    "Ve por partes: h1, h2, listas con li, alt en la imagen, el enlace, y luego header, main y footer.",
     "<main>\n  <h2>Ingredientes</h2>\n  <ul><li>…</li></ul>\n  <h2>Pasos</h2>\n  <ol><li>…</li></ol>\n</main>",
     "Repasa «Estructura del documento y del sitio web» y «Listas» en MDN.",
   ],

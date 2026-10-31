@@ -13,10 +13,10 @@ export const documento: Level = {
   title: "El sobre de la carta",
   npc: { name: "Sello, el cartero", avatar: "sello" },
   story:
-    "Una carta sin sobre no llega a ningún sitio, y esta página no tiene ni sobre. Envuélvela en un documento completo y que la pestaña diga «Correos de Marcado».",
+    "Esta página es una carta sin sobre. Dale un documento completo y que la pestaña diga «Correos de Marcado».",
   concept: "<!doctype>, <html lang>, <head> y <body>",
   lesson:
-    "Toda página es un documento: <!doctype html> activa el modo moderno, <html lang=\"es\"> dice el idioma, <head> guarda los datos que no se ven (charset, viewport, title) y <body> lo que sí se ve.",
+    "Armaste un documento: doctype, <html lang>, <head> con los datos que no se ven y <body> con lo que sí.",
   mode: "code",
   starter: { html: `${BODY}\n` },
   editable: ["html"],
@@ -40,15 +40,15 @@ export const documento: Level = {
       kind: "required",
       label: "Empieza con <!doctype html>",
       explain:
-        "Sin <!doctype html> el navegador entra en «modo antiguo» (quirks) y dibuja algunas cosas como en los años 90. Va en la primera línea.",
+        "Sin <!doctype html> el navegador dibuja algunas cosas a la antigua. Va en la primera línea.",
       test: (ctx) => ctx.doc.doctype?.name.toLowerCase() === "html" && ctx.doc.compatMode === "CSS1Compat",
     },
     {
       id: "title",
       kind: "required",
-      label: "La pestaña dice «Correos de Marcado» (<title> en el <head>)",
+      label: "La pestaña dice «Correos de Marcado»",
       explain:
-        "El texto de la pestaña sale de <title>, y solo cuenta si está dentro de <head>. Escribe <title>Correos de Marcado</title> ahí.",
+        "La pestaña sale de un <title> dentro de <head>: <title>Correos de Marcado</title>.",
       test: (ctx) => /correos de marcado/i.test(ctx.doc.title),
     },
     {
@@ -64,7 +64,7 @@ export const documento: Level = {
       kind: "required",
       label: "El <head> tiene el meta viewport para móviles",
       explain:
-        "Sin <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"> los móviles muestran la página diminuta, como si fuera de escritorio.",
+        "Sin él se ve diminuta en el móvil: <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">",
       test: (ctx) => !!$(ctx, "head meta[name='viewport' i]") && viewport(ctx).includes("width=device-width"),
     },
     {
@@ -80,7 +80,7 @@ export const documento: Level = {
       kind: "a11y",
       label: "<html lang=\"es\"> indica el idioma",
       explain:
-        "Con lang=\"es\" el lector de pantalla pronuncia en español; sin él, puede leer «correos» con acento inglés. Añádelo a la etiqueta <html>.",
+        "Con lang=\"es\" el lector pronuncia en español; sin él, puede usar acento inglés. Va en <html>.",
       test: (ctx) => /^es\b/i.test(ctx.doc.documentElement.lang),
     },
     {
@@ -88,7 +88,7 @@ export const documento: Level = {
       kind: "a11y",
       label: "El viewport deja hacer zoom",
       explain:
-        "user-scalable=no o maximum-scale=1 impiden ampliar la página, y mucha gente lo necesita para leer. Quítalos del meta viewport.",
+        "user-scalable=no o maximum-scale=1 impiden el zoom que mucha gente necesita. Quítalos.",
       test: (ctx) => {
         const v = viewport(ctx);
         const max = v.match(/maximum-scale=([\d.]+)/);
@@ -97,7 +97,7 @@ export const documento: Level = {
     },
   ],
   hints: [
-    "El documento es una caja: doctype arriba, <html lang> envuelve todo, <head> para los datos ocultos y <body> para lo visible.",
+    "Piensa en una caja: doctype arriba, <html lang> lo envuelve todo, <head> lo oculto y <body> lo visible.",
     "<!doctype html>\n<html lang=\"es\">\n<head>\n  <meta charset=\"utf-8\">\n  <title>Correos de Marcado</title>\n</head>\n<body>…</body>\n</html>",
     "Mira «¿Qué hay en el head?» en MDN.",
   ],

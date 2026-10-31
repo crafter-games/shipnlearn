@@ -22,10 +22,10 @@ export const imagenes: Level = {
   title: "El póster del club de lectura",
   npc: { name: "Tinta, la bibliotecaria", avatar: "tinta" },
   story:
-    "Mi póster tiene una foto preciosa de la biblioteca, pero mi amigo Rober usa lector de pantalla y para él está en blanco. Descríbela, dile su tamaño, y que la ola no le distraiga.",
+    "Mi amigo Rober usa lector de pantalla y no ve mi foto. Descríbela, dale tamaño y que la ola no le distraiga.",
   concept: "<img>: alt, width y height",
   lesson:
-    "alt es lo que se lee (o se muestra) cuando la imagen no se ve: describe lo que aporta. Una imagen solo decorativa lleva alt=\"\" para que se salte. width y height reservan su hueco y evitan que la página dé saltos al cargar.",
+    "alt describe lo que aporta la imagen; si solo decora, alt=\"\". width y height le guardan el hueco para que nada salte.",
   mode: "code",
   starter: { html: page("", "") },
   editable: ["html"],
@@ -60,7 +60,7 @@ export const imagenes: Level = {
       kind: "required",
       label: "La foto declara width y height (320 × 200)",
       explain:
-        "width=\"320\" height=\"200\" le dicen al navegador cuánto espacio guardar antes de que llegue la imagen, así el texto no salta.",
+        "width=\"320\" height=\"200\" guardan el hueco antes de que llegue la imagen: así el texto no salta.",
       test: (ctx) => {
         const img = photo(ctx);
         return !!img && hasPixelAttr(img, "width") && hasPixelAttr(img, "height");
@@ -71,7 +71,7 @@ export const imagenes: Level = {
       kind: "a11y",
       label: "El alt describe lo que se ve (no «imagen» ni «foto»)",
       explain:
-        "«Foto» no le cuenta nada a Rober: ya sabe que es una imagen. Di qué aparece, por ejemplo «Biblioteca de tejado rojo junto a la playa».",
+        "«Foto» no le cuenta nada a Rober. Di qué aparece: «Biblioteca de tejado rojo junto a la playa».",
       test: (ctx) => isUsefulAlt(photo(ctx)?.getAttribute("alt") ?? null),
     },
     {
@@ -79,12 +79,12 @@ export const imagenes: Level = {
       kind: "a11y",
       label: "La ola decorativa tiene alt vacío (alt=\"\")",
       explain:
-        "Una imagen sin alt hace que el lector anuncie su dirección entera. Como la ola solo decora, alt=\"\" le dice que la salte.",
+        "Sin alt, el lector anuncia la dirección del archivo. La ola solo decora: ponle alt=\"\".",
       test: (ctx) => wave(ctx)?.getAttribute("alt") === "",
     },
   ],
   hints: [
-    "Los datos de una imagen van en atributos dentro de <img>: alt para la descripción, width y height para el tamaño.",
+    "Todo va en atributos dentro de <img>: alt para la descripción, width y height para el tamaño.",
     "<img src=\"…\" alt=\"Biblioteca de tejado rojo…\" width=\"320\" height=\"200\">  ·  <img src=\"…\" alt=\"\">",
     "Mira «Imágenes en HTML» en MDN, la parte de texto alternativo.",
   ],

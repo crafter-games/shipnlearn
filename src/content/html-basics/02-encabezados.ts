@@ -23,10 +23,10 @@ export const encabezados: Level = {
   title: "El cartel de la panadería",
   npc: { name: "Doña Hogaza, la panadera", avatar: "hogaza" },
   story:
-    "¡Mi panadería sale en el cartel de la isla! Arriba el nombre de la isla, debajo el de mi panadería y una frase que abra el apetito.",
+    "¡Mi panadería sale en el cartel! Arriba el nombre de la isla, luego el de mi panadería y una frase rica.",
   concept: "<h2> y <p>: jerarquía de encabezados",
   lesson:
-    "Los encabezados forman un índice: <h1> es el título de la página, <h2> una sección dentro de él, y <p> el texto normal. Se eligen por su rango, no por su tamaño, y nunca se saltan niveles.",
+    "Los encabezados forman un índice: <h1> para la página, <h2> para cada sección y <p> para el texto. Van por rango, sin saltar niveles.",
   mode: "tiles",
   tiles,
   starter: { html: tilesSource(tiles, []) },
@@ -44,9 +44,9 @@ export const encabezados: Level = {
     {
       id: "has-subheading",
       kind: "required",
-      label: "La panadería tiene su propio encabezado debajo del título",
+      label: "La panadería tiene su encabezado bajo el título",
       explain:
-        "Falta un segundo encabezado para la panadería, colocado después del <h1>. Cada sección de la página merece su título.",
+        "Falta el encabezado de la panadería, después del <h1>. Cada sección merece su título.",
       test: (ctx) => $$(ctx, "h1,h2,h3,h4,h5,h6").filter((h) => text(h).length > 0).length >= 2,
     },
     {
@@ -54,7 +54,7 @@ export const encabezados: Level = {
       kind: "required",
       label: "Hay un párrafo <p> debajo de los encabezados",
       explain:
-        "La frase de la panadería va en un <p> y después de los encabezados: primero el título, luego el texto que lo explica.",
+        "La frase va en un <p>, después de los encabezados: primero el título, luego el texto.",
       test: (ctx) => {
         const headings = $$(ctx, "h1,h2,h3,h4,h5,h6");
         const p = $$(ctx, "p").find((el) => text(el).length > 0) ?? null;
@@ -72,9 +72,9 @@ export const encabezados: Level = {
     {
       id: "no-skipped-levels",
       kind: "a11y",
-      label: "Los encabezados no se saltan niveles (h1 → h2, no h1 → h4)",
+      label: "Sin saltar niveles: tras <h1> va <h2>, no <h4>",
       explain:
-        "Saltar de <h1> a <h4> deja huecos en el índice que usan los lectores de pantalla. Si quieres otro tamaño, eso lo hará CSS; aquí toca <h2>.",
+        "Saltar de <h1> a <h4> deja huecos en el índice del lector de pantalla. Aquí toca <h2>.",
       test: (ctx) => headingsInOrder(ctx),
     },
   ],
