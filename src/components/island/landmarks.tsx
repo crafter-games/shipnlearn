@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "motion/react";
-import type { ComponentType } from "react";
+import { type ComponentType, useId } from "react";
 import type { WorldId } from "@/lib/levels/types";
 import type { LandmarkStage } from "./features";
 import { GREY, INK, Pop } from "./parts";
@@ -199,8 +199,83 @@ function Workshop({ stage, reduced, paint }: LandmarkProps) {
   );
 }
 
+/* --------------------------------------------------------------- Faro */
+
+/** Left/right x of the tapering tower at height y. */
+const towerX = (y: number) => {
+  const t = (112 - y) / 64;
+  return [146 + 5 * t, 174 - 5 * t] as const;
+};
+
+function band(y0: number, y1: number) {
+  const [a0, b0] = towerX(y0);
+  const [a1, b1] = towerX(y1);
+  return `M${a0} ${y0} L${b0} ${y0} L${b1} ${y1} L${a1} ${y1} Z`;
+}
+
+function Lighthouse({ stage, reduced, paint }: LandmarkProps) {
+  const lit = stage >= 1;
+  const id = useId();
+  return (
+    <g>
+      {stage >= 2 && (
+        <Pop r={reduced} x={160} y={37}>
+          <defs>
+            {[-1, 1].map((s) => (
+              <linearGradient key={s} id={`${id}beam${s}`} gradientUnits="userSpaceOnUse" x1="160" y1="0" x2={160 + s * 92} y2="0">
+                <stop offset="0" stopColor="var(--color-sand)" stopOpacity="0.95" />
+                <stop offset="1" stopColor="var(--color-sand)" stopOpacity="0" />
+              </linearGradient>
+            ))}
+          </defs>
+          {[-1, 1].map((s) => (
+            <motion.path
+              key={s}
+              d={`M160 37 L${160 + s * 92} 16 L${160 + s * 92} 58 Z`}
+              fill={`url(#${id}beam${s})`}
+              opacity={0.85}
+              animate={reduced || stage < 3 ? undefined : { opacity: s < 0 ? [1, 0.15, 1] : [0.15, 1, 0.15] }}
+              transition={loop(3)}
+            />
+          ))}
+        </Pop>
+      )}
+      {/* tower */}
+      <path d={band(112, 48)} style={{ fill: paint("var(--color-foam)") }} />
+      {[
+        [100, 88],
+        [76, 64],
+      ].map(([a, b]) => (
+        <path key={a} d={band(a, b)} style={{ fill: paint("var(--color-coral)") }} />
+      ))}
+      <path d={band(112, 48)} fill="none" stroke={INK} strokeWidth="3.5" strokeLinejoin="round" />
+      <path d="M156 112 L156 103 Q160 98 164 103 L164 112" style={{ fill: paint("var(--color-ocean-deep)") }} stroke={INK} strokeWidth="2.5" />
+      <rect x="157.5" y="78" width="5" height="7" rx="2" fill="var(--color-ink-soft)" stroke={INK} strokeWidth="1.5" />
+      {/* lantern room + gallery */}
+      {stage >= 3 && (
+        <motion.circle
+          cx="160"
+          cy="37"
+          r="14"
+          fill="var(--color-sand)"
+          opacity={0.4}
+          animate={reduced ? undefined : { opacity: [0.25, 0.55, 0.25], scale: [0.9, 1.1, 0.9] }}
+          transition={loop(1.8)}
+          style={{ transformOrigin: "160px 37px", transformBox: "view-box" }}
+        />
+      )}
+      <rect x="151" y="30" width="18" height="15" style={{ fill: lit ? "var(--color-sand)" : paint("var(--color-ink-soft)") }} stroke={INK} strokeWidth="3" />
+      <path d="M157 30 L157 45 M163 30 L163 45" stroke={INK} strokeWidth="1.5" />
+      <path d="M148 31 Q160 12 172 31 Z" style={{ fill: paint("var(--color-coral)") }} stroke={INK} strokeWidth="3" strokeLinejoin="round" />
+      <circle cx="160" cy="17" r="2.6" fill={INK} />
+      <rect x="145" y="44" width="30" height="5" rx="1.5" style={{ fill: paint("var(--color-ink-soft)") }} stroke={INK} strokeWidth="2.5" />
+    </g>
+  );
+}
+
 /** Landmark per world. Worlds without an entry keep the plain island. */
 export const LANDMARKS: Partial<Record<WorldId, Landmark>> = {
   "html-intermediate": { Art: Market, scale: 1.5, flagAt: { x: 200, y: 84 } },
   "css-intermediate": { Art: Workshop, scale: 1.3, flagAt: { x: 126, y: 77 } },
+  "html-advanced": { Art: Lighthouse, scale: 1.15, flagAt: { x: 174, y: 45 }, hidesLighthouse: true },
 };
