@@ -1,15 +1,22 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useState, useSyncExternalStore } from "react";
+import { Fragment, useCallback, useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore } from "react";
 import { Octo } from "@/components/characters/octo";
 import { Hud } from "@/components/hud/hud";
+import { worldProgress } from "@/components/island/features";
 import { Intro } from "@/components/intro/intro";
 import { CoachMarks, MAP_TOUR } from "@/components/tutorial";
-import { setScene, unlockAudio } from "@/lib/audio";
-import { allLevels, worlds } from "@/lib/levels/registry";
+import { useReducedMotion } from "@/components/ui/use-reduced-motion";
+import { playSfx, setScene, unlockAudio } from "@/lib/audio";
+import { worlds } from "@/lib/levels/registry";
+import type { World } from "@/lib/levels/types";
 import { FLAG_RANKS, dueReviews, isUnlocked, rankOf, useProgress } from "@/lib/progress/store";
 import { useHydrated } from "@/lib/progress/use-hydrated";
+import { currentLevelId } from "./current-level";
+import { IslandNavigator, type NavWorld } from "./island-navigator";
 import { Ocean } from "./ocean";
+import { TierBanner } from "./tier-banner";
+import { worldMeta } from "./world-meta";
 import { WorldSection } from "./world-section";
 
 // Time the map was opened: tides due later show up on the next visit.
@@ -18,6 +25,10 @@ const mountTime = () => (openedAt ||= Date.now());
 const noop = () => () => {};
 /** Wait for the page transition before Octo hops to the next level. */
 const HOP_DELAY = 450; // ms (tune)
+/** Height of the fixed HUD + island navigator: nodes above this are hidden under it. */
+const TOP_BAR = 140; // px
+/** How long the jumped-to node stays spotlit. */
+const JUMP_SPOTLIGHT_MS = 2600; // tune
 
 function MapSkeleton() {
   return (
@@ -34,22 +45,34 @@ function MapSkeleton() {
 /** Home: the archipelago map, or the intro on a first visit. */
 export function WorldMap() {
   const hydrated = useHydrated();
+  const reduced = useReducedMotion();
   const levels = useProgress((s) => s.levels);
   const xp = useProgress((s) => s.xp);
   const reviews = useProgress((s) => s.reviews);
   const seenIntro = useProgress((s) => s.seenIntro);
+  const unlockedWorlds = useProgress((s) => s.unlockedWorlds);
   // A flag above the current rank (e.g. after a reset) falls back to the default.
   const flag = useProgress((s) => (FLAG_RANKS[s.equipped.flag] <= rankOf(s.xp) ? s.equipped.flag : "coral"));
   const [openId, setOpenId] = useState<string | null>(null);
+  const [highlightId, setHighlightId] = useState<string | null>(null);
   const now = useSyncExternalStore(noop, mountTime, () => 0);
   // The map stays mounted (hidden) while a level is played: close the node
   // popover on the way out so the player comes back to a clear map.
   useLayoutEffect(() => () => setOpenId(null), []);
 
   const showIntro = hydrated && !seenIntro && Object.keys(levels).length === 0;
-  const currentId = allLevels.find((l) => !levels[l.id]?.stars && isUnlocked(l.id, levels))?.id;
+  const currentId = currentLevelId(levels, unlockedWorlds);
   const due = dueReviews(reviews, now).map((r) => r.levelId);
   const rank = rankOf(xp);
+
+  const nav: NavWorld[] = worlds.map((w) => ({
+    id: w.id,
+    title: w.title,
+    accent: w.accent,
+    completed: worldProgress(w, levels, rank).completed,
+    total: w.levels.length,
+    locked: w.levels.length === 0 || !isUnlocked(w.levels[0].id, levels, unlockedWorlds),
+  }));
 
   useEffect(() => {
     setScene("map");
@@ -80,12 +103,12 @@ export function WorldMap() {
     if (!octo.settled || octo.id === currentId) return;
     const node = document.querySelector<HTMLElement>('[data-current="true"]');
     const r = node?.getBoundingClientRect();
-    if (node && r && (r.top < 80 || r.bottom > window.innerHeight - 40)) {
-      node.scrollIntoView({ block: "center", behavior: "smooth" });
+    if (node && r && (r.top < TOP_BAR || r.bottom > window.innerHeight - 40)) {
+      node.scrollIntoView({ block: "center", behavior: reduced ? "instant" : "smooth" });
     }
     const t = window.setTimeout(() => setOcto({ id: currentId, settled: true, hop: true }), HOP_DELAY);
     return () => window.clearTimeout(t);
-  }, [octo, currentId]);
+  }, [octo, currentId, reduced]);
   useEffect(() => {
     if (!ready) return;
     const el = document.querySelector<HTMLElement>('[data-current="true"]');
@@ -95,6 +118,29 @@ export function WorldMap() {
     else el.scrollIntoView({ block: "center", behavior: "instant" });
   }, [ready]);
 
+  // "Saltar a esta isla": open the world's first level, then bring it into view
+  // with a short spotlight. Octo hops there through the effect above.
+  const spotlightTimer = useRef(0);
+  const onJump = useCallback(
+    (world: World) => {
+      const first = world.levels[0];
+      if (!first) return;
+      useProgress.getState().unlockWorld(world.id);
+      playSfx("star");
+      setHighlightId(first.id);
+      window.clearTimeout(spotlightTimer.current);
+      spotlightTimer.current = window.setTimeout(() => setHighlightId(null), JUMP_SPOTLIGHT_MS);
+      // After the dialog closes and the node re-renders (re-keyed) as the next level.
+      window.setTimeout(() => {
+        const node = document.querySelector<HTMLElement>(`[data-level="${first.id}"]`);
+        node?.scrollIntoView({ block: "center", behavior: reduced ? "instant" : "smooth" });
+        node?.querySelector<HTMLElement>("button")?.focus({ preventScroll: true });
+      }, 60);
+    },
+    [reduced],
+  );
+  useEffect(() => () => window.clearTimeout(spotlightTimer.current), []);
+
   return (
     <>
       <Ocean />
@@ -102,29 +148,38 @@ export function WorldMap() {
         <Intro />
       ) : (
         <>
-          <Hud />
-          <main className="mx-auto max-w-5xl px-4 pb-24 pt-[calc(5.5rem+env(safe-area-inset-top))]">
+          <Hud>{hydrated && <IslandNavigator worlds={nav} />}</Hud>
+          <main className="mx-auto max-w-5xl px-4 pb-24 pt-[calc(9rem+env(safe-area-inset-top))]">
             <h1 className="sr-only">Mapa del archipiélago</h1>
             {!hydrated ? (
               <MapSkeleton />
             ) : (
               <div className="flex flex-col gap-16">
-                {worlds.map((world, i) => (
-                  <WorldSection
-                    key={world.id}
-                    world={world}
-                    index={i}
-                    levels={levels}
-                    currentId={currentId}
-                    octoId={octoId}
-                    octoHop={octo.hop}
-                    openId={openId}
-                    setOpenId={setOpenId}
-                    rank={rank}
-                    flag={flag}
-                    dueLevelIds={due.filter((id) => world.levels.some((l) => l.id === id))}
-                  />
-                ))}
+                {worlds.map((world, i) => {
+                  const meta = worldMeta(world.id);
+                  const opensTier = i === 0 || worldMeta(worlds[i - 1].id).tier !== meta.tier;
+                  return (
+                    <Fragment key={world.id}>
+                      {opensTier && <TierBanner tier={meta.tier} label={meta.banner} />}
+                      <WorldSection
+                        world={world}
+                        index={i}
+                        levels={levels}
+                        unlockedWorlds={unlockedWorlds}
+                        currentId={currentId}
+                        octoId={octoId}
+                        octoHop={octo.hop}
+                        openId={openId}
+                        setOpenId={setOpenId}
+                        rank={rank}
+                        flag={flag}
+                        dueLevelIds={due.filter((id) => world.levels.some((l) => l.id === id))}
+                        highlightId={highlightId}
+                        onJump={onJump}
+                      />
+                    </Fragment>
+                  );
+                })}
                 <div className="flex flex-col items-center gap-2 text-center">
                   <Octo mood={currentId ? "idle" : "happy"} className="size-20" />
                   <p className="font-display text-2xl text-foam text-stroke">

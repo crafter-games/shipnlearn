@@ -3,7 +3,7 @@
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useRef } from "react";
 import { LinkButton } from "@/components/ui/link-button";
-import { Crown, Lock, Question, Star } from "@/components/icons";
+import { Crown, Lock, Question, Sparkle, Star } from "@/components/icons";
 import { NAV_IN } from "@/components/ui/page-transition";
 import { markTransitionOrigin } from "@/components/ui/transition-origin";
 import { useReducedMotion } from "@/components/ui/use-reduced-motion";
@@ -12,7 +12,8 @@ import type { Level } from "@/lib/levels/types";
 import type { Stars } from "@/lib/progress/store";
 import { leftAt } from "./layout";
 
-export type NodeState = "locked" | "current" | "done";
+/** "open": playable but not the next level (a gap left behind after a jump). */
+export type NodeState = "locked" | "open" | "current" | "done";
 
 type Props = {
   level: Level;
@@ -23,12 +24,17 @@ type Props = {
   s: number;
   top: number;
   open: boolean;
+  /** Spotlight right after "Saltar a esta isla". */
+  highlight?: boolean;
+  /** Popover line for a locked node (defaults to "complete the previous level"). */
+  lockedHint?: string;
   onToggle: () => void;
   onClose: () => void;
 };
 
 const fills: Record<NodeState, string> = {
   locked: "bg-[color-mix(in_oklab,var(--color-foam)_55%,var(--color-ink-soft))]",
+  open: "bg-lime",
   current: "bg-lime",
   done: "bg-ocean",
 };
@@ -42,8 +48,42 @@ const popIn = (number: number) => ({
   transition: { type: "spring" as const, stiffness: 520, damping: 17, delay: 0.12 + number * 0.045 },
 });
 
+const SPARKS = [0, 1, 2, 3, 4, 5, 6, 7];
+
+/**
+ * Light "welcome" after a jump: a sand ring pulses around the node and a few
+ * sparkles fly out once. Reduced motion keeps only a still ring.
+ */
+function Spotlight({ reduced }: { reduced: boolean }) {
+  return (
+    <div aria-hidden data-testid="jump-spotlight" className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+      <motion.span
+        className="absolute top-1/2 left-1/2 block size-28 -translate-x-1/2 -translate-y-1/2 rounded-full border-[6px] border-sand shadow-[0_0_0_3px_var(--color-ink)]"
+        initial={reduced ? false : { scale: 0.4, opacity: 0 }}
+        animate={reduced ? { opacity: 1 } : { scale: [0.4, 1.15, 1, 1.08, 1], opacity: 1 }}
+        transition={{ duration: 1.1, ease: "easeOut" }}
+      />
+      {!reduced &&
+        SPARKS.map((i) => {
+          const a = (i / SPARKS.length) * Math.PI * 2;
+          return (
+            <motion.span
+              key={i}
+              className="absolute top-0 left-0 block -translate-x-1/2 -translate-y-1/2"
+              initial={{ x: 0, y: 0, scale: 0.3, opacity: 1 }}
+              animate={{ x: Math.cos(a) * 84, y: Math.sin(a) * 84, scale: [0.3, 1.1, 0.6], opacity: [1, 1, 0] }}
+              transition={{ duration: 0.8, ease: "easeOut", delay: 0.05 }}
+            >
+              <Sparkle className="size-6" fill={i % 2 ? "var(--color-sand)" : "var(--color-foam)"} />
+            </motion.span>
+          );
+        })}
+    </div>
+  );
+}
+
 /** One chunky circular level node on the map path, with its popover. */
-export function LevelNode({ level, number, state, stars, s, top, open, onToggle, onClose }: Props) {
+export function LevelNode({ level, number, state, stars, s, top, open, highlight = false, lockedHint, onToggle, onClose }: Props) {
   const reduced = useReducedMotion();
   const wrapRef = useRef<HTMLDivElement>(null);
   const btnRef = useRef<HTMLButtonElement>(null);
@@ -55,7 +95,7 @@ export function LevelNode({ level, number, state, stars, s, top, open, onToggle,
   const name =
     `Nivel ${number}: ${level.title}` +
     (boss ? " (jefe)" : "") +
-    (locked ? ", bloqueado" : state === "current" ? ", siguiente nivel" : `, ${plural(stars)}`);
+    (locked ? ", bloqueado" : state === "current" ? ", siguiente nivel" : state === "open" ? ", disponible" : `, ${plural(stars)}`);
 
   // Close on outside tap and Escape (returning focus to the node).
   useEffect(() => {
@@ -86,15 +126,17 @@ export function LevelNode({ level, number, state, stars, s, top, open, onToggle,
       style={{ left: leftAt(s), top }}
       data-current={state === "current" ? "true" : undefined}
       data-first={number === 1 ? "true" : undefined}
+      data-level={level.id}
     >
       <motion.div key={state} {...popIn(number)} className="-translate-x-1/2 -translate-y-1/2">
-      <div className={state === "current" && !reduced ? "animate-bob" : ""}>
+      <div className={`relative ${state === "current" && !reduced ? "animate-bob" : ""}`}>
         {state === "current" && (
           <div className="pointer-events-none absolute -top-11 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-xl border-[3px] border-ink bg-foam px-3 py-0.5 font-display text-base tracking-wide text-ink shadow-chunky-sm">
             {number === 1 && stars === 0 ? "¡Empieza!" : "¡Juega!"}
             <span className="absolute -bottom-[9px] left-1/2 size-3.5 -translate-x-1/2 rotate-45 border-b-[3px] border-r-[3px] border-ink bg-foam" />
           </div>
         )}
+        {highlight && <Spotlight reduced={reduced} />}
         <button
           ref={btnRef}
           type="button"
@@ -163,7 +205,7 @@ export function LevelNode({ level, number, state, stars, s, top, open, onToggle,
               <span>Nivel {number}</span>
               {boss && <span className="rounded-md border-2 border-ink bg-sand px-1.5 text-ink">Jefe</span>}
             </div>
-            <h3 className="mt-0.5 font-display text-2xl leading-tight">{level.title}</h3>
+            <h4 className="mt-0.5 font-display text-2xl leading-tight">{level.title}</h4>
             {state === "done" ? (
               <p className="mt-1 text-base">
                 <span className="font-extrabold">Aprendiste:</span>{" "}
@@ -183,7 +225,7 @@ export function LevelNode({ level, number, state, stars, s, top, open, onToggle,
             {locked ? (
               <p className="mt-3 flex items-center gap-2 rounded-xl bg-ink/10 px-3 py-2 font-bold">
                 <Lock className="size-6" fill="var(--color-foam)" />
-                Completa el nivel anterior para abrirlo
+                {lockedHint ?? "Completa el nivel anterior para abrirlo"}
               </p>
             ) : (
               <LinkButton
