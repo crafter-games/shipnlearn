@@ -417,3 +417,70 @@ export function Balance(props: IconProps) {
     </Icon>
   );
 }
+
+/* ───────────────────────── Map: tiers and jumps ───────────────────────── */
+
+const TIER_BARS = [
+  { x: 3, h: 7 },
+  { x: 9.5, h: 11.5 },
+  { x: 16, h: 16 },
+];
+
+/** Three rising bars: difficulty tier 1..3 (filled bars in currentColor). */
+export function TierBars({ tier, ...props }: IconProps & { tier: 1 | 2 | 3 }) {
+  return (
+    <Icon {...props}>
+      {TIER_BARS.map((b, i) => (
+        <rect
+          key={b.x}
+          x={b.x}
+          y={20.5 - b.h}
+          width="5"
+          height={b.h}
+          rx="1.6"
+          fill={i < tier ? "currentColor" : "none"}
+          stroke="currentColor"
+          strokeWidth="2.2"
+          opacity={i < tier ? 1 : 0.45}
+        />
+      ))}
+    </Icon>
+  );
+}
+
+/** Dotted arc that lands on a flag: "jump ahead to this island". */
+export function JumpArc(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M3.5 19.5C4.5 10 10 5.6 15.6 7.4" fill="none" stroke="currentColor" strokeWidth="2.8" strokeDasharray="0.1 4.4" />
+      <path d="M12.8 4.4l3.4 3.2-3.4 3.2" fill="none" stroke="currentColor" strokeWidth="2.8" />
+      <path d="M14.5 21h7M19.5 21v-8.6" fill="none" stroke="currentColor" strokeWidth="2.6" />
+      <path d="M19.5 12.4l-3.6 1.7 3.6 1.7z" fill="currentColor" stroke="currentColor" strokeWidth="1.6" />
+    </Icon>
+  );
+}
+
+/** Tiny island for the navigator, tinted with the world's accent (grey when locked). */
+export function MiniIsland({ accent, locked = false, ...props }: IconProps & { accent: string; locked?: boolean }) {
+  const grey = "color-mix(in oklab, var(--color-foam) 45%, var(--color-ink-soft))";
+  const land = locked ? grey : accent;
+  return (
+    <Icon {...props}>
+      <ellipse cx="12" cy="17.6" rx="11" ry="4.2" fill="var(--color-ocean-light)" opacity="0.8" />
+      <path
+        d="M3.4 16.6C3.4 12.6 7.4 10.8 12 10.8s8.6 1.8 8.6 5.8c0 2.2-3.8 3.4-8.6 3.4s-8.6-1.2-8.6-3.4z"
+        style={{ fill: locked ? grey : "var(--color-sand)" }}
+        stroke={INK}
+        strokeWidth="2"
+      />
+      <path d="M6.6 15.8c0-2 2.4-3.1 5.4-3.1s5.4 1.1 5.4 3.1c0 1.3-2.4 2-5.4 2s-5.4-.7-5.4-2z" style={{ fill: land }} />
+      <path d="M12.6 12.4c-.3-2.4.3-4-.3-6" fill="none" stroke={INK} strokeWidth="2.2" />
+      <path
+        d="M12.3 6.4Q9 3.8 6 6.8q3.4.3 6.3-.4zM12.3 6.4q3.3-2.6 6.3.4-3.4.3-6.3-.4z"
+        style={{ fill: locked ? grey : "var(--color-lime)" }}
+        stroke={INK}
+        strokeWidth="1.6"
+      />
+    </Icon>
+  );
+}
