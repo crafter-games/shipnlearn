@@ -17,7 +17,7 @@ const sizes: Record<Size, string> = {
   lg: "h-16 px-8 text-2xl rounded-chunk",
 };
 
-/** Chunky game button: ink border + solid shadow that sinks when pressed. */
+/** Chunky game button: ink border + solid shadow; lifts on hover, sinks and squashes when pressed. */
 export function Button({
   variant = "primary",
   size = "md",
@@ -28,7 +28,7 @@ export function Button({
     <button
       type="button"
       {...props}
-      className={`inline-flex select-none items-center justify-center gap-2 border-[3px] border-ink font-display tracking-wide shadow-chunky transition-[transform,box-shadow] duration-75 active:translate-y-1 active:shadow-pressed disabled:translate-y-0 disabled:cursor-not-allowed disabled:opacity-50 disabled:shadow-chunky ${variants[variant]} ${sizes[size]} ${className}`}
+      className={`inline-flex select-none items-center justify-center gap-2 border-[3px] border-ink font-display tracking-wide shadow-chunky transition-[translate,scale,box-shadow] duration-100 [@media(hover:hover)]:hover:-translate-y-0.5 [@media(hover:hover)]:hover:shadow-[0_7px_0_0_var(--color-ink)] active:translate-y-1 active:scale-[0.97] active:shadow-pressed active:duration-75 disabled:translate-y-0 disabled:scale-100 disabled:cursor-not-allowed disabled:opacity-50 disabled:shadow-chunky ${variants[variant]} ${sizes[size]} ${className}`}
     />
   );
 }

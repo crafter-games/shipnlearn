@@ -77,7 +77,7 @@ function IconButton({
       type="button"
       aria-label={label}
       onClick={onClick}
-      className="grid size-11 shrink-0 place-items-center rounded-xl border-[3px] border-ink bg-foam shadow-chunky-sm transition-transform duration-75 active:translate-y-0.5 active:shadow-pressed"
+      className="grid size-11 shrink-0 place-items-center rounded-xl border-[3px] border-ink bg-foam shadow-chunky-sm transition-[translate,scale,box-shadow] duration-100 [@media(hover:hover)]:hover:-translate-y-0.5 [@media(hover:hover)]:hover:shadow-chunky active:translate-y-0.5 active:scale-[0.94] active:shadow-pressed active:duration-75"
     >
       {children}
     </button>
@@ -187,7 +187,7 @@ export function Hud() {
             playSfx("ui-tap");
           }}
           data-testid="hud-fichero"
-          className="grid size-11 shrink-0 place-items-center rounded-xl border-[3px] border-ink bg-sand shadow-chunky-sm transition-transform duration-75 active:translate-y-0.5 active:shadow-pressed"
+          className="grid size-11 shrink-0 place-items-center rounded-xl border-[3px] border-ink bg-sand shadow-chunky-sm transition-[translate,scale,box-shadow] duration-100 [@media(hover:hover)]:hover:-translate-y-0.5 [@media(hover:hover)]:hover:shadow-chunky active:translate-y-0.5 active:scale-[0.94] active:shadow-pressed active:duration-75"
         >
           <Cards className="size-7" />
         </Link>
