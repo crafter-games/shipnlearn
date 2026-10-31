@@ -1,6 +1,7 @@
 import type { ComponentType } from "react";
 import type { AvatarId } from "@/lib/levels/types";
 import { Hogaza, Migas } from "./npcs/bakers";
+import { Eco, Llave } from "./npcs/beacon";
 import { Bruno, DjMarea, Nieve, Rosa, Tablas, Tula } from "./npcs/crafts";
 import { Anselmo, Anzuelo } from "./npcs/fishers";
 import { Faustino, Lumi } from "./npcs/keepers";
@@ -53,9 +54,9 @@ const PORTRAITS: Record<AvatarId, ComponentType<PortraitProps>> = {
   cifras: Cifras,
   escuadra: Escuadra,
   pixel: Pixel,
+  eco: Eco,
+  llave: Llave,
   // Placeholders until the new islanders are drawn.
-  eco: Placeholder("E", "var(--color-ocean-light)"),
-  llave: Placeholder("L", "var(--color-ocean-light)"),
   magma: Placeholder("M", "var(--color-sand-deep)"),
   prisma: Placeholder("P", "var(--color-sand-deep)"),
 };
