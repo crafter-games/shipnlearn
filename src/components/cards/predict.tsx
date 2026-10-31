@@ -1,8 +1,9 @@
 "use client";
 
 import { motion } from "motion/react";
-import type { Ref } from "react";
+import { useEffect, useRef } from "react";
 import { Check, Cross, Question, Restart } from "@/components/icons";
+import { useReducedMotion } from "@/components/ui/use-reduced-motion";
 import type { ConceptCard } from "@/lib/levels/types";
 import { RichText } from "./rich-text";
 
@@ -14,7 +15,6 @@ type Props = {
   /** Offered when the question is optional practice (Fichero, mid-level). */
   onRetry?: () => void;
   headingId: string;
-  ref?: Ref<HTMLElement>;
 };
 
 const LETTERS = ["A", "B", "C", "D"];
@@ -24,27 +24,28 @@ const LETTERS = ["A", "B", "C", "D"];
  * question and explains it; a wrong pick also explains the right one. No
  * score, no gating: it is a check for the player, not a test.
  */
-export function Predict({ predict, answer, onAnswer, onRetry, headingId, ref }: Props) {
+export function Predict({ predict, answer, onAnswer, onRetry, headingId }: Props) {
   const answered = answer !== null;
   const chosen = answered ? predict.options[answer] : null;
   const correctIndex = predict.options.findIndex((o) => o.correct);
   const correct = predict.options[correctIndex];
+  const reduced = useReducedMotion();
+  const feedbackRef = useRef<HTMLDivElement>(null);
+
+  // The verdict lands below the options: bring it into view on small screens.
+  useEffect(() => {
+    if (answered) feedbackRef.current?.scrollIntoView({ block: "nearest", behavior: reduced ? "auto" : "smooth" });
+  }, [answered, reduced]);
 
   return (
     <section
-      ref={ref}
-      tabIndex={-1}
       aria-labelledby={headingId}
       data-testid="card-predict"
-      className="relative rounded-2xl border-[3px] border-ink bg-grape-deep p-3 text-foam shadow-chunky-sm outline-none sm:p-4"
+      className="relative rounded-2xl border-[3px] border-ink bg-grape-deep p-3 text-foam shadow-chunky-sm sm:p-4"
     >
-      <p className="flex items-center gap-1.5 font-display text-sm uppercase tracking-[0.14em] text-foam">
-        <Question className="size-6" />
-        Reto rápido
-      </p>
-      <h3 id={headingId} className="mt-1.5 text-lg font-extrabold leading-snug sm:text-xl">
+      <p id={headingId} className="text-lg font-extrabold leading-snug sm:text-xl">
         <RichText text={predict.question} chip="bg-ink/40" />
-      </h3>
+      </p>
 
       <ul className="mt-3 grid gap-2">
         {predict.options.map((o, i) => {
@@ -95,7 +96,7 @@ export function Predict({ predict, answer, onAnswer, onRetry, headingId, ref }: 
         })}
       </ul>
 
-      <div aria-live="polite" className="mt-3 min-h-0">
+      <div ref={feedbackRef} aria-live="polite" className="mt-3 min-h-0 scroll-mb-4">
         {chosen && (
           <motion.p
             initial={{ scale: 0.6, opacity: 0 }}

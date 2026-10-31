@@ -376,3 +376,44 @@ export const KindSelector = (p: IconProps) => (
 export const KindConcept = (p: IconProps) => (
   <Glyph {...p} d="M12 6.5C9.8 4.8 6.8 4.4 3.5 5v13.5c3.3-.6 6.3-.2 8.5 1.5 2.2-1.7 5.2-2.1 8.5-1.5V5c-3.3-.6-6.3-.2-8.5 1.5zM12 6.5V20" />
 );
+
+/* ───────────────────────── Card steps ───────────────────────── */
+
+/** Open eye: "look at the example". */
+export function Eye(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path
+        d="M2.4 12c2.4-4.2 5.6-6.4 9.6-6.4s7.2 2.2 9.6 6.4c-2.4 4.2-5.6 6.4-9.6 6.4S4.8 16.2 2.4 12z"
+        fill="var(--color-foam)"
+        stroke={INK}
+        strokeWidth={OUTLINE}
+      />
+      <circle cx="12" cy="12" r="3.9" fill="var(--color-ocean)" stroke={INK} strokeWidth="2" />
+      <circle cx="12" cy="12" r="1.6" fill={INK} />
+      <Shine d="M10 10.4l.9-.7" width={1.4} />
+    </Icon>
+  );
+}
+
+/** Four-point twinkle for celebratory bursts. */
+export function Sparkle({ fill = "var(--color-sand)", ...props }: IconProps & { fill?: string }) {
+  return (
+    <Icon {...props}>
+      <path d="M12 2.5l2.2 7.3 7.3 2.2-7.3 2.2L12 21.5l-2.2-7.3L2.5 12l7.3-2.2z" fill={fill} stroke={INK} strokeWidth="2" />
+    </Icon>
+  );
+}
+
+/** Scales with a lime pan and a coral pan: "when yes / when no". */
+export function Balance(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M12 4.5v15M7.5 20.5h9M4.5 7h15" fill="none" stroke={INK} strokeWidth="2.4" />
+      <path d="M4.5 7L2 13.2M4.5 7L7 13.2M19.5 7L17 13.2M19.5 7l2.5 6.2" fill="none" stroke={INK} strokeWidth="1.4" />
+      <path d="M1.5 13.2a3 3 0 0 0 6 0z" fill="var(--color-lime)" stroke={INK} strokeWidth="2" />
+      <path d="M16.5 13.2a3 3 0 0 0 6 0z" fill="var(--color-coral)" stroke={INK} strokeWidth="2" />
+      <circle cx="12" cy="4.2" r="1.8" fill="var(--color-sand)" stroke={INK} strokeWidth="1.6" />
+    </Icon>
+  );
+}

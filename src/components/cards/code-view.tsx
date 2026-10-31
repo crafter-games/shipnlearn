@@ -18,7 +18,7 @@ const TONE: Record<TokenKind, string> = {
 function Code({ src, lang }: { src: string; lang: "html" | "css" }) {
   const tokens = lang === "html" ? highlightHtml(src) : highlightCss(src);
   return (
-    <pre className="overflow-x-auto px-3 py-2.5 font-mono text-[13px] leading-relaxed sm:text-sm">
+    <pre className="overflow-x-auto px-3 py-2 font-mono text-[12.5px] leading-normal sm:py-2.5 sm:text-sm sm:leading-relaxed">
       <code>
         {tokens.map((t, i) => (
           <span key={i} className={TONE[t.kind]}>
