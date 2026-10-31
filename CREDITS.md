@@ -32,3 +32,15 @@ Made for this project; no third-party material.
 | `public/levels/mercado/anuncio.mp4` | Isla Mercado video level | Generated with ffmpeg from the project's own artwork |
 | `public/levels/mercado/cancion.mp3` | Isla Mercado audio level | Synthesised tone generated with ffmpeg |
 | `public/levels/mercado/subtitulos.vtt` | Isla Mercado captions | Written for ShipNLearn |
+
+## Promo video sound effects
+
+`promo/public/sfx/*.ogg` come from three Kenney packs, all CC0 1.0 (https://creativecommons.org/publicdomain/zero/1.0/):
+
+| Pack | Author | Source |
+| --- | --- | --- |
+| Interface Sounds | Kenney | https://kenney.nl/assets/interface-sounds |
+| Digital Audio | Kenney | https://kenney.nl/assets/digital-audio |
+| Impact Sounds | Kenney | https://kenney.nl/assets/impact-sounds |
+
+The promo's music, `promo/public/audio/music-upbeat.mp3`, is "Stage 2" by Juhani Junkala (listed above).
