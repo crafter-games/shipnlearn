@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { getWorld } from "@/lib/levels/registry";
+import { allLevels, getWorld } from "@/lib/levels/registry";
 import { currentLevelId } from "./current-level";
 
 const html = getWorld("html-basics")!.levels;
@@ -28,7 +28,10 @@ describe("currentLevelId", () => {
   });
 
   it("wraps around to earlier gaps once the last world is done", () => {
-    const levels = Object.fromEntries(css.map((l, i) => [l.id, done(10 + i)]));
-    expect(currentLevelId(levels, ["css-basics"])).toBe(html[0].id);
+    // The last world that has levels, whichever it is as content grows.
+    const lastWorld = allLevels.at(-1)!.worldId;
+    const last = getWorld(lastWorld)!.levels;
+    const levels = Object.fromEntries(last.map((l, i) => [l.id, done(10 + i)]));
+    expect(currentLevelId(levels, [lastWorld])).toBe(html[0].id);
   });
 });
