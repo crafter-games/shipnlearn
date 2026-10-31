@@ -21,3 +21,14 @@ seamless loops.
 
 Juhani Junkala's music is also part of his "400 Indie Game Music Loops" pack:
 https://subspaceaudio.itch.io/indie-game-music-loops
+
+## Level media
+
+Made for this project; no third-party material.
+
+| File | Used for | How it was made |
+| --- | --- | --- |
+| `public/levels/mercado/*.svg` | Isla Mercado level images | Drawn as SVG for ShipNLearn |
+| `public/levels/mercado/anuncio.mp4` | Isla Mercado video level | Generated with ffmpeg from the project's own artwork |
+| `public/levels/mercado/cancion.mp3` | Isla Mercado audio level | Synthesised tone generated with ffmpeg |
+| `public/levels/mercado/subtitulos.vtt` | Isla Mercado captions | Written for ShipNLearn |
