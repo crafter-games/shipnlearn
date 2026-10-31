@@ -72,6 +72,7 @@ export function WorldSection({
       <div className="md:sticky md:top-[calc(8.5rem+env(safe-area-inset-top))]">
         <div className="relative">
           <Island
+            worldId={world.id}
             name={world.title}
             accent={world.accent}
             progress={progress}
