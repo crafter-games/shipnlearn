@@ -1,6 +1,7 @@
 import { expect, type Page, test } from "@playwright/test";
 import { allCards, getCard } from "../src/lib/levels/cards";
 import { getLevel } from "../src/lib/levels/registry";
+import { TIP_IDS } from "../src/components/tutorial/tours";
 
 const KEY = "shipnlearn-progress";
 const LEVEL_ID = "html-01-titulo";
@@ -20,7 +21,8 @@ async function fresh(page: Page, path: string, state: Record<string, unknown> = 
       localStorage.clear();
       localStorage.setItem(k, JSON.stringify({ state: s, version: 3 }));
     },
-    [KEY, state] as const,
+    // Tutorial tips already seen: they have their own spec (tutorial.spec.ts).
+    [KEY, { seenTips: TIP_IDS, ...state }] as const,
   );
   await page.reload();
 }

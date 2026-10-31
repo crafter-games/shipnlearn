@@ -35,10 +35,11 @@ export function PreviewPane({ iframeRef, ghostSrcdoc, passed, total, className =
   return (
     <section
       aria-label="Vista previa"
+      data-tour="preview"
       className={`flex min-h-0 flex-col overflow-hidden rounded-chunk border-[3px] border-ink bg-ink shadow-chunky ${className}`}
     >
       <div className="flex flex-wrap items-center gap-2 px-2.5 py-2">
-        <div role="radiogroup" aria-label="Vista" className="flex rounded-full border-2 border-ink bg-ink-soft p-0.5">
+        <div role="radiogroup" aria-label="Vista" data-tour="views" className="flex rounded-full border-2 border-ink bg-ink-soft p-0.5">
           {VIEWS.map((v) => (
             <button
               key={v.id}
